@@ -4,10 +4,10 @@ class MoveableObject extends DrawableObject {
     speedY = 0;
     acceleration = 1;
     offset = {
-        top: 10,
-        left: 10,
-        right: 10,
-        bottom: 10
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0
     };
     energy = 100;
     lastHit = 0;
@@ -25,7 +25,7 @@ class MoveableObject extends DrawableObject {
         if (this instanceof ThrowableObject) {
             return true;
         } else {
-            return this.y < 116;
+            return this.y < 140;
         }
     }
 

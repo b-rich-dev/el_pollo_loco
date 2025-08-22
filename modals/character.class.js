@@ -1,7 +1,31 @@
 class Character extends MoveableObject {
-    y = 20; //ideal 118
-    width = 148;
-    height = 320;
+    y = 140;
+    width = 180;
+    height = 280;
+    IMAGES_IDLE = [
+        'assets/img/2_character_pepe/1_idle/idle/I-1.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-2.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-3.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-4.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-5.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-6.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-7.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-8.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-9.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-10.png',
+    ];
+    IMAGES_IDLE_LONG = [
+        'assets/img/2_character_pepe/1_idle/long_idle/I-11.png',
+        'assets/img/2_character_pepe/1_idle/long_idle/I-12.png',
+        'assets/img/2_character_pepe/1_idle/long_idle/I-13.png',
+        'assets/img/2_character_pepe/1_idle/long_idle/I-14.png',
+        'assets/img/2_character_pepe/1_idle/long_idle/I-15.png',
+        'assets/img/2_character_pepe/1_idle/long_idle/I-16.png',
+        'assets/img/2_character_pepe/1_idle/long_idle/I-17.png',
+        'assets/img/2_character_pepe/1_idle/long_idle/I-18.png',
+        'assets/img/2_character_pepe/1_idle/long_idle/I-19.png',
+        'assets/img/2_character_pepe/1_idle/long_idle/I-20.png',
+    ];
     IMAGES_WALKING = [
         'assets/img/2_character_pepe/2_walk/W-21.png',
         'assets/img/2_character_pepe/2_walk/W-22.png',
@@ -38,14 +62,23 @@ class Character extends MoveableObject {
     world;
     speed = 2;
     offset = {
-        top: 120,
-        left: 40,
-        right: 30,
-        bottom: 30
+        top: 138,
+        left: 36,
+        right: 52,
+        bottom: 13
     };
+    offsetJump = {
+        top: 138,
+        left: 38,
+        right: 42,
+        bottom: 13
+    };
+    lastActionTime = Date.now();
 
     constructor() {
         super().loadImage('assets/img/2_character_pepe/2_walk/W-21.png');
+        this.loadImages(this.IMAGES_IDLE);
+        this.loadImages(this.IMAGES_IDLE_LONG);
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_HURT);
@@ -57,18 +90,26 @@ class Character extends MoveableObject {
     animate() {
 
         setInterval(() => {
+            let action = false;
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
                 this.moveRight();
                 this.otherDirection = false;
+                action = true;
             }
 
             if (this.world.keyboard.LEFT && this.x > 0) {
                 this.moveLeft();
                 this.otherDirection = true;
+                action = true;
             }
 
             if ((this.world.keyboard.UP || this.world.keyboard.SPACE) && !this.isAboveGround()) {
                 this.jump();
+                action = true;
+            }
+
+            if (action) {
+                this.lastActionTime = Date.now();
             }
 
             this.world.camera_x = -this.x + 100;
@@ -77,7 +118,7 @@ class Character extends MoveableObject {
         setInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
-            } else if(this.isHurt()){
+            } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
             }
             else if (this.isAboveGround()) {
@@ -87,7 +128,36 @@ class Character extends MoveableObject {
                     this.playAnimation(this.IMAGES_WALKING);
                 }
             }
+            if (!this.isAboveGround()) {
+                this.offset = {
+                    top: 138,
+                    left: 36,
+                    right: 52,
+                    bottom: 13
+                };
+            }
         }, 40);
+
+        setInterval(() => {
+            if (this.isInactive(3000)) {
+                this.playAnimation(this.IMAGES_IDLE);
+            }
+        }, 1000);
+
+        setInterval(() => {
+            if (this.isInactive(5000)) {
+                this.playAnimation(this.IMAGES_IDLE_LONG);
+            }
+        }, 1000);
+    }
+
+    isInactive(time) {
+        return (Date.now() - this.lastActionTime) > time;
+    }
+
+    jump() {
+        this.speedY = 20;
+        this.offset = this.offsetJump;
     }
 
     isColliding(mo) {

@@ -3,8 +3,20 @@ body{
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    height: 100vh;
+    background-image: url('./assets/img/others/desert.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+h1 {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    right: 50%;
 }
 
 canvas {
+    position: relative;
     background-color: black;
 }
