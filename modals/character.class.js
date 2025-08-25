@@ -1,5 +1,5 @@
 class Character extends MoveableObject {
-    y = 140;
+    y = 148;
     width = 180;
     height = 280;
     IMAGES_IDLE = [
@@ -60,7 +60,7 @@ class Character extends MoveableObject {
         'assets/img/2_character_pepe/5_dead/D-57.png'
     ];
     world;
-    speed = 2;
+    speed = 20; // normal 2
     offset = {
         top: 138,
         left: 36,
@@ -74,6 +74,7 @@ class Character extends MoveableObject {
         bottom: 13
     };
     lastActionTime = Date.now();
+    lastWasAboveGround = false;
 
     constructor() {
         super().loadImage('assets/img/2_character_pepe/2_walk/W-21.png');
@@ -116,12 +117,13 @@ class Character extends MoveableObject {
         }, 1000 / 60);
 
         setInterval(() => {
-            if (this.isDead()) {
+            if (this.hasJustLanded()) {
+                this.playAnimation([this.IMAGES_JUMPING[8]]);
+            } else if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
-            }
-            else if (this.isAboveGround()) {
+            } else if (this.isAboveGround()) {
                 this.playAnimation(this.IMAGES_JUMPING);
             } else {
                 if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
@@ -136,7 +138,8 @@ class Character extends MoveableObject {
                     bottom: 13
                 };
             }
-        }, 40);
+            this.lastWasAboveGround = this.isAboveGround(); // Status aktualisieren
+        }, 50);
 
         setInterval(() => {
             if (this.isInactive(3000)) {
@@ -165,5 +168,9 @@ class Character extends MoveableObject {
             this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
             this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
             this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom;
+    }
+
+    hasJustLanded() {
+        return this.lastWasAboveGround && !this.isAboveGround();
     }
 }

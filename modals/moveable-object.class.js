@@ -25,21 +25,24 @@ class MoveableObject extends DrawableObject {
         if (this instanceof ThrowableObject) {
             return true;
         } else {
-            return this.y < 140;
+            return this.y < 148;
         }
     }
 
     playAnimation(images) {
+        if (!images || images.length === 0) return;
         this.currentImage = (this.currentImage + 1) % images.length;
         this.img = this.imageCache[images[this.currentImage]];
     }
 
     moveRight() {
+        console.log('character x position:', this.world.character.x);
         this.x += this.speed;
     }
 
     moveLeft() {
         this.x -= this.speed;
+        // console.log('character x position:', this.world.character.x);
     }
 
     jump() {

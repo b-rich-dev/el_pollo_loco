@@ -5,32 +5,33 @@ class World {
     ctx;
     keyboard;
     camera_x = 0;
-    statusBarHealth = new StatusBar('health', 20, 0, 100);
-    statusBarCoins = new StatusBar('coins', 20, 50, 0);
-    statusBarBottle = new StatusBar('bottle', 20, 100, 0);
+    statusBarHealth = new StatusBar('health', 90, 0, 100);
+    statusBarCoins = new StatusBar('coins', 50, 30, 0);
+    statusBarBottle = new StatusBar('bottle', 20, 60, 0);
     throwableObject = [];
-    coins = [];
+    endbossStarted = false;
+    endbossMoveInterval = null;
+    endboss = null;
 
     constructor(canvas, ctx, keyboard) {
         this.canvas = canvas;
         this.ctx = ctx;
         this.keyboard = keyboard;
-        this.createCoins(10); // z.B. 10 Coins erzeugen
         this.draw();
         this.setWorld();
         this.run();
+        this.endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);
     }
 
     setWorld() {
         this.character.world = this;
-        // this.enemies.forEach(enemy => enemy.world = this);
-        // this.coins.forEach(coin => coin.world = this);
     }
 
     run() {
         setInterval(() => {
             this.checkCollisions();
             this.checkThrowableObjects();
+            this.startEndbossBattle();
         }, 200);
     }
 
@@ -47,12 +48,6 @@ class World {
         if (this.keyboard.D || this.keyboard.NUMPAD_ZERO) {
             let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
             this.throwableObject.push(bottle);
-        }
-    }
-
-    createCoins(amount) {
-        for (let i = 0; i < amount; i++) {
-            this.coins.push(new Coins());
         }
     }
 
@@ -74,7 +69,8 @@ class World {
         this.addToMap(this.character);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.throwableObject);
-        this.addObjectsToMap(this.coins); // Coins-Array zeichnen
+        this.addObjectsToMap(this.level.coins);
+        this.addObjectsToMap(this.level.bottles);
 
         this.ctx.translate(-this.camera_x, 0);
 
@@ -108,5 +104,22 @@ class World {
     flipImageBack(mo) {
         mo.x = mo.x * -1;
         this.ctx.restore();
+    }
+
+    startEndbossBattle() {
+        if (!this.endbossStarted && this.character.x >= 2230 && this.endboss) {
+            this.endbossStarted = true;
+            console.log('Endboss startet:', this.endboss.x);
+            this.endbossMoveInterval = setInterval(() => {
+                // Logging zur Überwachung der Endboss-Position
+                console.log('Endboss aktuelle Position:', this.endboss.x);
+                if (this.endboss.x > 2500) {
+                    this.endboss.moveLeft();
+                } else {
+                    clearInterval(this.endbossMoveInterval);
+                    console.log('Endboss hat Zielposition erreicht.');
+                }
+            }, 1000 / 60);
+        }
     }
 }

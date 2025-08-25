@@ -3,6 +3,8 @@ class Endboss extends MoveableObject {
     width = 250;
     height = 400;
     y = 60;
+    x = 3000; // Stelle sicher, dass dies größer als 2600 ist!
+    speed = 2;
 
     IMAGES_WALKING = [
         'assets/img/4_enemie_boss_chicken/1_walk/G1.png',
@@ -44,12 +46,10 @@ class Endboss extends MoveableObject {
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
-        this.x = 700;
         this.animate();
     }
 
     animate() {
-        // this.moveLeft();
         setInterval(() => {
             this.playAnimation(this.IMAGES_WALKING);
         }, 1000 / 6);
