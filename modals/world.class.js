@@ -9,11 +9,13 @@ class World {
     statusBarCoins = new StatusBar('coins', 20, 50, 0);
     statusBarBottle = new StatusBar('bottle', 20, 100, 0);
     throwableObject = [];
+    coins = [];
 
     constructor(canvas, ctx, keyboard) {
         this.canvas = canvas;
         this.ctx = ctx;
         this.keyboard = keyboard;
+        this.createCoins(10); // z.B. 10 Coins erzeugen
         this.draw();
         this.setWorld();
         this.run();
@@ -22,12 +24,11 @@ class World {
     setWorld() {
         this.character.world = this;
         // this.enemies.forEach(enemy => enemy.world = this);
-        // this.clouds.forEach(cloud => cloud.world = this);
+        // this.coins.forEach(coin => coin.world = this);
     }
 
     run() {
         setInterval(() => {
-
             this.checkCollisions();
             this.checkThrowableObjects();
         }, 200);
@@ -43,9 +44,15 @@ class World {
     }
 
     checkThrowableObjects() {
-        if (this.keyboard.D || this.keyboard.ZERO) {
+        if (this.keyboard.D || this.keyboard.NUMPAD_ZERO) {
             let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
             this.throwableObject.push(bottle);
+        }
+    }
+
+    createCoins(amount) {
+        for (let i = 0; i < amount; i++) {
+            this.coins.push(new Coins());
         }
     }
 
@@ -67,6 +74,7 @@ class World {
         this.addToMap(this.character);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.throwableObject);
+        this.addObjectsToMap(this.coins); // Coins-Array zeichnen
 
         this.ctx.translate(-this.camera_x, 0);
 

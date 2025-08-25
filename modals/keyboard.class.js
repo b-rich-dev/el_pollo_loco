@@ -5,5 +5,5 @@ class Keyboard {
     DOWN = false;
     SPACE = false;
     D = false;
-    ZERO = false;
+    NUMPAD_ZERO = false;
 }

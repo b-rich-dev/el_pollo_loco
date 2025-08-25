@@ -28,8 +28,8 @@ class DrawableObject {
 
         if (this instanceof Character || this instanceof Chicken || this instanceof Endboss) {
             ctx.beginPath();
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 0;
+            ctx.strokeStyle = 'transparent'; // transparent
             ctx.rect(this.x + this.offset.left, this.y + this.offset.top, (this.x + this.width - this.offset.right) - (this.x + this.offset.left), (this.y + this.height - this.offset.bottom) - (this.y + this.offset.top));
             ctx.stroke();
         }
