@@ -24,6 +24,8 @@ class MoveableObject extends DrawableObject {
     isAboveGround() {
         if (this instanceof ThrowableObject) {
             return true;
+        } else if (this instanceof Endboss) {
+            return this.y < 94;
         } else {
             return this.y < 148;
         }
@@ -36,7 +38,7 @@ class MoveableObject extends DrawableObject {
     }
 
     moveRight() {
-        console.log('character x position:', this.world.character.x);
+        // console.log('character x position:', this.world.character.x);
         this.x += this.speed;
     }
 
@@ -50,10 +52,11 @@ class MoveableObject extends DrawableObject {
     }
 
     isColliding(mo) {
-        return this.x + this.width > mo.x &&
-            this.y + this.height > mo.y &&
-            this.x < mo.x + mo.width &&
-            this.y < mo.y + mo.height;
+        // Berücksichtigt die Offsets von beiden Objekten!
+        return this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
+            this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
+            this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
+            this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom;
     }
 
     hit() {
@@ -74,4 +77,33 @@ class MoveableObject extends DrawableObject {
     isDead() {
         return this.energy === 0;
     }
+
+    /**
+     * Setzt das passende Bild für die Sprunganimation abhängig vom Sprungstatus.
+     * images: Array mit Sprungbildern
+     * jumpStart: true, wenn Sprung gestartet
+     * landing: true, wenn gelandet
+     */
+    setJumpAnimation(images, jumpStart = false, landing = false) {
+        if (!images || images.length === 0) return;
+
+        if (jumpStart) {
+            // Erstes Bild beim Sprungstart
+            this.img = this.imageCache[images[0]];
+        } else if (landing) {
+            // Letztes Bild bei Landung
+            this.img = this.imageCache[images[images.length - 1]];
+        } else {
+            // Höchster Punkt: Bild mit J-34.png (Index 3)
+            if (Math.abs(this.speedY) < 1) {
+                this.img = this.imageCache[images[3]];
+            } else {
+                // Dazwischen: Verteile Bilder nach Y-Position/Sprungphase
+                let phase = Math.floor((this.speedY + 20) / 40 * (images.length - 2));
+                phase = Math.max(1, Math.min(images.length - 2, phase));
+                this.img = this.imageCache[images[phase]];
+            }
+        }
+    }
 }
+

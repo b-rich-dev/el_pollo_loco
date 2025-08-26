@@ -26,10 +26,10 @@ class DrawableObject {
 
     drawBoundingBox(ctx) {
 
-        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss) {
+        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss || this instanceof Bottle || this instanceof Coins) {
             ctx.beginPath();
             ctx.lineWidth = 0;
-            ctx.strokeStyle = 'transparent'; // transparent
+            ctx.strokeStyle = 'red'; // transparent
             ctx.rect(this.x + this.offset.left, this.y + this.offset.top, (this.x + this.width - this.offset.right) - (this.x + this.offset.left), (this.y + this.height - this.offset.bottom) - (this.y + this.offset.top));
             ctx.stroke();
         }

@@ -12,7 +12,7 @@ class Character extends MoveableObject {
         'assets/img/2_character_pepe/1_idle/idle/I-7.png',
         'assets/img/2_character_pepe/1_idle/idle/I-8.png',
         'assets/img/2_character_pepe/1_idle/idle/I-9.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-10.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-10.png'
     ];
     IMAGES_IDLE_LONG = [
         'assets/img/2_character_pepe/1_idle/long_idle/I-11.png',
@@ -43,7 +43,8 @@ class Character extends MoveableObject {
         'assets/img/2_character_pepe/3_jump/J-36.png',
         'assets/img/2_character_pepe/3_jump/J-37.png',
         'assets/img/2_character_pepe/3_jump/J-38.png',
-        'assets/img/2_character_pepe/3_jump/J-39.png'
+        'assets/img/2_character_pepe/3_jump/J-39.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-1.png'
     ];
     IMAGES_HURT = [
         'assets/img/2_character_pepe/4_hurt/H-41.png',
@@ -60,7 +61,7 @@ class Character extends MoveableObject {
         'assets/img/2_character_pepe/5_dead/D-57.png'
     ];
     world;
-    speed = 20; // normal 2
+    speed = 2; // normal 2
     offset = {
         top: 138,
         left: 36,
@@ -107,6 +108,8 @@ class Character extends MoveableObject {
             if ((this.world.keyboard.UP || this.world.keyboard.SPACE) && !this.isAboveGround()) {
                 this.jump();
                 action = true;
+                // Sprungstart: Erstes Bild setzen
+                this.setJumpAnimation(this.IMAGES_JUMPING, true, false);
             }
 
             if (action) {
@@ -118,13 +121,21 @@ class Character extends MoveableObject {
 
         setInterval(() => {
             if (this.hasJustLanded()) {
-                this.playAnimation([this.IMAGES_JUMPING[8]]);
+                this.offset = {
+                    top: 138,
+                    left: 36,
+                    right: 52,
+                    bottom: 13
+                };
+                // Landung: Letztes Bild setzen
+                this.setJumpAnimation(this.IMAGES_JUMPING, false, true);
             } else if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
             } else if (this.isAboveGround()) {
-                this.playAnimation(this.IMAGES_JUMPING);
+                // Sprungphase: Bild je nach Höhe/Sprungstatus setzen
+                this.setJumpAnimation(this.IMAGES_JUMPING, false, false);
             } else {
                 if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                     this.playAnimation(this.IMAGES_WALKING);
@@ -163,12 +174,31 @@ class Character extends MoveableObject {
         this.offset = this.offsetJump;
     }
 
-    isColliding(mo) {
-        return this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
-            this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
-            this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
-            this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom;
+    jumpCharacter() {
+    if (this.isJumping == true) {
+      return false;
     }
+    this.speedY = 16.5;
+    this.isJumping = true;
+    this.jumpAnimationIndex = 0;
+    this.frameCounter = 0;
+    // this.jumpingSound.volume = 0.001;
+    // this.jumpingSound.play();
+  }
+
+    // isColliding(mo) {
+    //     return this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
+    //         this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
+    //         this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
+    //         this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom;
+    // }
+
+    // isCollectingItem(mo) {
+    //     return this.x + this.width > mo.x &&
+    //         this.y + this.height > mo.y &&
+    //         this.x < mo.x + mo.width &&
+    //         this.y < mo.y + mo.height;
+    // }
 
     hasJustLanded() {
         return this.lastWasAboveGround && !this.isAboveGround();

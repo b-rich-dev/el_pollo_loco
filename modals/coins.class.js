@@ -2,6 +2,12 @@ class Coins extends MoveableObject {
     y = 200;
     height = 90;
     width = 90;
+    offset = {
+        top: 30,
+        left: 30,
+        right: 30,
+        bottom: 30
+    };
     IMAGES_COINS = [
         'assets/img/8_coin/coin_1.png',
         'assets/img/8_coin/coin_2.png',

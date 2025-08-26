@@ -12,6 +12,9 @@ class World {
     endbossStarted = false;
     endbossMoveInterval = null;
     endboss = null;
+    endbossDefeated = false;
+    endbossAttackInterval = null;
+    endbossAlert = false;
 
     constructor(canvas, ctx, keyboard) {
         this.canvas = canvas;
@@ -32,11 +35,17 @@ class World {
             this.checkCollisions();
             this.checkThrowableObjects();
             this.startEndbossBattle();
-        }, 200);
+        }, 50);
     }
 
     checkCollisions() {
-            this.level.enemies.forEach(enemy => {
+        this.checkEnemyCollisions();
+        this.checkBottleCollisions();
+        this.checkCoinCollisions();
+    }
+
+    checkEnemyCollisions(){
+        this.level.enemies.forEach(enemy => {
             if (this.character.isColliding(enemy)) {
                 this.character.hit();
                 this.statusBarHealth.setPercentage(this.character.energy);
@@ -44,9 +53,29 @@ class World {
         });
     }
 
+    checkBottleCollisions() {
+        this.level.bottles.forEach((bottle, index) => {
+            if (this.character.isColliding(bottle)) {
+                this.statusBarBottle.collectItem('bottle');
+                this.level.bottles.splice(index, 1);
+            }
+        });
+    }
+
+    checkCoinCollisions() {
+        this.level.coins.forEach((coin, index) => {
+            if (this.character.isColliding(coin)) {
+                this.statusBarCoins.collectItem('coin');
+                this.level.coins.splice(index, 1);
+            }
+        });
+    }
+
+
+
     checkThrowableObjects() {
         if (this.keyboard.D || this.keyboard.NUMPAD_ZERO) {
-            let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
+            let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 120);
             this.throwableObject.push(bottle);
         }
     }
@@ -109,17 +138,23 @@ class World {
     startEndbossBattle() {
         if (!this.endbossStarted && this.character.x >= 2230 && this.endboss) {
             this.endbossStarted = true;
-            console.log('Endboss startet:', this.endboss.x);
+            // console.log('Endboss startet:', this.endboss.x);
             this.endbossMoveInterval = setInterval(() => {
-                // Logging zur Überwachung der Endboss-Position
-                console.log('Endboss aktuelle Position:', this.endboss.x);
-                if (this.endboss.x > 2500) {
+                // console.log('Endboss aktuelle Position:', this.endboss.x);
+                // console.log('Endboss aktuelle Position:', this.endboss.y);
+                if (this.character.x > 2238) { //2496 endboss
+                    this.endboss.speed = 12;
+                    this.endboss.walking();
                     this.endboss.moveLeft();
-                } else {
-                    clearInterval(this.endbossMoveInterval);
-                    console.log('Endboss hat Zielposition erreicht.');
                 }
-            }, 1000 / 60);
+                if (this.endboss.x <= 2496) {
+                    clearInterval(this.endbossMoveInterval);
+                    this.endbossAlertInterval = setInterval(() => {
+                        this.endboss.alert();
+                    }, 1400);
+                    // console.log('Endboss hat Zielposition erreicht.');
+                }
+            }, 1000 / 6);
         }
     }
 }
