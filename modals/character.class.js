@@ -61,7 +61,7 @@ class Character extends MoveableObject {
         'assets/img/2_character_pepe/5_dead/D-57.png'
     ];
     world;
-    speed = 2; // normal 2
+    speed = 10; // normal 2 schnell 20
     offset = {
         top: 138,
         left: 36,
@@ -86,6 +86,11 @@ class Character extends MoveableObject {
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
         this.applyGravity();
+        // this.animate(); // Entfernt, Animation wird später gestartet
+    }
+
+    setWorld(world) {
+        this.world = world;
         this.animate();
     }
 

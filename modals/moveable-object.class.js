@@ -59,6 +59,11 @@ class MoveableObject extends DrawableObject {
             this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom;
     }
 
+    isCollidingFromAbove(mo) {
+        const isFromAbove = this.y + this.height - this.offset.bottom <= mo.y + mo.offset.top + 10;
+        return isFromAbove;
+    }
+
     hit() {
         this.energy -= 5;
         if (this.energy < 0) {
@@ -85,8 +90,6 @@ class MoveableObject extends DrawableObject {
      * landing: true, wenn gelandet
      */
     setJumpAnimation(images, jumpStart = false, landing = false) {
-        if (!images || images.length === 0) return;
-
         if (jumpStart) {
             // Erstes Bild beim Sprungstart
             this.img = this.imageCache[images[0]];
@@ -103,6 +106,12 @@ class MoveableObject extends DrawableObject {
                 phase = Math.max(1, Math.min(images.length - 2, phase));
                 this.img = this.imageCache[images[phase]];
             }
+        }
+    }
+
+    draw(ctx) {
+        if (this.img) {
+            ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
         }
     }
 }

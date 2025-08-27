@@ -17,7 +17,8 @@ class Bottle extends MoveableObject {
         super().loadImage('assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png');
 
         this.x = 30 + Math.random() * 2260;
-        this.y = 328 + Math.random() * 70;
+        // this.y = 328 + Math.random() * 70;
+        this.y = 326 + Math.random() * 70;
         // this.animate();
         // Animation entfernt, da nur ein Bild vorhanden ist
     }

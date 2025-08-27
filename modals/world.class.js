@@ -1,6 +1,6 @@
 class World {
     character = new Character();
-    level = level1;
+    level = typeof level1 !== 'undefined' ? level1 : null; // Fallback
     canvas;
     ctx;
     keyboard;
@@ -15,13 +15,16 @@ class World {
     endbossDefeated = false;
     endbossAttackInterval = null;
     endbossAlert = false;
+    lastThrowTime = 0;
+    objectThrowCooldown = 200; // Millisekunden Pause zwischen Würfen
 
     constructor(canvas, ctx, keyboard) {
         this.canvas = canvas;
         this.ctx = ctx;
         this.keyboard = keyboard;
-        this.draw();
         this.setWorld();
+        this.character.setWorld(this); // Welt-Referenz setzen und Animation starten
+        this.draw();
         this.run();
         this.endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);
     }
@@ -45,8 +48,15 @@ class World {
     }
 
     checkEnemyCollisions(){
-        this.level.enemies.forEach(enemy => {
-            if (this.character.isColliding(enemy)) {
+        this.level.enemies.forEach((enemy, index) => {
+            if (this.character.isColliding(enemy) && this.character.isCollidingFromAbove(enemy)) {
+                if (typeof enemy.die === 'function' && !enemy.isDeadChicken) {
+                    enemy.die(() => {
+                        this.level.enemies.splice(index, 1);
+                    });
+                }
+            }
+            if (this.character.isColliding(enemy) && !(this.character.isCollidingFromAbove(enemy))) {
                 this.character.hit();
                 this.statusBarHealth.setPercentage(this.character.energy);
             }
@@ -74,10 +84,36 @@ class World {
 
 
     checkThrowableObjects() {
-        if (this.keyboard.D || this.keyboard.NUMPAD_ZERO) {
-            let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 120);
+        const now = Date.now();
+        if ((this.keyboard.D || this.keyboard.NUMPAD_ZERO) &&
+            this.statusBarBottle.bottles > 0 &&
+            now - this.lastThrowTime > this.objectThrowCooldown) {
+            let bottle = new ThrowableObject(
+                this.character.x + 100,
+                this.character.y + 120,
+                this,
+                this.character.otherDirection // Blickrichtung übergeben
+            );
             this.throwableObject.push(bottle);
+            this.statusBarBottle.bottles--;
+            this.statusBarBottle.setPercentage(this.statusBarBottle.bottles);
+            this.lastThrowTime = now;
         }
+        if ((this.keyboard.D || this.keyboard.NUMPAD_ZERO) && 
+            this.statusBarBottle.bottles === 0 &&
+            this.statusBarCoins.coins > 0 &&
+            now - this.lastThrowTime > this.objectThrowCooldown) {
+            let coin = new ThrowableObject(
+                this.character.x + 100,
+                this.character.y + 120,
+                this,
+                this.character.otherDirection // Blickrichtung übergeben
+            );
+            this.throwableObject.push(coin);
+            this.statusBarCoins.coins--;
+            this.statusBarCoins.setPercentage(this.statusBarCoins.coins);
+            this.lastThrowTime = now;
+            }
     }
 
     draw() {

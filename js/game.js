@@ -27,8 +27,8 @@ window.addEventListener('keydown', (e) => {
     if (e.code === 'KeyD') {
         keyboard.D = true;
     }
-    if (e.code === 'Digit0') {
-        keyboard.ZERO = true;
+    if (e.code === 'Numpad0') {
+        keyboard.NUMPAD_ZERO = true;
     }
 });
 
@@ -51,7 +51,7 @@ window.addEventListener('keyup', (e) => {
     if (e.code === 'KeyD') {
         keyboard.D = false;
     }
-    if (e.code === 'Digit0') {
-        keyboard.ZERO = false;
+    if (e.code === 'Numpad0') {
+        keyboard.NUMPAD_ZERO = false;
     }
 });

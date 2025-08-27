@@ -13,15 +13,28 @@ class DrawableObject {
     }
 
     loadImages(arr) {
-        arr.forEach((path) => {
+        if (Array.isArray(arr)) {
+            arr.forEach((path) => {
+                let img = new Image();
+                img.src = path;
+                this.imageCache[path] = img;
+            });
+        } else if (typeof arr === 'string') {
             let img = new Image();
-            img.src = path;
-            this.imageCache[path] = img;
-        });
+            img.src = arr;
+            this.imageCache[arr] = img;
+            this.img = img;
+        }
     }
 
     draw(ctx) {
-        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+        if (this.img && this.img.complete && this.img.naturalWidth > 0) {
+            ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+        }
+        // Optional: else-Zweig für Debugging
+        // else {
+        //     // Bild noch nicht geladen oder ungültig
+        // }
     }
 
     drawBoundingBox(ctx) {
