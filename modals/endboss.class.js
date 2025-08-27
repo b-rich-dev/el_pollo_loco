@@ -1,10 +1,10 @@
 class Endboss extends MoveableObject {
 
-    width = 280;
-    height = 360;
-    y = 94;
-    x = 2960;
-    speed = 2;
+    width = 280; //280
+    height = 160; //360
+    y = 194; // 94
+    x = 1060; // 2960
+    speed = 5; //2
     offset = {
         top: 64,
         left: 20,
@@ -42,12 +42,11 @@ class Endboss extends MoveableObject {
         'assets/img/4_enemie_boss_chicken/4_hurt/G22.png',
         'assets/img/4_enemie_boss_chicken/4_hurt/G23.png',
     ];
-    // IMAGES_DEAD = [
-    //     'assets/img/4_enemie_boss_chicken/5_dead/G24.png',
-    //     'assets/img/4_enemie_boss_chicken/5_dead/G25.png',
-    //     'assets/img/4_enemie_boss_chicken/5_dead/G26.png',
-    // ];
-    IMAGE_DEAD = 'assets/img/3_enemies_chicken/chicken_small/2_dead/dead.png';
+    IMAGES_DEAD = [
+        'assets/img/4_enemie_boss_chicken/5_dead/G24.png',
+        'assets/img/4_enemie_boss_chicken/5_dead/G25.png',
+        'assets/img/4_enemie_boss_chicken/5_dead/G26.png',
+    ];
     isDeadChicken = false;
 
     constructor() {
@@ -63,7 +62,7 @@ class Endboss extends MoveableObject {
 
     animate() {
         setInterval(() => {
-            this.playAnimation(this.IMAGES_WALKING);
+            if (!this.isDeadChicken) this.playAnimation(this.IMAGES_WALKING);
         }, 1000 / 6);
     }
 
@@ -75,8 +74,22 @@ class Endboss extends MoveableObject {
         this.playAnimation(this.IMAGES_HURT);
     }
 
-    die() {
-        this.playAnimation(this.IMAGES_DEAD);
+    die(callback) {
+        this.isDeadChicken = true;
+        let frame = 0;
+        const deadImages = this.IMAGES_DEAD;
+        const interval = setInterval(() => {
+            this.img = this.imageCache[deadImages[frame]];
+            frame++;
+            if (frame >= deadImages.length) {
+                clearInterval(interval);
+                // Zeige das letzte Dead-Bild für 2 Sekunden
+                this.img = this.imageCache[deadImages[deadImages.length - 1]];
+                setTimeout(() => {
+                    if (callback) callback();
+                }, 2000);
+            }
+        }, 400); // Zeige jedes Bild für 400ms (insgesamt ca. 1,2s Animation)
     }
 
     walking(){
@@ -85,14 +98,6 @@ class Endboss extends MoveableObject {
 
     alert() {
         this.playAnimation(this.IMAGES_ALERT);
-    }
-
-    die(callback) {
-        this.img = this.imageCache[this.IMAGE_DEAD];
-        this.isDeadChicken = true;
-        setTimeout(() => {
-            if (callback) callback();
-        }, 300);
     }
 
 }

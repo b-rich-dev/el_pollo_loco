@@ -38,12 +38,24 @@ class DrawableObject {
     }
 
     drawBoundingBox(ctx) {
-
-        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss || this instanceof Bottle || this instanceof Coins) {
+        if (
+            this instanceof Character ||
+            this instanceof Chicken ||
+            this instanceof Endboss ||
+            this instanceof Bottle ||
+            this instanceof Coins ||
+            this instanceof Chicks ||
+            this instanceof ThrowableObject // Rahmen auch für geworfene Objekte
+        ) {
             ctx.beginPath();
-            ctx.lineWidth = 0;
-            ctx.strokeStyle = 'red'; // transparent
-            ctx.rect(this.x + this.offset.left, this.y + this.offset.top, (this.x + this.width - this.offset.right) - (this.x + this.offset.left), (this.y + this.height - this.offset.bottom) - (this.y + this.offset.top));
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'red';
+            ctx.rect(
+                this.x + this.offset.left,
+                this.y + this.offset.top,
+                (this.x + this.width - this.offset.right) - (this.x + this.offset.left),
+                (this.y + this.height - this.offset.bottom) - (this.y + this.offset.top)
+            );
             ctx.stroke();
         }
     }

@@ -9,7 +9,7 @@ class MoveableObject extends DrawableObject {
         right: 0,
         bottom: 0
     };
-    energy = 100;
+    energy = 100; // 100
     lastHit = 0;
 
     applyGravity() {
@@ -60,7 +60,8 @@ class MoveableObject extends DrawableObject {
     }
 
     isCollidingFromAbove(mo) {
-        const isFromAbove = this.y + this.height - this.offset.bottom <= mo.y + mo.offset.top + 10;
+        const isFromAbove = this.y + this.height - this.offset.bottom <= mo.y + mo.offset.top + 20
+            && this.speedY < 0;
         return isFromAbove;
     }
 

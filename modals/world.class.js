@@ -38,27 +38,40 @@ class World {
             this.checkCollisions();
             this.checkThrowableObjects();
             this.startEndbossBattle();
+            this.removeDeadEnemies(); // NEU: Tote Gegner entfernen
         }, 50);
+    }
+
+    removeDeadEnemies() {
+        // Entferne alle Gegner, die isDeadChicken=true UND deren Callback bereits aufgerufen wurden
+        this.level.enemies = this.level.enemies.filter(enemy => !enemy.isDeadChicken || (enemy.isDeadChicken && !enemy._remove));
     }
 
     checkCollisions() {
         this.checkEnemyCollisions();
         this.checkBottleCollisions();
         this.checkCoinCollisions();
+        this.checkThrowableObjectEnemyCollisions(); // NEU: Eigene Prüfung für geworfene Objekte
     }
 
-    checkEnemyCollisions(){
+    checkEnemyCollisions() {
         this.level.enemies.forEach((enemy, index) => {
-            if (this.character.isColliding(enemy) && this.character.isCollidingFromAbove(enemy)) {
-                if (typeof enemy.die === 'function' && !enemy.isDeadChicken) {
-                    enemy.die(() => {
-                        this.level.enemies.splice(index, 1);
-                    });
+            if (this.character.isColliding(enemy)) {
+                if (this.character.isCollidingFromAbove(enemy)) {
+                    // Charakter springt von oben: Enemy stirbt, Charakter bekommt KEINEN Schaden
+                    if (typeof enemy.die === 'function' && !enemy.isDeadChicken) {
+                        enemy.die(() => {
+                            enemy._remove = true; // Markiere für Entfernung
+                        });
+                        this.character.littleJump(); // Charakter springt nach dem Töten hoch
+                    }
+                } else {
+                    // Seitliche Kollision: Charakter bekommt Schaden, Enemy bleibt
+                    if (!enemy.isDeadChicken && !this.character.isHurt()) { // NEU: Nur wenn nicht hurt
+                        this.character.hit();
+                        this.statusBarHealth.setPercentage(this.character.energy);
+                    }
                 }
-            }
-            if (this.character.isColliding(enemy) && !(this.character.isCollidingFromAbove(enemy))) {
-                this.character.hit();
-                this.statusBarHealth.setPercentage(this.character.energy);
             }
         });
     }
@@ -81,7 +94,20 @@ class World {
         });
     }
 
-
+    checkThrowableObjectEnemyCollisions() {
+        this.throwableObject.forEach((obj, objIndex) => {
+            this.level.enemies.forEach((enemy, enemyIndex) => {
+                if (obj.isColliding && obj.isColliding(enemy) && !enemy.isDeadChicken) {
+                    if (typeof enemy.die === 'function') {
+                        enemy.die(() => {
+                            enemy._remove = true;
+                        });
+                    }
+                    this.throwableObject.splice(objIndex, 1);
+                }
+            });
+        });
+    }
 
     checkThrowableObjects() {
         const now = Date.now();
@@ -99,7 +125,7 @@ class World {
             this.statusBarBottle.setPercentage(this.statusBarBottle.bottles);
             this.lastThrowTime = now;
         }
-        if ((this.keyboard.D || this.keyboard.NUMPAD_ZERO) && 
+        if ((this.keyboard.D || this.keyboard.NUMPAD_ZERO) &&
             this.statusBarBottle.bottles === 0 &&
             this.statusBarCoins.coins > 0 &&
             now - this.lastThrowTime > this.objectThrowCooldown) {
@@ -113,7 +139,7 @@ class World {
             this.statusBarCoins.coins--;
             this.statusBarCoins.setPercentage(this.statusBarCoins.coins);
             this.lastThrowTime = now;
-            }
+        }
     }
 
     draw() {

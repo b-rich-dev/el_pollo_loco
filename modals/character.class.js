@@ -61,7 +61,7 @@ class Character extends MoveableObject {
         'assets/img/2_character_pepe/5_dead/D-57.png'
     ];
     world;
-    speed = 10; // normal 2 schnell 20
+    speed = 20; // normal 2 schnell 20
     offset = {
         top: 138,
         left: 36,
@@ -179,17 +179,22 @@ class Character extends MoveableObject {
         this.offset = this.offsetJump;
     }
 
-    jumpCharacter() {
-    if (this.isJumping == true) {
-      return false;
+    littleJump() {
+        this.speedY = 8;
+        this.offset = this.offsetJump;
     }
-    this.speedY = 16.5;
-    this.isJumping = true;
-    this.jumpAnimationIndex = 0;
-    this.frameCounter = 0;
-    // this.jumpingSound.volume = 0.001;
-    // this.jumpingSound.play();
-  }
+
+    jumpCharacter() {
+        if (this.isJumping == true) {
+            return false;
+        }
+        this.speedY = 16.5;
+        this.isJumping = true;
+        this.jumpAnimationIndex = 0;
+        this.frameCounter = 0;
+        // this.jumpingSound.volume = 0.001;
+        // this.jumpingSound.play();
+    }
 
     // isColliding(mo) {
     //     return this.x + this.width - this.offset.right > mo.x + mo.offset.left &&

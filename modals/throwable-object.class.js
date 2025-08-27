@@ -22,6 +22,7 @@ class ThrowableObject extends MoveableObject {
     currentRotation = 0;
     groundLevel = 400; // Passe ggf. an die tatsächliche Bodenhöhe an
     directionLeft = false; // Neue Eigenschaft für Richtung
+    offset = { top: 0, left: 0, right: 0, bottom: 0 }; // Standard-Offset
 
     constructor(x, y, world, directionLeft = false) {
         // Entscheide, ob Flasche oder Coin geworfen wird anhand eines Flags oder Typs
@@ -29,14 +30,19 @@ class ThrowableObject extends MoveableObject {
         if (world && world.statusBarBottle && world.statusBarBottle.bottles > 0) {
             super().loadImage(this.IMAGES_BOTTLE_ROTATION[0]);
             this.loadImages(this.IMAGES_BOTTLE_ROTATION);
+            this.offset = { top: 10, left: 10, right: 10, bottom: 10 }; // Beispiel-Offset für Bottle
+            this.width = 50;
+            this.height = 80;
         } else {
             super().loadImage(this.IMAGES_COIN_ROTATION[0]);
             this.loadImages(this.IMAGES_COIN_ROTATION);
+            this.offset = { top: 30, left: 30, right: 30, bottom: 30 }; // Beispiel-Offset für Coin
+            this.width = 90;
+            this.height = 90;
         }
         this.x = x;
         this.y = y;
-        this.width = 50;
-        this.height = 80;
+        
         this.world = world;
         this.directionLeft = directionLeft; // Richtung speichern
         if (world && world.statusBarBottle && world.statusBarBottle.bottles > 0) {
@@ -90,5 +96,18 @@ class ThrowableObject extends MoveableObject {
     animateRotationCoin() {
         this.currentRotation = (this.currentRotation + 1) % this.IMAGES_COIN_ROTATION.length;
         this.img = this.imageCache[this.IMAGES_COIN_ROTATION[this.currentRotation]];
+    }
+
+    drawBoundingBox(ctx) {
+        ctx.beginPath();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'red';
+        ctx.rect(
+            this.x + this.offset.left,
+            this.y + this.offset.top,
+            (this.x + this.width - this.offset.right) - (this.x + this.offset.left),
+            (this.y + this.height - this.offset.bottom) - (this.y + this.offset.top)
+        );
+        ctx.stroke();
     }
 }

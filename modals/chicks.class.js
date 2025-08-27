@@ -3,9 +3,9 @@ class Chicks extends MoveableObject {
     width = 68;
     height = 86;
     offset = {
-        top: 6,
-        left: 1,
-        right: 2,
+        top: 14,
+        left: 8,
+        right: 6,
         bottom: 6
     };
     IMAGES_WALKING = [
@@ -21,17 +21,27 @@ class Chicks extends MoveableObject {
         super().loadImage('assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
         this.loadImage(this.IMAGE_DEAD);
+        this.imageCache[this.IMAGE_DEAD] = new Image();
+        this.imageCache[this.IMAGE_DEAD].src = this.IMAGE_DEAD;
         this.x = 280 + Math.random() * 2000;
         this.speed = 0.18 + Math.random() * 0.28;
         this.animate();
     }
 
     animate() {
-        setInterval(() => { this.moveLeft(); }, 1000 / 60);
+        setInterval(() => { 
+            if (!this.isDeadChicken) this.moveLeft(); 
+        }, 1000 / 60);
 
         setInterval(() => {
-            this.playAnimation(this.IMAGES_WALKING);
+            if (!this.isDeadChicken) this.playAnimation(this.IMAGES_WALKING);
         }, 1000 / 6);
+    }
+
+    moveLeft() {
+        if (!this.isDeadChicken) {
+            super.moveLeft();
+        }
     }
 
     die(callback) {
@@ -39,6 +49,6 @@ class Chicks extends MoveableObject {
         this.isDeadChicken = true;
         setTimeout(() => {
             if (callback) callback();
-        }, 300);
+        }, 1000); // 1 Sekunde
     }
 }
