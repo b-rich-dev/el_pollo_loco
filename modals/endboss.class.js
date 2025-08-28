@@ -1,10 +1,10 @@
 class Endboss extends MoveableObject {
 
     width = 280; //280
-    height = 160; //360
-    y = 194; // 94
-    x = 1060; // 2960
-    speed = 5; //2
+    height = 360; //360
+    y = 94; // 94
+    x = 2960; // 2960
+    speed = 2; //2
     offset = {
         top: 64,
         left: 20,
@@ -92,12 +92,45 @@ class Endboss extends MoveableObject {
         }, 400); // Zeige jedes Bild für 400ms (insgesamt ca. 1,2s Animation)
     }
 
-    walking(){
+    walking() {
         this.playAnimation(this.IMAGES_WALKING);
     }
 
-    alert() {
-        this.playAnimation(this.IMAGES_ALERT);
+    alert(world) {
+        this.speed = 0;
+        let frame = 0;
+        const alertImages = this.IMAGES_ALERT;
+        if (this.endbossAlertInterval) {
+            clearInterval(this.endbossAlertInterval);
+        }
+        this.endbossAlertInterval = setInterval(() => {
+            this.img = this.imageCache[alertImages[frame]];
+            frame++;
+            if (frame >= alertImages.length) {
+                clearInterval(this.endbossAlertInterval);
+                this.endbossAlertInterval = null;
+                this.slideBossStatusbar(world);
+            }
+        }, 800);
     }
 
+    slideBossStatusbar(world) {
+        const targetX = 424;
+        const slideSpeed = 10; // px pro Frame
+
+        const statusBar = world.statusBarBoss;
+        function slide() {
+            if (statusBar.x > targetX) {
+                statusBar.x -= slideSpeed;
+                if (statusBar.x < targetX) statusBar.x = targetX;
+                requestAnimationFrame(slide);
+            } else if (statusBar.x < targetX) {
+                statusBar.x += slideSpeed;
+                if (statusBar.x > targetX) statusBar.x = targetX;
+                requestAnimationFrame(slide);
+            }
+            // Stoppt automatisch, wenn targetX erreicht ist
+        }
+        slide();
+    }
 }

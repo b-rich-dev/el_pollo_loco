@@ -29,10 +29,6 @@ class Chicks extends MoveableObject {
     }
 
     animate() {
-        setInterval(() => { 
-            if (!this.isDeadChicken) this.moveLeft(); 
-        }, 1000 / 60);
-
         setInterval(() => {
             if (!this.isDeadChicken) this.playAnimation(this.IMAGES_WALKING);
         }, 1000 / 6);
@@ -40,7 +36,15 @@ class Chicks extends MoveableObject {
 
     moveLeft() {
         if (!this.isDeadChicken) {
+            this.otherDirection = false;
             super.moveLeft();
+        }
+    }
+
+    moveRight() {
+        if (!this.isDeadChicken) {
+            this.otherDirection = true;
+            super.moveRight();
         }
     }
 

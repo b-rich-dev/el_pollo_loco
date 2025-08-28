@@ -7,14 +7,6 @@ class StatusBar extends DrawableObject {
         'assets/img/7_statusbars/1_statusbar/2_statusbar_health/green/80.png',
         'assets/img/7_statusbars/1_statusbar/2_statusbar_health/green/100.png'
     ];
-    IMAGES_BOSS_STATUSBAR = [
-        'assets/img/7_statusbars/2_statusbar_endboss/blue/blue0.png',
-        'assets/img/7_statusbars/2_statusbar_endboss/blue/blue20.png',
-        'assets/img/7_statusbars/2_statusbar_endboss/blue/blue40.png',
-        'assets/img/7_statusbars/2_statusbar_endboss/blue/blue60.png',
-        'assets/img/7_statusbars/2_statusbar_endboss/blue/blue80.png',
-        'assets/img/7_statusbars/2_statusbar_endboss/blue/blue100.png',
-    ];
     IMAGES_COINS = [
         'assets/img/7_statusbars/1_statusbar/1_statusbar_coin/blue/0.png'
     ];
@@ -57,7 +49,6 @@ class StatusBar extends DrawableObject {
         if (this.type === 'health') return this.IMAGES_HEALTH;
         if (this.type === 'coins') return this.IMAGES_COINS;
         if (this.type === 'bottle') return this.IMAGES_BOTTLE;
-        if (this.type === 'boss') return this.IMAGES_BOSS_STATUSBAR;
     }
 
     setPercentage(percentage) {

@@ -8,8 +8,10 @@ class World {
     statusBarHealth = new StatusBar('health', 90, 0, 100);
     statusBarCoins = new StatusBar('coins', 50, 30, 0);
     statusBarBottle = new StatusBar('bottle', 20, 60, 0);
+    statusBarBoss = new StatusBar('boss', 720, 7, 100);
     throwableObject = [];
     endbossStarted = false;
+    endbossStartDone = false;
     endbossMoveInterval = null;
     endboss = null;
     endbossDefeated = false;
@@ -38,7 +40,8 @@ class World {
             this.checkCollisions();
             this.checkThrowableObjects();
             this.startEndbossBattle();
-            this.removeDeadEnemies(); // NEU: Tote Gegner entfernen
+            this.removeDeadEnemies();
+            this.enemyTrackingOfCharacter();
         }, 50);
     }
 
@@ -103,7 +106,16 @@ class World {
                             enemy._remove = true;
                         });
                     }
-                    this.throwableObject.splice(objIndex, 1);
+                    // Flasche: Splash-Animation exakt an Enemy-Position und Gravity aus
+                    if (obj.IMAGES_BOTTLE_ROTATION && !obj.isSplashing) {
+                        obj.x = enemy.x;
+                        obj.y = enemy.y;
+                        obj.speedY = 0;
+                        obj.acceleration = 0;
+                        obj.animateSplash();
+                    } else {
+                        this.throwableObject.splice(objIndex, 1);
+                    }
                 }
             });
         });
@@ -155,6 +167,7 @@ class World {
         this.addToMap(this.statusBarHealth);
         this.addToMap(this.statusBarCoins);
         this.addToMap(this.statusBarBottle);
+        this.addToMap(this.statusBarBoss);
         this.ctx.translate(this.camera_x, 0);
 
         this.addToMap(this.character);
@@ -200,23 +213,78 @@ class World {
     startEndbossBattle() {
         if (!this.endbossStarted && this.character.x >= 2230 && this.endboss) {
             this.endbossStarted = true;
-            // console.log('Endboss startet:', this.endboss.x);
+            this.endbossStartDone = true; // <-- Nur hier setzen!
             this.endbossMoveInterval = setInterval(() => {
-                // console.log('Endboss aktuelle Position:', this.endboss.x);
-                // console.log('Endboss aktuelle Position:', this.endboss.y);
-                if (this.character.x > 2238) { //2496 endboss
-                    this.endboss.speed = 12;
+                if (this.character.x > 2240) { //2496 endboss
+                    // this.endboss.speed = 6;
                     this.endboss.walking();
                     this.endboss.moveLeft();
                 }
                 if (this.endboss.x <= 2496) {
                     clearInterval(this.endbossMoveInterval);
-                    this.endbossAlertInterval = setInterval(() => {
-                        this.endboss.alert();
-                    }, 1400);
-                    // console.log('Endboss hat Zielposition erreicht.');
+                    this.endboss.alert(this); // <--- Welt übergeben!
                 }
             }, 1000 / 6);
+        }
+        // this.endbossStartDone = true; <-- Entfernen!
+    }
+
+    enemyTrackingOfCharacter() {
+        const directionCooldown = 3000; // ms Wartezeit nach Überholen
+        if (this.character.x) {
+            this.level.enemies.forEach(enemy => {
+                // Prüfe, ob es sich um den Endboss handelt
+                if (enemy instanceof Endboss) {
+                    if (!this.endbossStartDone) {
+                        return; // Endboss wird nur getrackt, wenn endbossStartDone true ist
+                    }
+                }
+
+                // Initialisiere lastDirectionChange nur, wenn NICHT gesetzt
+                if (typeof enemy.lastDirectionChange !== 'number') {
+                    enemy.lastDirectionChange = 0;
+                }
+                const now = Date.now();
+
+                // Charakter ist links vom Gegner
+                if (enemy.x > this.character.x && enemy.otherDirection !== false) {
+                    // Wartezeit ab Überholen
+                    if (enemy._pendingDirection !== 'left') {
+                        enemy._pendingDirection = 'left';
+                        enemy._pendingSince = now;
+                    }
+                    if (now - enemy._pendingSince > directionCooldown) {
+                        enemy.otherDirection = false;
+                        enemy.lastDirectionChange = now;
+                        enemy._pendingDirection = null;
+                        enemy._pendingSince = null;
+                    }
+                }
+                // Charakter ist rechts vom Gegner
+                else if (enemy.x < this.character.x && enemy.otherDirection !== true) {
+                    if (enemy._pendingDirection !== 'right') {
+                        enemy._pendingDirection = 'right';
+                        enemy._pendingSince = now;
+                    }
+                    if (now - enemy._pendingSince > directionCooldown) {
+                        enemy.otherDirection = true;
+                        enemy.lastDirectionChange = now;
+                        enemy._pendingDirection = null;
+                        enemy._pendingSince = null;
+                    }
+                } else {
+                    // Richtung stimmt, Warte-Flags zurücksetzen
+                    enemy._pendingDirection = null;
+                    enemy._pendingSince = null;
+                }
+
+                // Bewegung nur in Blickrichtung
+                if (enemy.otherDirection === true) {
+                    enemy.moveRight();
+                } else {
+                    enemy.moveLeft();
+                }
+            });
         }
     }
 }

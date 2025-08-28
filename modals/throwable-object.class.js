@@ -23,6 +23,8 @@ class ThrowableObject extends MoveableObject {
     groundLevel = 400; // Passe ggf. an die tatsächliche Bodenhöhe an
     directionLeft = false; // Neue Eigenschaft für Richtung
     offset = { top: 0, left: 0, right: 0, bottom: 0 }; // Standard-Offset
+    isSplashing = false; // Splash-Status
+    splashInterval = null;
 
     constructor(x, y, world, directionLeft = false) {
         // Entscheide, ob Flasche oder Coin geworfen wird anhand eines Flags oder Typs
@@ -42,7 +44,7 @@ class ThrowableObject extends MoveableObject {
         }
         this.x = x;
         this.y = y;
-        
+
         this.world = world;
         this.directionLeft = directionLeft; // Richtung speichern
         if (world && world.statusBarBottle && world.statusBarBottle.bottles > 0) {
@@ -52,24 +54,44 @@ class ThrowableObject extends MoveableObject {
         }
     }
 
-    throwBottle(){
+    throwBottle() {
         this.speedY = 18;
         this.applyGravity();
         this.throwBottleInterval = setInterval(() => {
+            if (this.isSplashing) return;
             if (this.directionLeft) {
                 this.x -= 12; // Nach links werfen
             } else {
                 this.x += 12; // Nach rechts werfen
             }
             this.animateRotationBottle();
+            // Splash bei Boden
             if (this.y >= this.groundLevel) {
                 clearInterval(this.throwBottleInterval);
-                // Optional: Splash-Animation hier starten
+                this.animateSplash();
+            }
+            // Splash bei Enemy
+            const enemy = this.getCollidingEnemy();
+            if (enemy) {
+                clearInterval(this.throwBottleInterval);
+                // Position exakt auf Enemy setzen
+                this.x = enemy.x;
+                this.y = enemy.y;
+                this.speedY = 0; // Gravity deaktivieren
+                this.acceleration = 0; // Falls vorhanden
+                this.animateSplash();
             }
         }, 52);
     }
 
-    throwCoin(){
+    getCollidingEnemy() {
+        if (!this.world || !this.world.level || !this.world.level.enemies) return null;
+        return this.world.level.enemies.find(enemy =>
+            this.isColliding && this.isColliding(enemy) && !enemy.isDeadChicken
+        );
+    }
+
+    throwCoin() {
         this.speedY = 8;
         this.applyGravity();
         this.throwCoinInterval = setInterval(() => {
@@ -89,6 +111,7 @@ class ThrowableObject extends MoveableObject {
     }
 
     animateRotationBottle() {
+        if (this.isSplashing) return;
         this.currentRotation = (this.currentRotation + 1) % this.IMAGES_BOTTLE_ROTATION.length;
         this.img = this.imageCache[this.IMAGES_BOTTLE_ROTATION[this.currentRotation]];
     }
@@ -96,6 +119,30 @@ class ThrowableObject extends MoveableObject {
     animateRotationCoin() {
         this.currentRotation = (this.currentRotation + 1) % this.IMAGES_COIN_ROTATION.length;
         this.img = this.imageCache[this.IMAGES_COIN_ROTATION[this.currentRotation]];
+    }
+
+    animateSplash() {
+        if (this.isSplashing) return;
+        this.isSplashing = true;
+        this.currentRotation = 0;
+        this.loadImages(this.IMAGES_BOTTLE_SPLASH);
+        this.splashInterval = setInterval(() => {
+            this.img = this.imageCache[this.IMAGES_BOTTLE_SPLASH[this.currentRotation]];
+            this.currentRotation++;
+            if (this.currentRotation >= this.IMAGES_BOTTLE_SPLASH.length) {
+                clearInterval(this.splashInterval);
+                this.removeFromWorld();
+            }
+        }, 120); // Animation langsamer (120ms)
+    }
+
+    removeFromWorld() {
+        if (this.world && Array.isArray(this.world.throwableObject)) {
+            const idx = this.world.throwableObject.indexOf(this);
+            if (idx > -1) {
+                this.world.throwableObject.splice(idx, 1);
+            }
+        }
     }
 
     drawBoundingBox(ctx) {
