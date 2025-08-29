@@ -20,11 +20,12 @@ class ThrowableObject extends MoveableObject {
         'assets/img/8_coin/rotation/coin_rotation_4.png'
     ];
     currentRotation = 0;
-    groundLevel = 400; // Passe ggf. an die tatsächliche Bodenhöhe an
+    groundLevel = 400;
     directionLeft = false; // Neue Eigenschaft für Richtung
     offset = { top: 0, left: 0, right: 0, bottom: 0 }; // Standard-Offset
     isSplashing = false; // Splash-Status
     splashInterval = null;
+    isCoin = false; // NEU: Unterscheidung Coin/Bottle
 
     constructor(x, y, world, directionLeft = false) {
         // Entscheide, ob Flasche oder Coin geworfen wird anhand eines Flags oder Typs
@@ -35,12 +36,14 @@ class ThrowableObject extends MoveableObject {
             this.offset = { top: 10, left: 10, right: 10, bottom: 10 }; // Beispiel-Offset für Bottle
             this.width = 50;
             this.height = 80;
+            this.isCoin = false;
         } else {
             super().loadImage(this.IMAGES_COIN_ROTATION[0]);
             this.loadImages(this.IMAGES_COIN_ROTATION);
             this.offset = { top: 30, left: 30, right: 30, bottom: 30 }; // Beispiel-Offset für Coin
             this.width = 90;
             this.height = 90;
+            this.isCoin = true;
         }
         this.x = x;
         this.y = y;
@@ -93,6 +96,7 @@ class ThrowableObject extends MoveableObject {
 
     throwCoin() {
         this.speedY = 8;
+        this.groundLevel = 800;
         this.applyGravity();
         this.throwCoinInterval = setInterval(() => {
             if (this.directionLeft) {
@@ -122,6 +126,8 @@ class ThrowableObject extends MoveableObject {
     }
 
     animateSplash() {
+        // Nur für Bottle ausführen!
+        if (this.isCoin) return;
         if (this.isSplashing) return;
         this.isSplashing = true;
         this.currentRotation = 0;

@@ -18,7 +18,7 @@ class MoveableObject extends DrawableObject {
             if (this instanceof ThrowableObject) {
                 // Stoppe Gravitation, wenn Boden erreicht
                 if (this.y >= this.groundLevel) {
-                    this.y = 400;
+                    this.y = this.groundLevel;
                     this.speedY = 0;
                     this.acceleration = 0;
                     clearInterval(this.gravityInterval);

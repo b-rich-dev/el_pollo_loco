@@ -115,12 +115,15 @@ class World {
                         });
                     }
                     // Flasche: Splash-Animation exakt an Enemy-Position und Gravity aus
-                    if (obj.IMAGES_BOTTLE_ROTATION && !obj.isSplashing) {
+                    if (obj.IMAGES_BOTTLE_ROTATION && !obj.isCoin && !obj.isSplashing) {
                         obj.x = enemy.x;
                         obj.y = enemy.y;
                         obj.speedY = 0;
                         obj.acceleration = 0;
                         obj.animateSplash();
+                    } else if (obj.isCoin) {
+                        // Coin: einfach entfernen, keine Splash-Animation
+                        this.throwableObject.splice(objIndex, 1);
                     } else {
                         this.throwableObject.splice(objIndex, 1);
                     }
