@@ -16,7 +16,6 @@ class Chicks extends MoveableObject {
     IMAGE_DEAD = 'assets/img/3_enemies_chicken/chicken_small/2_dead/dead.png';
     isDeadChicken = false;
 
-
     constructor() {
         super().loadImage('assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
@@ -24,11 +23,17 @@ class Chicks extends MoveableObject {
         this.imageCache[this.IMAGE_DEAD] = new Image();
         this.imageCache[this.IMAGE_DEAD].src = this.IMAGE_DEAD;
         this.x = 280 + Math.random() * 2000;
-        this.speed = 0.18 + Math.random() * 0.28;
+        this.moveSpeed = 0.28 + Math.random() * 0.36; // Initiale Geschwindigkeit merken
+        this.speed = this.moveSpeed;
         this.animate();
+        this.applyGravity();
     }
 
     animate() {
+        this.moveLeftAnimateIntervalEnemy = setInterval(() => {
+            this.moveLeft();
+        }, 50);
+
         setInterval(() => {
             if (!this.isDeadChicken) this.playAnimation(this.IMAGES_WALKING);
         }, 1000 / 6);
@@ -37,14 +42,28 @@ class Chicks extends MoveableObject {
     moveLeft() {
         if (!this.isDeadChicken) {
             this.otherDirection = false;
+            this.speed = this.moveSpeed; // Immer die initiale Geschwindigkeit verwenden
             super.moveLeft();
+        }
+        if (!(this.y < 340)) {
+            this.enemyRandomJump();
         }
     }
 
     moveRight() {
         if (!this.isDeadChicken) {
             this.otherDirection = true;
+            this.speed = this.moveSpeed; // Immer die initiale Geschwindigkeit verwenden
             super.moveRight();
+        }
+        if (!(this.y < 340)) {
+            this.enemyRandomJump();
+        }
+    }
+
+    enemyRandomJump() {
+        if (Math.random() < 0.01) { // 1% Wahrscheinlichkeit pro Aufruf
+            this.speedY = +12;
         }
     }
 

@@ -89,8 +89,8 @@ class Character extends MoveableObject {
         // this.animate(); // Entfernt, Animation wird später gestartet
     }
 
-    setWorld(world) {
-        this.world = world;
+    setWorld() {
+        // this.world = world;
         this.animate();
     }
 

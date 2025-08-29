@@ -133,4 +133,8 @@ class Endboss extends MoveableObject {
         }
         slide();
     }
+
+    enemyJump() {
+        this.speedY = +10;
+    }
 }

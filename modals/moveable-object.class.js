@@ -13,6 +13,7 @@ class MoveableObject extends DrawableObject {
     lastHit = 0;
 
     applyGravity() {
+        if (this.gravityInterval) return; // Nur einmal starten!
         this.gravityInterval = setInterval(() => {
             if (this instanceof ThrowableObject) {
                 // Stoppe Gravitation, wenn Boden erreicht
@@ -37,6 +38,8 @@ class MoveableObject extends DrawableObject {
             return true;
         } else if (this instanceof Endboss) {
             return this.y < 94;
+        } else if (this instanceof Chicken || this instanceof Chicks) {
+            return this.y < 340; // Chickens und Chicks: Bodenhöhe 340
         } else {
             return this.y < 148;
         }
@@ -51,10 +54,12 @@ class MoveableObject extends DrawableObject {
     moveRight() {
         // console.log('character x position:', this.world.character.x);
         this.x += this.speed;
+        
     }
 
     moveLeft() {
         this.x -= this.speed;
+        
         // console.log('character x position:', this.world.character.x);
     }
 

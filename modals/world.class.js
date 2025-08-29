@@ -19,6 +19,7 @@ class World {
     endbossAlert = false;
     lastThrowTime = 0;
     objectThrowCooldown = 200; // Millisekunden Pause zwischen Würfen
+    enemyTrackingInterval = null;
 
     constructor(canvas, ctx, keyboard) {
         this.canvas = canvas;
@@ -28,6 +29,7 @@ class World {
         this.character.setWorld(this); // Welt-Referenz setzen und Animation starten
         this.draw();
         this.run();
+        this.startEnemyTrackingInterval();
         this.endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);
     }
 
@@ -41,8 +43,14 @@ class World {
             this.checkThrowableObjects();
             this.startEndbossBattle();
             this.removeDeadEnemies();
-            this.enemyTrackingOfCharacter();
+            // this.enemyTrackingOfCharacter(); // <--- Entfernen!
         }, 50);
+    }
+
+    startEnemyTrackingInterval() {
+        this.enemyTrackingInterval = setInterval(() => {
+            this.enemyTrackingOfCharacter();
+        }, 1000); // Alle 2000ms
     }
 
     removeDeadEnemies() {
@@ -230,7 +238,7 @@ class World {
     }
 
     enemyTrackingOfCharacter() {
-        const directionCooldown = 3000; // ms Wartezeit nach Überholen
+        const directionCooldown = 2000; // ms Wartezeit nach Überholen
         if (this.character.x) {
             this.level.enemies.forEach(enemy => {
                 // Prüfe, ob es sich um den Endboss handelt
@@ -246,9 +254,10 @@ class World {
                 }
                 const now = Date.now();
 
+                let directionChanged = false;
+
                 // Charakter ist links vom Gegner
                 if (enemy.x > this.character.x && enemy.otherDirection !== false) {
-                    // Wartezeit ab Überholen
                     if (enemy._pendingDirection !== 'left') {
                         enemy._pendingDirection = 'left';
                         enemy._pendingSince = now;
@@ -258,6 +267,8 @@ class World {
                         enemy.lastDirectionChange = now;
                         enemy._pendingDirection = null;
                         enemy._pendingSince = null;
+                        directionChanged = true;
+                        clearInterval(this.moveRightAnimateIntervalEnemy);
                     }
                 }
                 // Charakter ist rechts vom Gegner
@@ -271,6 +282,9 @@ class World {
                         enemy.lastDirectionChange = now;
                         enemy._pendingDirection = null;
                         enemy._pendingSince = null;
+                        directionChanged = true;
+                        clearInterval(enemy.moveLeftAnimateIntervalEnemy);
+                        clearInterval(this.moveLeftAnimateIntervalEnemy);
                     }
                 } else {
                     // Richtung stimmt, Warte-Flags zurücksetzen
@@ -278,11 +292,19 @@ class World {
                     enemy._pendingSince = null;
                 }
 
-                // Bewegung nur in Blickrichtung
-                if (enemy.otherDirection === true) {
-                    enemy.moveRight();
-                } else {
-                    enemy.moveLeft();
+                // Bewegung nur bei Richtungsänderung
+                if (directionChanged) {
+                    if (enemy.otherDirection === true) {
+                        enemy.speed = enemy.moveSpeed;
+                        this.moveRightAnimateIntervalEnemy = setInterval(() => {
+                            enemy.moveRight();
+                        }, 50);
+                    } else {
+                        enemy.speed = enemy.moveSpeed;
+                        this.moveLeftAnimateIntervalEnemy = setInterval(() => {
+                            enemy.moveLeft();
+                        }, 50);
+                    }
                 }
             });
         }
