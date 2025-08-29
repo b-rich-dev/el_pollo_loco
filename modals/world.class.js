@@ -268,7 +268,6 @@ class World {
                         enemy._pendingDirection = null;
                         enemy._pendingSince = null;
                         directionChanged = true;
-                        clearInterval(this.moveRightAnimateIntervalEnemy);
                     }
                 }
                 // Charakter ist rechts vom Gegner
@@ -283,8 +282,6 @@ class World {
                         enemy._pendingDirection = null;
                         enemy._pendingSince = null;
                         directionChanged = true;
-                        clearInterval(enemy.moveLeftAnimateIntervalEnemy);
-                        clearInterval(this.moveLeftAnimateIntervalEnemy);
                     }
                 } else {
                     // Richtung stimmt, Warte-Flags zurücksetzen
@@ -292,16 +289,20 @@ class World {
                     enemy._pendingSince = null;
                 }
 
-                // Bewegung nur bei Richtungsänderung
+                // Sicherung: Bewegungsintervall pro Gegner verwalten
                 if (directionChanged) {
+                    clearInterval(enemy.moveLeftAnimateIntervalEnemy);
+                    if (enemy.moveInterval) {
+                        clearInterval(enemy.moveInterval);
+                        enemy.moveInterval = null;
+                    }
+                    enemy.speed = enemy.moveSpeed;
                     if (enemy.otherDirection === true) {
-                        enemy.speed = enemy.moveSpeed;
-                        this.moveRightAnimateIntervalEnemy = setInterval(() => {
+                        enemy.moveInterval = setInterval(() => {
                             enemy.moveRight();
                         }, 50);
                     } else {
-                        enemy.speed = enemy.moveSpeed;
-                        this.moveLeftAnimateIntervalEnemy = setInterval(() => {
+                        enemy.moveInterval = setInterval(() => {
                             enemy.moveLeft();
                         }, 50);
                     }
