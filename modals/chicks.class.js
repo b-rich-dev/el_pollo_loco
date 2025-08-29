@@ -62,8 +62,10 @@ class Chicks extends MoveableObject {
     }
 
     enemyRandomJump() {
-        if (Math.random() < 0.01) { // 1% Wahrscheinlichkeit pro Aufruf
-            this.speedY = +12;
+        if (!this.isDeadChicken) {
+            if (Math.random() < 0.01) { // 1% Wahrscheinlichkeit pro Aufruf
+                this.speedY = +12;
+            }
         }
     }
 

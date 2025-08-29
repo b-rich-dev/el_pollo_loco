@@ -20,6 +20,7 @@ class World {
     lastThrowTime = 0;
     objectThrowCooldown = 200; // Millisekunden Pause zwischen Würfen
     enemyTrackingInterval = null;
+    shootingPossible = true;
 
     constructor(canvas, ctx, keyboard) {
         this.canvas = canvas;
@@ -51,6 +52,14 @@ class World {
         this.enemyTrackingInterval = setInterval(() => {
             this.enemyTrackingOfCharacter();
         }, 1000); // Alle 2000ms
+    }
+
+    startFightInterval() {
+        if (this.endbossStartDone) {
+            this.fightInterval = setInterval(() => {
+
+            }, 50);
+        }
     }
 
     removeDeadEnemies() {
@@ -133,35 +142,37 @@ class World {
     }
 
     checkThrowableObjects() {
-        const now = Date.now();
-        if ((this.keyboard.D || this.keyboard.NUMPAD_ZERO) &&
-            this.statusBarBottle.bottles > 0 &&
-            now - this.lastThrowTime > this.objectThrowCooldown) {
-            let bottle = new ThrowableObject(
-                this.character.x + 100,
-                this.character.y + 120,
-                this,
-                this.character.otherDirection // Blickrichtung übergeben
-            );
-            this.throwableObject.push(bottle);
-            this.statusBarBottle.bottles--;
-            this.statusBarBottle.setPercentage(this.statusBarBottle.bottles);
-            this.lastThrowTime = now;
-        }
-        if ((this.keyboard.D || this.keyboard.NUMPAD_ZERO) &&
-            this.statusBarBottle.bottles === 0 &&
-            this.statusBarCoins.coins > 0 &&
-            now - this.lastThrowTime > this.objectThrowCooldown) {
-            let coin = new ThrowableObject(
-                this.character.x + 100,
-                this.character.y + 120,
-                this,
-                this.character.otherDirection // Blickrichtung übergeben
-            );
-            this.throwableObject.push(coin);
-            this.statusBarCoins.coins--;
-            this.statusBarCoins.setPercentage(this.statusBarCoins.coins);
-            this.lastThrowTime = now;
+        if (this.shootingPossible) {
+            const now = Date.now();
+            if ((this.keyboard.D || this.keyboard.NUMPAD_ZERO) &&
+                this.statusBarBottle.bottles > 0 &&
+                now - this.lastThrowTime > this.objectThrowCooldown) {
+                let bottle = new ThrowableObject(
+                    this.character.x + 100,
+                    this.character.y + 120,
+                    this,
+                    this.character.otherDirection // Blickrichtung übergeben
+                );
+                this.throwableObject.push(bottle);
+                this.statusBarBottle.bottles--;
+                this.statusBarBottle.setPercentage(this.statusBarBottle.bottles);
+                this.lastThrowTime = now;
+            }
+            if ((this.keyboard.D || this.keyboard.NUMPAD_ZERO) &&
+                this.statusBarBottle.bottles === 0 &&
+                this.statusBarCoins.coins > 0 &&
+                now - this.lastThrowTime > this.objectThrowCooldown) {
+                let coin = new ThrowableObject(
+                    this.character.x + 100,
+                    this.character.y + 120,
+                    this,
+                    this.character.otherDirection // Blickrichtung übergeben
+                );
+                this.throwableObject.push(coin);
+                this.statusBarCoins.coins--;
+                this.statusBarCoins.setPercentage(this.statusBarCoins.coins);
+                this.lastThrowTime = now;
+            }
         }
     }
 
@@ -226,14 +237,16 @@ class World {
             this.endbossStarted = true;
             this.endbossStartDone = true; // <-- Nur hier setzen!
             this.endbossMoveInterval = setInterval(() => {
+                this.shootingPossible = false;
                 if (this.character.x > 2240) { //2496 endboss
-                    // this.endboss.speed = 6;
+                    this.endboss.speed = 16;
+                    // console.log('speed', this.endboss.speed);
                     this.endboss.walking();
                     this.endboss.moveLeft();
                 }
                 if (this.endboss.x <= 2496) {
                     clearInterval(this.endbossMoveInterval);
-                    this.endboss.alert(this); // <--- Welt übergeben!
+                    this.endboss.alert(this);
                 }
             }, 1000 / 6);
         }

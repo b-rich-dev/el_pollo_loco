@@ -110,6 +110,7 @@ class Endboss extends MoveableObject {
                 clearInterval(this.endbossAlertInterval);
                 this.endbossAlertInterval = null;
                 this.slideBossStatusbar(world);
+                world.shootingPossible = true;
             }
         }, 800);
     }
@@ -136,5 +137,10 @@ class Endboss extends MoveableObject {
 
     enemyJump() {
         this.speedY = +10;
+    }
+
+    enemyAttack() {
+        this.speed = 8;
+        this.playAnimation(this.IMAGES_ATTACK);
     }
 }

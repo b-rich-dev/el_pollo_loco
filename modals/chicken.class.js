@@ -64,8 +64,10 @@ class Chicken extends MoveableObject {
     }
 
     enemyRandomJump() {
-        if (Math.random() < 0.005) { // 0.5% Wahrscheinlichkeit pro Aufruf
-            this.speedY = +8;
+        if (!this.isDeadChicken) {
+            if (Math.random() < 0.005) { // 0.5% Wahrscheinlichkeit pro Aufruf
+                this.speedY = +8;
+            }
         }
     }
 
