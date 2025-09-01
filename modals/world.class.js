@@ -32,6 +32,9 @@ class World {
         this.run();
         this.startEnemyTrackingInterval();
         this.endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);
+        if (this.endboss) {
+            this.endboss.setWorld(this); // <--- Welt-Referenz für Endboss setzen!
+        }
     }
 
     setWorld() {
@@ -51,14 +54,20 @@ class World {
     startEnemyTrackingInterval() {
         this.enemyTrackingInterval = setInterval(() => {
             this.enemyTrackingOfCharacter();
-        }, 1000); // Alle 2000ms
+            // this.trackEndbossToCharacter();
+        }, 1000);
     }
 
     startFightInterval() {
         if (this.endbossStartDone) {
+            if (this.fightInterval) {
+                clearInterval(this.fightInterval);
+            }
             this.fightInterval = setInterval(() => {
-
-            }, 50);
+                if (this.endboss && !this.endboss.isDeadChicken) {
+                    this.endboss.attack();
+                }
+            }, 2000); // Endboss greift alle 2 Sekunden an
         }
     }
 
@@ -268,22 +277,78 @@ class World {
     startEndbossBattle() {
         if (!this.endbossStarted && this.character.x >= 2230 && this.endboss) {
             this.endbossStarted = true;
-            this.endbossStartDone = true; // <-- Nur hier setzen!
+            this.endbossStartDone = true;
             this.endbossMoveInterval = setInterval(() => {
                 this.shootingPossible = false;
-                if (this.character.x > 2240) { //2496 endboss
+                if (this.character.x > 2240) {
                     this.endboss.speed = 16;
-                    // console.log('speed', this.endboss.speed);
                     this.endboss.walking();
                     this.endboss.moveLeft();
                 }
                 if (this.endboss.x <= 2496) {
                     clearInterval(this.endbossMoveInterval);
-                    this.endboss.alert(this);
+                    // Callback wird übergeben, trackEndbossToCharacter startet nach Alert!
+                    this.endboss.alert(this, () => this.trackEndbossToCharacter());
+                    // this.trackEndbossToCharacter(); // <--- Entfernen!
                 }
             }, 1000 / 6);
         }
-        // this.endbossStartDone = true; <-- Entfernen!
+    }
+
+    trackEndbossToCharacter() {
+        if (this.endbossTrackInterval) {
+            clearInterval(this.endbossTrackInterval);
+        }
+        let attackPlayed = false;
+        this.endbossTrackInterval = setInterval(() => {
+            if (!this.endboss || this.endboss.isDeadChicken) {
+                clearInterval(this.endbossTrackInterval);
+                return;
+            }
+            // Endboss nur bewegen, wenn keine Attack-Animation läuft!
+            if (!this.endboss.attackInterval) {
+                if (this.endboss.x > this.character.x + 240) {
+                    this.endboss.otherDirection = false;
+                    this.endboss.speed = 5;
+                    console.log(this.endboss.speed);
+                    this.endboss.moveLeft();
+                    this.endboss.walking();
+                    this.endboss.enemyRandomJump();
+                    attackPlayed = false;
+                } else if (this.endboss.x < this.character.x - 340) {
+                    this.endboss.otherDirection = true;
+                    this.endboss.speed = 5;
+                    this.endboss.moveRight();
+                    this.endboss.walking();
+                    this.endboss.enemyRandomJump();
+                    attackPlayed = false;
+                } else {
+                    // Endboss ist in der Nähe (<100px): Attack-Animation einmal abspielen
+                    if (!attackPlayed) {
+                        attackPlayed = true;
+                        // Attacke mit Callback, falls vorhanden
+                        if (typeof this.endboss.attack === 'function' && this.endboss.attack.length > 0) {
+                            this.endboss.attack(() => {
+                                if (this.endboss.x < this.character.x + 240 || this.endboss.x > this.character.x - 340) {
+                                    clearInterval(this.endbossTrackInterval);
+                                    this.endboss.alert(this, () => this.trackEndbossToCharacter());
+                                }
+                                console.log('after callback');
+                            });
+                        } else {
+                            // Fallback: Wartezeit nach Attacke (z.B. 1 Sekunde)
+                            this.endboss.attack();
+                            setTimeout(() => {
+                                if (this.endboss.x < this.character.x + 240 || this.endboss.x > this.character.x - 340) {
+                                    clearInterval(this.endbossTrackInterval);
+                                    this.endboss.alert(this, () => this.trackEndbossToCharacter());
+                                }
+                            }, 2000);
+                        }
+                    }
+                }
+            }
+        }, 100);
     }
 
     enemyTrackingOfCharacter() {
@@ -292,9 +357,7 @@ class World {
             this.level.enemies.forEach(enemy => {
                 // Prüfe, ob es sich um den Endboss handelt
                 if (enemy instanceof Endboss) {
-                    if (!this.endbossStartDone) {
-                        return; // Endboss wird nur getrackt, wenn endbossStartDone true ist
-                    }
+                    return; // Endboss wird nicht verfolgt
                 }
 
                 // Initialisiere lastDirectionChange nur, wenn NICHT gesetzt

@@ -35,7 +35,8 @@ class Endboss extends MoveableObject {
         'assets/img/4_enemie_boss_chicken/3_attack/G17.png',
         'assets/img/4_enemie_boss_chicken/3_attack/G18.png',
         'assets/img/4_enemie_boss_chicken/3_attack/G19.png',
-        'assets/img/4_enemie_boss_chicken/3_attack/G20.png'
+        'assets/img/4_enemie_boss_chicken/3_attack/G20.png',
+        'assets/img/4_enemie_boss_chicken/3_attack/G19.png'
     ];
     IMAGES_HURT = [
         'assets/img/4_enemie_boss_chicken/4_hurt/G21.png',
@@ -49,6 +50,7 @@ class Endboss extends MoveableObject {
     ];
     isDeadChicken = false;
     endbossEnergy = 100;
+    world;
 
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
@@ -61,18 +63,76 @@ class Endboss extends MoveableObject {
         // this.animate();
     }
 
+    setWorld(world) {
+        this.world = world;
+    }
+
     animate() {
         setInterval(() => {
             if (!this.isDeadChicken) this.playAnimation(this.IMAGES_WALKING);
         }, 1000 / 6);
     }
 
-    attack() {
-        this.playAnimation(this.IMAGES_ATTACK);
+    attack(callback) {
+        // Stoppt alle anderen Bewegungsintervalle des Endboss, damit die Animation nicht gestört wird.
+        // if (this.moveInterval) {
+        //     clearInterval(this.moveInterval);
+        //     this.moveInterval = null;
+        // }
+        if (this.attackInterval) {
+            clearInterval(this.attackInterval);
+        }
+
+        // Berechne die Distanz zum Charakter
+        let targetX = this.world && this.world.character ? this.world.character.x : this.x;
+        let totalDist = Math.abs(targetX - this.x);
+        // Mindestens 40px, ggf. mehr
+        if (totalDist < 40) totalDist = 40;
+
+        const attackImages = this.IMAGES_ATTACK;
+        const frames = attackImages.length;
+        const intervalTime = 1000 / 6; // 6 FPS
+
+        // Geschwindigkeit so berechnen, dass die Distanz in der Animationsdauer überwunden wird
+        this.speed = totalDist / frames;
+
+        let frame = 0;
+
+        this.attackInterval = setInterval(() => {
+            this.img = this.imageCache[attackImages[frame]];
+
+            if (this.world && this.world.character) {
+                targetX = this.world.character.x;
+                const dist = targetX - this.x;
+                // Verschiebt die x-Position um die berechnete Geschwindigkeit in Richtung des Charakters.
+                this.x += Math.sign(dist) * this.speed;
+                this.otherDirection = dist > 0;
+            }
+
+            if (frame === 5 && typeof this.littleJump === 'function') {
+                this.littleJump();
+            }
+
+            frame++;
+            if (frame >= attackImages.length) {
+                clearInterval(this.attackInterval);
+                this.attackInterval = null;
+                this.speed = 5; // Geschwindigkeit zurücksetzen auf Standardwert.
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            }
+        }, intervalTime);
+    }
+
+    littleJump() {
+        this.speedY = 16;
     }
 
     hurt() {
         let frame = 0;
+        let repeat = 0;
+        const maxRepeats = 3;
         if (this.hurtInterval) {
             clearInterval(this.hurtInterval);
         }
@@ -80,16 +140,27 @@ class Endboss extends MoveableObject {
             this.img = this.imageCache[this.IMAGES_HURT[frame]];
             frame++;
             if (frame >= this.IMAGES_HURT.length) {
-                clearInterval(this.hurtInterval);
-                this.hurtInterval = null;
+                frame = 0;
+                repeat++;
+                if (repeat >= maxRepeats) {
+                    clearInterval(this.hurtInterval);
+                    this.hurtInterval = null;
+                }
             }
-        }, 1000 / 6);
+        }, 100);
     }
 
     die(callback) {
+        if (this.endbossAlertInterval || this.world.endbossTrackInterval) {
+            clearInterval(this.endbossAlertInterval);
+            this.world.endbossAttackInterval = null;
+            clearInterval(this.world.endbossTrackInterval);
+        }
+
         this.isDeadChicken = true;
         let frame = 0;
         const deadImages = this.IMAGES_DEAD;
+        
         const interval = setInterval(() => {
             this.img = this.imageCache[deadImages[frame]];
             frame++;
@@ -97,18 +168,33 @@ class Endboss extends MoveableObject {
                 clearInterval(interval);
                 // Zeige das letzte Dead-Bild für 2 Sekunden
                 this.img = this.imageCache[deadImages[deadImages.length - 1]];
-                setTimeout(() => {
-                    if (callback) callback();
-                }, 2000);
+                // Endboss soll jetzt durch das Canvas fallen
+                this.fallThroughCanvasInterval = setInterval(() => {
+                    this.y += 12; // Geschwindigkeit des Fallens
+                    if (this.y > 1000) { // Canvas verlassen (anpassen je nach Canvas-Höhe)
+                        clearInterval(this.fallThroughCanvasInterval);
+                        if (callback) callback();
+                    }
+                }, 60);
             }
-        }, 400); // Zeige jedes Bild für 400ms (insgesamt ca. 1,2s Animation)
+        }, 600); // Zeige jedes Bild für 600ms
     }
 
     walking() {
         this.playAnimation(this.IMAGES_WALKING);
     }
 
-    alert(world) {
+    enemyRandomJump() {
+        if (!(this.y < 94)) {
+            if (!this.isDeadChicken) {
+                if (Math.random() < 0.005) { // 50% Wahrscheinlichkeit pro Aufruf
+                    this.speedY = +12;
+                }
+            }
+        }
+    }
+
+    alert(world, callback) {
         this.speed = 0;
         let frame = 0;
         const alertImages = this.IMAGES_ALERT;
@@ -123,6 +209,10 @@ class Endboss extends MoveableObject {
                 this.endbossAlertInterval = null;
                 this.slideBossStatusbar(world);
                 world.shootingPossible = true;
+                this.speed = 5; // Geschwindigkeit nach Alert wieder setzen!
+                if (typeof callback === 'function') {
+                    callback(); // trackEndbossToCharacter wird jetzt gestartet!
+                }
             }
         }, 800);
     }
@@ -152,23 +242,26 @@ class Endboss extends MoveableObject {
     }
 
     // this.setEnemyAttack(this.IMAGES_ATTACK, true, false);
-    setEnemyAttack(images, attackStart = false, attackEnd = false) {
-        if (attackStart) {
-            // Erstes Bild beim Sprungstart
-            this.img = this.imageCache[images[0]];
-        } else if (attackEnd) {
-            // Letztes Bild bei Landung
-            this.img = this.imageCache[images[images.length - 1]];
-        } else {
-            // Höchster Punkt: Bild mit J-34.png (Index 3)
-            if (Math.abs(this.speedY) < 1) {
-                this.img = this.imageCache[images[5]];
-            } else {
-                // Dazwischen: Verteile Bilder nach Y-Position/Sprungphase
-                let phase = Math.floor((this.speedY + 20) / 40 * (images.length - 2));
-                phase = Math.max(1, Math.min(images.length - 2, phase));
-                this.img = this.imageCache[images[phase]];
-            }
-        }
-    }
+    // setEnemyAttack(images, attackStart = false, attackEnd = false) {
+    //     if (attackStart) {
+    //         // Erstes Bild beim Sprungstart
+    //         this.img = this.imageCache[images[0]];
+    //     } else if (attackEnd) {
+    //         // Letztes Bild bei Landung
+    //         this.img = this.imageCache[images[images.length - 1]];
+    //     } else {
+    //         // Höchster Punkt: Bild mit J-34.png (Index 3)
+    //         if (Math.abs(this.speedY) < 1) {
+    //             this.img = this.imageCache[images[5]];
+    //         } else {
+    //             // Dazwischen: Verteile Bilder nach Y-Position/Sprungphase
+    //             let phase = Math.floor((this.speedY + 20) / 40 * (images.length - 2));
+    //             phase = Math.max(1, Math.min(images.length - 2, phase));
+    //             this.img = this.imageCache[images[phase]];
+    //         }
+    //     }
+    // }
 }
+    //     }
+    // }
+
