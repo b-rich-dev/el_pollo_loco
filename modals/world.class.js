@@ -116,25 +116,58 @@ class World {
 
     checkThrowableObjectEnemyCollisions() {
         this.throwableObject.forEach((obj, objIndex) => {
+            let hit = false;
             this.level.enemies.forEach((enemy, enemyIndex) => {
-                if (obj.isColliding && obj.isColliding(enemy) && !enemy.isDeadChicken) {
-                    if (typeof enemy.die === 'function') {
-                        enemy.die(() => {
-                            enemy._remove = true;
-                        });
-                    }
-                    // Flasche: Splash-Animation exakt an Enemy-Position und Gravity aus
-                    if (obj.IMAGES_BOTTLE_ROTATION && !obj.isCoin && !obj.isSplashing) {
-                        obj.x = enemy.x;
-                        obj.y = enemy.y;
-                        obj.speedY = 0;
-                        obj.acceleration = 0;
-                        obj.animateSplash();
-                    } else if (obj.isCoin) {
-                        // Coin: einfach entfernen, keine Splash-Animation
-                        this.throwableObject.splice(objIndex, 1);
+                if (!hit && obj.isColliding && obj.isColliding(enemy) && !enemy.isDeadChicken) {
+                    if (enemy instanceof Endboss) {
+                        if (enemy.endbossEnergy > 0) {
+                            // Prüfe ob Coin oder Bottle
+                            if (obj.isCoin) {
+                                enemy.endbossEnergy -= 10;
+                            } else {
+                                enemy.endbossEnergy -= 20;
+                            }
+                            if (enemy.endbossEnergy < 0) enemy.endbossEnergy = 0;
+                            enemy.hurt();
+                            this.statusBarBoss.setPercentage(enemy.endbossEnergy);
+                            if (obj.IMAGES_BOTTLE_ROTATION && !obj.isCoin && !obj.isSplashing) {
+                                obj.x = enemy.x;
+                                obj.y = enemy.y;
+                                obj.speedY = 0;
+                                obj.acceleration = 0;
+                                obj.animateSplash();
+                                hit = true;
+                                // Flasche entfernt sich selbst nach Splash!
+                                // KEIN splice hier!
+                            } else {
+                                hit = true;
+                                this.throwableObject.splice(objIndex, 1);
+                            }
+                            if (enemy.endbossEnergy === 0) {
+                                enemy.die(() => {
+                                    enemy._remove = true;
+                                });
+                            }
+                        }
                     } else {
-                        this.throwableObject.splice(objIndex, 1);
+                        if (typeof enemy.die === 'function') {
+                            enemy.die(() => {
+                                enemy._remove = true;
+                            });
+                        }
+                        if (obj.IMAGES_BOTTLE_ROTATION && !obj.isCoin && !obj.isSplashing) {
+                            obj.x = enemy.x;
+                            obj.y = enemy.y;
+                            obj.speedY = 0;
+                            obj.acceleration = 0;
+                            obj.animateSplash();
+                            hit = true;
+                            // Flasche entfernt sich selbst nach Splash!
+                            // KEIN splice hier!
+                        } else {
+                            hit = true;
+                            this.throwableObject.splice(objIndex, 1);
+                        }
                     }
                 }
             });

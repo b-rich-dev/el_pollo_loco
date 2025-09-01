@@ -48,6 +48,7 @@ class Endboss extends MoveableObject {
         'assets/img/4_enemie_boss_chicken/5_dead/G26.png',
     ];
     isDeadChicken = false;
+    endbossEnergy = 100;
 
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
@@ -71,7 +72,18 @@ class Endboss extends MoveableObject {
     }
 
     hurt() {
-        this.playAnimation(this.IMAGES_HURT);
+        let frame = 0;
+        if (this.hurtInterval) {
+            clearInterval(this.hurtInterval);
+        }
+        this.hurtInterval = setInterval(() => {
+            this.img = this.imageCache[this.IMAGES_HURT[frame]];
+            frame++;
+            if (frame >= this.IMAGES_HURT.length) {
+                clearInterval(this.hurtInterval);
+                this.hurtInterval = null;
+            }
+        }, 1000 / 6);
     }
 
     die(callback) {
@@ -139,8 +151,24 @@ class Endboss extends MoveableObject {
         this.speedY = +10;
     }
 
-    enemyAttack() {
-        this.speed = 8;
-        this.playAnimation(this.IMAGES_ATTACK);
+    // this.setEnemyAttack(this.IMAGES_ATTACK, true, false);
+    setEnemyAttack(images, attackStart = false, attackEnd = false) {
+        if (attackStart) {
+            // Erstes Bild beim Sprungstart
+            this.img = this.imageCache[images[0]];
+        } else if (attackEnd) {
+            // Letztes Bild bei Landung
+            this.img = this.imageCache[images[images.length - 1]];
+        } else {
+            // Höchster Punkt: Bild mit J-34.png (Index 3)
+            if (Math.abs(this.speedY) < 1) {
+                this.img = this.imageCache[images[5]];
+            } else {
+                // Dazwischen: Verteile Bilder nach Y-Position/Sprungphase
+                let phase = Math.floor((this.speedY + 20) / 40 * (images.length - 2));
+                phase = Math.max(1, Math.min(images.length - 2, phase));
+                this.img = this.imageCache[images[phase]];
+            }
+        }
     }
 }
