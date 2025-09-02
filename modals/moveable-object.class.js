@@ -96,16 +96,6 @@ class MoveableObject extends DrawableObject {
         return timePassed < 0.5;
     }
 
-    isDead() {
-        return this.energy === 0;
-    }
-
-    /**
-     * Setzt das passende Bild für die Sprunganimation abhängig vom Sprungstatus.
-     * images: Array mit Sprungbildern
-     * jumpStart: true, wenn Sprung gestartet
-     * landing: true, wenn gelandet
-     */
     setJumpAnimation(images, jumpStart = false, landing = false) {
         if (jumpStart) {
             // Erstes Bild beim Sprungstart

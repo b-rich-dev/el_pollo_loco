@@ -42,7 +42,7 @@ class World {
     }
 
     run() {
-        setInterval(() => {
+        this.runInterval = setInterval(() => {
             this.checkCollisions();
             this.checkThrowableObjects();
             this.startEndbossBattle();
@@ -99,6 +99,9 @@ class World {
                     if (!enemy.isDeadChicken && !this.character.isHurt()) { // NEU: Nur wenn nicht hurt
                         this.character.hit();
                         this.statusBarHealth.setPercentage(this.character.energy);
+                        if (this.character.energy <= 0) {
+                            this.character.die();
+                        }
                     }
                 }
             }
@@ -310,7 +313,6 @@ class World {
                 if (this.endboss.x > this.character.x + 240) {
                     this.endboss.otherDirection = false;
                     this.endboss.speed = 5;
-                    console.log(this.endboss.speed);
                     this.endboss.moveLeft();
                     this.endboss.walking();
                     this.endboss.enemyRandomJump();
@@ -333,7 +335,6 @@ class World {
                                     clearInterval(this.endbossTrackInterval);
                                     this.endboss.alert(this, () => this.trackEndbossToCharacter());
                                 }
-                                console.log('after callback');
                             });
                         } else {
                             // Fallback: Wartezeit nach Attacke (z.B. 1 Sekunde)

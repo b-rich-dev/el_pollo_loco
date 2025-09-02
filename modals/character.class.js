@@ -57,8 +57,7 @@ class Character extends MoveableObject {
         'assets/img/2_character_pepe/5_dead/D-53.png',
         'assets/img/2_character_pepe/5_dead/D-54.png',
         'assets/img/2_character_pepe/5_dead/D-55.png',
-        'assets/img/2_character_pepe/5_dead/D-56.png',
-        'assets/img/2_character_pepe/5_dead/D-57.png'
+        'assets/img/2_character_pepe/5_dead/D-56.png'
     ];
     world;
     speed = 2; // normal 2 schnell 20
@@ -76,6 +75,7 @@ class Character extends MoveableObject {
     };
     lastActionTime = Date.now();
     lastWasAboveGround = false;
+    isCharacterDead = false;
 
     constructor() {
         super().loadImage('assets/img/2_character_pepe/2_walk/W-21.png');
@@ -96,7 +96,7 @@ class Character extends MoveableObject {
 
     animate() {
 
-        setInterval(() => {
+        this.controlInterval = setInterval(() => {
             let action = false;
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
                 this.moveRight();
@@ -124,7 +124,7 @@ class Character extends MoveableObject {
             this.world.camera_x = -this.x + 100;
         }, 1000 / 60);
 
-        setInterval(() => {
+        this.jumpLandingInterval = setInterval(() => {
             if (this.hasJustLanded()) {
                 this.offset = {
                     top: 138,
@@ -134,8 +134,8 @@ class Character extends MoveableObject {
                 };
                 // Landung: Letztes Bild setzen
                 this.setJumpAnimation(this.IMAGES_JUMPING, false, true);
-            } else if (this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD);
+            // } else if (this.isDead()) {
+            //     this.playAnimation(this.IMAGES_DEAD);
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
             } else if (this.isAboveGround()) {
@@ -157,13 +157,13 @@ class Character extends MoveableObject {
             this.lastWasAboveGround = this.isAboveGround(); // Status aktualisieren
         }, 50);
 
-        setInterval(() => {
+        this.idleCheckInterval = setInterval(() => {
             if (this.isInactive(3000)) {
                 this.playAnimation(this.IMAGES_IDLE);
             }
         }, 1000);
 
-        setInterval(() => {
+        this.idleLongCheckInterval = setInterval(() => {
             if (this.isInactive(5000)) {
                 this.playAnimation(this.IMAGES_IDLE_LONG);
             }
@@ -184,6 +184,10 @@ class Character extends MoveableObject {
         this.offset = this.offsetJump;
     }
 
+    deadJump() {
+        this.speedY = 6;
+    }
+
     jumpCharacter() {
         if (this.isJumping == true) {
             return false;
@@ -196,19 +200,46 @@ class Character extends MoveableObject {
         // this.jumpingSound.play();
     }
 
-    // isColliding(mo) {
-    //     return this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
-    //         this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
-    //         this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
-    //         this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom;
-    // }
+    die(callback) {
+        if (this.world.runInterval || 
+            this.world.endbossTrackInterval || 
+            this.world.endbossAttackInterval ||
+            this.controlInterval ||
+            this.jumpLandingInterval ||
+            this.idleCheckInterval ||
+            this.idleLongCheckInterval) {
+            clearInterval(this.world.runInterval);
+            clearInterval(this.world.endbossAttackInterval);
+            clearInterval(this.world.endbossTrackInterval);
+            clearInterval(this.controlInterval);
+            clearInterval(this.jumpLandingInterval);
+            clearInterval(this.idleCheckInterval);
+            clearInterval(this.idleLongCheckInterval);
+        }
 
-    // isCollectingItem(mo) {
-    //     return this.x + this.width > mo.x &&
-    //         this.y + this.height > mo.y &&
-    //         this.x < mo.x + mo.width &&
-    //         this.y < mo.y + mo.height;
-    // }
+        this.isCharacterDead = true;
+        let frame = 0;
+        const deadImages = this.IMAGES_DEAD;
+        
+        const interval = setInterval(() => {
+            this.deadJump();
+            this.img = this.imageCache[deadImages[frame]];
+            frame++;
+            if (frame >= deadImages.length) {
+                clearInterval(interval);
+                // Zeige das letzte Dead-Bild für 2 Sekunden
+                this.img = this.imageCache[deadImages[deadImages.length - 1]];
+                // Endboss soll jetzt durch das Canvas fallen
+                this.fallThroughCanvasInterval = setInterval(() => {
+                    this.y += 12; // Geschwindigkeit des Fallens
+                    if (this.y > 1000) { // Canvas verlassen (anpassen je nach Canvas-Höhe)
+                        clearInterval(this.fallThroughCanvasInterval);
+                        if (callback) callback();
+                    }
+                }, 60);
+            }
+        }, 400); // Zeige jedes Bild für 400ms
+    }
 
     hasJustLanded() {
         return this.lastWasAboveGround && !this.isAboveGround();
