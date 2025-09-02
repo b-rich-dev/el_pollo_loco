@@ -194,7 +194,7 @@ class Endboss extends MoveableObject {
         }
     }
 
-    alert(world, callback) {
+    alert(world, callback, intervalTime = 800) {
         this.speed = 0;
         let frame = 0;
         const alertImages = this.IMAGES_ALERT;
@@ -214,7 +214,7 @@ class Endboss extends MoveableObject {
                     callback(); // trackEndbossToCharacter wird jetzt gestartet!
                 }
             }
-        }, 800);
+        }, intervalTime);
     }
 
     slideBossStatusbar(world) {
@@ -240,28 +240,4 @@ class Endboss extends MoveableObject {
     enemyJump() {
         this.speedY = +10;
     }
-
-    // this.setEnemyAttack(this.IMAGES_ATTACK, true, false);
-    // setEnemyAttack(images, attackStart = false, attackEnd = false) {
-    //     if (attackStart) {
-    //         // Erstes Bild beim Sprungstart
-    //         this.img = this.imageCache[images[0]];
-    //     } else if (attackEnd) {
-    //         // Letztes Bild bei Landung
-    //         this.img = this.imageCache[images[images.length - 1]];
-    //     } else {
-    //         // Höchster Punkt: Bild mit J-34.png (Index 3)
-    //         if (Math.abs(this.speedY) < 1) {
-    //             this.img = this.imageCache[images[5]];
-    //         } else {
-    //             // Dazwischen: Verteile Bilder nach Y-Position/Sprungphase
-    //             let phase = Math.floor((this.speedY + 20) / 40 * (images.length - 2));
-    //             phase = Math.max(1, Math.min(images.length - 2, phase));
-    //             this.img = this.imageCache[images[phase]];
-    //         }
-    //     }
-    // }
 }
-    //     }
-    // }
-

@@ -185,7 +185,7 @@ class Character extends MoveableObject {
     }
 
     deadJump() {
-        this.speedY = 6;
+        this.speedY = 16;
     }
 
     jumpCharacter() {
@@ -217,12 +217,10 @@ class Character extends MoveableObject {
             clearInterval(this.idleLongCheckInterval);
         }
 
-        this.isCharacterDead = true;
         let frame = 0;
         const deadImages = this.IMAGES_DEAD;
         
         const interval = setInterval(() => {
-            this.deadJump();
             this.img = this.imageCache[deadImages[frame]];
             frame++;
             if (frame >= deadImages.length) {
@@ -230,15 +228,27 @@ class Character extends MoveableObject {
                 // Zeige das letzte Dead-Bild für 2 Sekunden
                 this.img = this.imageCache[deadImages[deadImages.length - 1]];
                 // Endboss soll jetzt durch das Canvas fallen
-                this.fallThroughCanvasInterval = setInterval(() => {
-                    this.y += 12; // Geschwindigkeit des Fallens
-                    if (this.y > 1000) { // Canvas verlassen (anpassen je nach Canvas-Höhe)
-                        clearInterval(this.fallThroughCanvasInterval);
-                        if (callback) callback();
-                    }
-                }, 60);
+                if (this.img === this.imageCache[deadImages[deadImages.length - 1]]) {
+                    this.deadJump();
+                    setTimeout(() => {
+                        this.fallThroughCanvasInterval = setInterval(() => {
+                            this.x += 1;
+                            this.y += 6; // Geschwindigkeit des Fallens
+                            if (this.y > 1000) { // Canvas verlassen (anpassen je nach Canvas-Höhe)
+                                clearInterval(this.fallThroughCanvasInterval);
+                                this.setDead(); // <-- Hier wird isCharacterDead gesetzt
+                                if (callback) callback();
+                            }
+                        }, 10);
+                    }, 600); // Wartezeit nach deadJump
+                }
             }
-        }, 400); // Zeige jedes Bild für 400ms
+        }, 1000 / 60); // Zeige jedes Bild für 300ms
+    }
+
+    setDead() {
+        this.isCharacterDead = true;
+       
     }
 
     hasJustLanded() {

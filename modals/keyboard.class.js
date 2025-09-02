@@ -7,3 +7,6 @@ class Keyboard {
     D = false;
     NUMPAD_ZERO = false;
 }
+
+// Keyboard global verfügbar machen
+window.keyboard = new Keyboard();

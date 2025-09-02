@@ -18,14 +18,16 @@ class World {
     endbossAttackInterval = null;
     endbossAlert = false;
     lastThrowTime = 0;
-    objectThrowCooldown = 200; // Millisekunden Pause zwischen Würfen
+    objectThrowCooldown = 300; // Millisekunden Pause zwischen Würfen
     enemyTrackingInterval = null;
     shootingPossible = true;
+    gameOverScreens;
 
     constructor(canvas, ctx, keyboard) {
         this.canvas = canvas;
         this.ctx = ctx;
         this.keyboard = keyboard;
+        this.gameOverScreens = new GameOverScreens(canvas, ctx); // <--- Hinzugefügt
         this.setWorld();
         this.character.setWorld(this); // Welt-Referenz setzen und Animation starten
         this.draw();
@@ -222,6 +224,16 @@ class World {
     }
 
     draw() {
+        if (this.character.isCharacterDead) {
+            this.gameOverScreens.showLoseScreen();
+            return;
+        }
+
+        // if (this.endboss.isDead) {
+        //     this.gameOverScreens.showLoseScreen();
+        //     return;
+        // }
+
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         this.ctx.translate(this.camera_x, 0);
@@ -333,7 +345,8 @@ class World {
                             this.endboss.attack(() => {
                                 if (this.endboss.x < this.character.x + 240 || this.endboss.x > this.character.x - 340) {
                                     clearInterval(this.endbossTrackInterval);
-                                    this.endboss.alert(this, () => this.trackEndbossToCharacter());
+                                    // Hier: Schnellerer Alert-Intervall (z.B. 300ms statt 800ms)
+                                    this.endboss.alert(this, () => this.trackEndbossToCharacter(), 300);
                                 }
                             });
                         } else {
@@ -342,7 +355,8 @@ class World {
                             setTimeout(() => {
                                 if (this.endboss.x < this.character.x + 240 || this.endboss.x > this.character.x - 340) {
                                     clearInterval(this.endbossTrackInterval);
-                                    this.endboss.alert(this, () => this.trackEndbossToCharacter());
+                                    // Hier: Schnellerer Alert-Intervall (z.B. 300ms statt 800ms)
+                                    this.endboss.alert(this, () => this.trackEndbossToCharacter(), 300);
                                 }
                             }, 2000);
                         }
