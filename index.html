@@ -10,11 +10,82 @@
 
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./styles/standard.css">
+    <link rel="stylesheet" href="./styles/font.css">
 </head>
 
-<body onload="init()">
-    <h1>El Pollo Loco</h1>
+<body>
     <canvas id="gameCanvas" width="720" height="480"></canvas>
+    <main id="main">
+        <section id="startScreen">
+            <div class="headline">
+                <h1>El Pollo Loco</h1>
+                <h2>Ride the Chicks</h2>
+            </div>
+            <div class="btnContainer">
+                <button onclick="startGame()" id="startGameButton" class="sc-btn">Start Game</button>
+                <button onclick="showHowToPlay()" id="howToPlayButton" class="sc-btn">How to Play</button>
+                <button onclick="showImprint()" id="imprintButton" class="sc-btn">Imprint</button>
+            </div>
+        </section>
+        <section id="endScreen">
+
+        </section>
+    </main>
+    <dialog id="howToPlayDialog">
+        <div id="dialogContent" class="dialog-content">
+            <div class="text-content">
+                <header>
+                    <h2>How to Play</h2>
+                    <h3>EL POLLO LOCCO – Ride the Chicks</h3>
+                    <p>Take control of <strong>Pepe</strong> and survive a wacky world full of chickens and chicks.</p>
+                </header>
+
+                <section class="card" aria-labelledby="controls-heading">
+                    <h4>🐔 Controls</h4>
+                    <ul>
+                        <li><strong>Arrow keys left/right</strong>: Move</li>
+                        <li><strong>Arrow key up</strong> or <strong>Spacebar</strong>: Jump</li>
+                        <li><strong>Key D</strong> or <strong>Numpad Zero</strong>: Throw bottles</li>
+                    </ul>
+                </section>
+
+                <section aria-labelledby="enemies-heading">
+                    <h4>🐣 The Enemies</h4>
+                    <p>Dangerous <strong>chicks and chickens</strong> roam around, trying to hurt Pepe. Defeat them by
+                        <strong>jumping on their heads</strong> or <strong>throwing bottles</strong> at them.
+                    </p>
+                </section>
+
+                <section aria-labelledby="resources-heading">
+                    <h4>💥 Weapons & Resources</h4>
+                    <ul>
+                        <li>Collect <strong>bottles</strong> along the way and use them as ammunition.</li>
+                        <li>If you run out of bottles, you can <strong>throw your collected coins</strong> as a last
+                            resort.
+                        </li>
+                    </ul>
+                    <p>Be careful – coins are valuable,
+                    <p>and the more you keep until the end of the level, the higher
+                        your score!</p>
+                    </p>
+                </section>
+
+                <section aria-labelledby="boss-heading">
+                    <h4>🐓 The Boss Fight</h4>
+                    <p>At the end of each level, face the ultimate challenge: <strong>a giant chicken boss
+                            monster</strong>!
+                        Only with skill, smart resource management, and courage can you take it down.</p>
+                </section>
+
+                <section aria-labelledby="goal-heading">
+                    <h4>✨ Goal of the Game</h4>
+                    <p>Survive all enemies, defeat the boss, and hold on to as many coins as possible to reach the high
+                        score!</p>
+                </section>
+            </div>
+            <button onclick="closeHowToPlayDialog()" id="closeHowToPlayButton" class="dialog-btn">Close</button>
+        </div>
+    </dialog>
 
     <script src="./modals/drawable-object.class.js"></script>
     <script src="./modals/moveable-object.class.js"></script>
@@ -34,7 +105,8 @@
     <script src="./levels/level1.js"></script>
     <script src="./js/game.js"></script>
     <script src="modals/game-over-screens.class.js"></script>
-    <script src="./modals/world.class.js"></script>  
+    <script src="./modals/world.class.js"></script>
+    <script src="./main.js"></script>
 </body>
 
 </html>

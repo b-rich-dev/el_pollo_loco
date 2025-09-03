@@ -3,20 +3,9 @@
     margin: 0;
     scroll-behavior: smooth;
 
-    font-family: 'Open Sans';
+    font-family: 'FortDeath';
     font-style: normal;
     font-weight: 400;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: 'Open Sans';
-    font-style: normal;
-    font-weight: bold;
 }
 
 a {

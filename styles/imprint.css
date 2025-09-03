@@ -1,0 +1,63 @@
+body {
+    min-height: 100vh;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.wrapper {
+    width: 100%;
+    height: 100vh;
+    background-color: #FDC973;
+}
+
+.header_wrapper img {
+    width: 20px;
+    height: auto;
+
+}
+
+.impressum_container {
+    max-width: 1920px;
+    width: 100%;
+    padding-left: 10%;
+    padding-right: 10%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    color: white;
+}
+
+.impressum_container h1 {
+    color: white;
+    font-size: 52px;
+    font-weight: 900;
+    padding: 16px 0 16px 0;
+}
+
+.impressum_container p {
+    padding: 16px 0 16px 0;
+}
+
+.impressum_container a {
+    text-decoration: none;
+    color: white;
+}
+
+.impressum_container a:hover {
+    color: #1f7594;
+}
+
+@media (max-width: 600px) {
+
+    .impressum_container {
+        text-align: center;
+    }
+
+    .impressum_container h1 {
+        font-size: 36px;
+    }
+}
