@@ -5,10 +5,12 @@ class GameOverScreens {
         this.hoveredButton = null;
     }
     
-
-
     showLoseScreen() {
         getLoseScreen();
+    }
+
+    showWinScreen() {
+        getWinScreen();
     }
 
 }

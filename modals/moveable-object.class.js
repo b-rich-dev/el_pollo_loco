@@ -9,7 +9,7 @@ class MoveableObject extends DrawableObject {
         right: 0,
         bottom: 0
     };
-    energy = 0; // 100
+    energy = 1000; // 100
     lastHit = 0;
 
     applyGravity() {

@@ -75,6 +75,14 @@ h1 {
     transition: background-color 0.3s;
 }
 
+.pepe-greeting {
+    position: absolute;
+    bottom: -56px;
+    left: 6%;
+    width: 180px;
+    height: auto;
+}
+
 .start-screen-btn:hover {
     background-color: #51781F;
 }

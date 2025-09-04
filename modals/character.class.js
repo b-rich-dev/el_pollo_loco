@@ -60,7 +60,7 @@ class Character extends MoveableObject {
         'assets/img/2_character_pepe/5_dead/D-56.png'
     ];
     world;
-    speed = 2; // normal 2 schnell 20
+    speed = 10; // normal 2 schnell 20
     offset = {
         top: 138,
         left: 36,
