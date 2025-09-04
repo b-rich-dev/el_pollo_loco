@@ -73,6 +73,10 @@ h1 {
     font-size: 24px;
     cursor: pointer;
     transition: background-color 0.3s;
+
+    &:hover {
+        background-color: #51781F;
+    }
 }
 
 .pepe-greeting {
@@ -81,10 +85,6 @@ h1 {
     left: 6%;
     width: 180px;
     height: auto;
-}
-
-.start-screen-btn:hover {
-    background-color: #51781F;
 }
 
 #loseEndScreen {
@@ -111,7 +111,7 @@ h1 {
     padding: 0 120px 80px 120px;
 }
 
-.lose-screen-btn{
+.end-screen-btn{
     width: 200px;
     background-color: #FFD908;
     color: #9A3A17;
@@ -122,20 +122,94 @@ h1 {
     font-size: 24px;
     cursor: pointer;
     transition: background-color 0.3s;
-}
 
-.lose-screen-btn:hover {
-    background-color: #FF9C00;
+    &:hover {
+        background-color: #FF9C00;
+    }
 }
 
 #winEndScreen {
     display: none;
+    /* display: flex; */
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     height: 100%;
     width: 100%;
+    
 }
+
+.win-screen-container{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 40px;
+    background-color: #1FA5CC;
+    background-image: url('assets/img/You won, you lost/You Win A.png');
+    /* background-image: url('assets/img/9_intro_outro_screens/start/startscreen_1.png'); */
+    background-size: 480px;
+    /* background-size: cover; */
+    background-repeat: no-repeat;
+    background-position: calc(50% + 0px) calc(50% - 0px);
+    padding: 0 120px 40px 120px;
+
+    h2{
+        padding-top: 40px;
+        font-size: 2rem;
+    }
+}
+
+.final-score-container{
+    font-size: 1.6rem;
+    padding-bottom: 162px;
+}
+
+/* .you-win-img{
+    padding-top: 80px;
+    width: 460px;
+    height: auto;
+} */
+
+span{
+    font-weight: bold;
+    color: #AC4B1E;
+}
+
+#finalScore{
+    font-family: 'Open Sans';
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.win-screen-btn-container{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* .win-screen-btn{
+    width: 200px;
+    background-color: #FFD908;
+    color: #9A3A17;
+    border: solid 1px black;
+    border: solid 1px #9A3A17;
+    border-radius: 20px;
+    padding: 12px 24px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: #FF9C00;
+    }
+} */
+
+
+
 
 dialog{
     height: 100%;
@@ -195,14 +269,15 @@ dialog{
     border-radius: 4px;
 }
 
-header{
+.dialog-header{
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-section{
+
+/* section{
     padding-top: 16px;
-}
+} */
 
 .dialog-btn{
     margin-top: 40px;

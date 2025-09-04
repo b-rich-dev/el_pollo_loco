@@ -13,7 +13,7 @@ function startGame() {
     init();
 }
 
-function showHowToPlay() {   
+function showHowToPlay() {
     dialog.showModal();
 }
 
@@ -32,14 +32,32 @@ function getLoseScreen() {
     loseScreen.style.display = "flex";
 }
 
+function showWinScreen() {
+    gameCanvas.style.display = "none";
+    startScreen.style.display = "none";
+    main.style.display = "flex";
+    winScreen.style.display = "flex";
+}
+
 function restartGame() {
-    loseScreen.style.display = "none";
+    if (loseScreen.style.display === "flex") {
+        loseScreen.style.display = "none";
+    }
+    if (winScreen.style.display === "flex") {
+        winScreen.style.display = "none";
+    }
     startGame();
 }
 
 function exitGame() {
-    startScreen.style.display = "flex";
-    loseScreen.style.display = "none";
+    if (loseScreen.style.display === "flex") {
+        loseScreen.style.display = "none";
+        startScreen.style.display = "flex";
+    }
+    if (winScreen.style.display === "flex") {
+        winScreen.style.display = "none";
+        startScreen.style.display = "flex";
+    }
 }
 
 function getWinScreen() {
@@ -48,7 +66,7 @@ function getWinScreen() {
     return winScreen;
 }
 
-document.getElementById('howToPlayDialog').addEventListener('click', function(event) {
+document.getElementById('howToPlayDialog').addEventListener('click', function (event) {
     const dialogContent = document.getElementById('dialogContent');
     if (!dialogContent.contains(event.target)) {
         closeHowToPlayDialog();
