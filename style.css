@@ -28,11 +28,9 @@ main {
     border: 4px solid #9E5431;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     border-radius: 40px;
-    background-image: url('assets/img/others/bg_img_cactus.jpg');
-    background-size: cover;
-    background-position: center;
     display: flex;
     flex-direction: column;
+    background-color: black;
 }
 
 .headline {
@@ -41,18 +39,23 @@ main {
 
 #startScreen {
     display: flex;
+    /* display: none; */
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     height: 100%;
     width: 100%;
+    border-radius: 40px;
+    background-image: url('assets/img/others/bg_img_cactus.jpg');
+    background-size: cover;
+    background-position: center;
 }
 
 h1 {
     font-size: 80px;
 }
 
-.btnContainer {
+.btn-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -61,7 +64,7 @@ h1 {
     margin-bottom: 30px;
 }
 
-.sc-btn{
+.start-screen-btn{
     background-color: #6B912E;
     color: white;
     border: solid 1px black;
@@ -72,8 +75,58 @@ h1 {
     transition: background-color 0.3s;
 }
 
-.sc-btn:hover {
+.start-screen-btn:hover {
     background-color: #51781F;
+}
+
+#loseEndScreen {
+    display: none;
+    /* display: flex; */
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+    border-radius: 40px;
+}
+
+.lose-screen-container{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    background-image: url('assets/img/You won, you lost/Game Over.png');
+    background-size: 460px;
+    background-repeat: no-repeat;
+    background-position: calc(50% + 0px) calc(50% - 64px);
+    padding: 0 120px 80px 120px;
+}
+
+.lose-screen-btn{
+    width: 200px;
+    background-color: #FFD908;
+    color: #9A3A17;
+    border: solid 1px black;
+    border: solid 1px #9A3A17;
+    border-radius: 20px;
+    padding: 12px 24px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.lose-screen-btn:hover {
+    background-color: #FF9C00;
+}
+
+#winEndScreen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
 }
 
 dialog{

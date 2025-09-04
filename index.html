@@ -21,14 +21,21 @@
                 <h1>El Pollo Loco</h1>
                 <h2>Ride the Chicks</h2>
             </div>
-            <div class="btnContainer">
-                <button onclick="startGame()" id="startGameButton" class="sc-btn">Start Game</button>
-                <button onclick="showHowToPlay()" id="howToPlayButton" class="sc-btn">How to Play</button>
-                <button onclick="showImprint()" id="imprintButton" class="sc-btn">Imprint</button>
+            <div class="btn-container">
+                <button onclick="startGame()" id="startGameButton" class="start-screen-btn">Start Game</button>
+                <button onclick="showHowToPlay()" id="howToPlayButton" class="start-screen-btn">How to Play</button>
+                <button onclick="showImprint()" id="imprintButton" class="start-screen-btn">Imprint</button>
             </div>
         </section>
-        <section id="endScreen">
-
+        <section id="loseEndScreen">
+            <div class="lose-screen-container">
+                <button onclick="restartGame()" id="restartButton" class="lose-screen-btn">Try again?</button>
+                <button onclick="exitGame()" id="exitButton" class="lose-screen-btn">Exit</button>
+            </div>
+        </section>
+        <section id="winEndScreen">
+            <button onclick="restartGame()" id="restartButton">Play again?</button>
+            <button onclick="exitGame()" id="exitButton">Exit</button>
         </section>
     </main>
     <dialog id="howToPlayDialog">
