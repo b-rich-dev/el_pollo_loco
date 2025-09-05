@@ -157,7 +157,6 @@ class Endboss extends MoveableObject {
             clearInterval(this.world.endbossTrackInterval);
         }
 
-        this.isDeadChicken = true;
         let frame = 0;
         const deadImages = this.IMAGES_DEAD;
         
@@ -173,6 +172,7 @@ class Endboss extends MoveableObject {
                     this.y += 12; // Geschwindigkeit des Fallens
                     if (this.y > 1000) { // Canvas verlassen (anpassen je nach Canvas-Höhe)
                         clearInterval(this.fallThroughCanvasInterval);
+                        this.isDeadChicken = true;
                         if (callback) callback();
                     }
                 }, 60);
@@ -240,4 +240,14 @@ class Endboss extends MoveableObject {
     enemyJump() {
         this.speedY = +10;
     }
+
+    // reset() {
+    //     this.isDeadChicken = false;
+    //     this.isDead = false;
+    //     this.otherDirection = false;
+    //     this.endbossEnergy = 100;
+    //     this.x = 2960;
+    //     this.y = 94;
+    //     // ggf. weitere Eigenschaften zurücksetzen
+    // }
 }

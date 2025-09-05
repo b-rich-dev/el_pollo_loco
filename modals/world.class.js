@@ -27,9 +27,11 @@ class World {
         this.canvas = canvas;
         this.ctx = ctx;
         this.keyboard = keyboard;
-        this.gameOverScreens = new GameOverScreens(canvas, ctx); // <--- Hinzugefügt
         this.setWorld();
-        this.character.setWorld(this); // Welt-Referenz setzen und Animation starten
+        this.character.setWorld(this);
+
+        // this.initEnemies();
+
         this.draw();
         this.run();
         this.startEnemyTrackingInterval();
@@ -225,14 +227,26 @@ class World {
 
     draw() {
         if (this.character.isCharacterDead) {
-            this.gameOverScreens.showLoseScreen();
+            showLoseScreen();
+            // // Alle Gegner zurücksetzen
+            // this.level.enemies.forEach(enemy => {
+            //     if (typeof enemy.reset === 'function') {
+            //         enemy.reset();
+            //     }
+            // });
             return;
         }
 
-        // if (this.endboss.isDead) {
-        //     this.gameOverScreens.showLoseScreen();
-        //     return;
-        // }
+        if (this.endboss && this.endboss.isDeadChicken) {
+            showWinScreen();
+            // // Alle Gegner zurücksetzen
+            // this.level.enemies.forEach(enemy => {
+            //     if (typeof enemy.reset === 'function') {
+            //         enemy.reset();
+            //     }
+            // });
+            return;
+        }
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -437,4 +451,53 @@ class World {
             });
         }
     }
+
+    // initEnemies() {
+    //     // Beispiel: Erzeuge Gegner und Endboss neu mit Startwerten/zufälligen Positionen
+    //     this.level.enemies = [];
+
+    //     // Chicken
+    //     for (let i = 0; i < 5; i++) {
+    //         let chicken = new Chicken();
+    //         chicken.x = 400 + Math.random() * 1200; // Zufällige Startposition
+    //         chicken.isDeadChicken = false;
+    //         chicken.otherDirection = false;
+    //         this.level.enemies.push(chicken);
+    //     }
+
+    //     // Chicks
+    //     for (let i = 0; i < 3; i++) {
+    //         let chick = new Chicks();
+    //         chick.x = 600 + Math.random() * 1000;
+    //         chick.isDeadChicken = false;
+    //         chick.otherDirection = false;
+    //         this.level.enemies.push(chick);
+    //     }
+
+    //     // Endboss
+    //     let endboss = new Endboss();
+    //     endboss.x = 2600; // Startposition
+    //     endboss.isDeadChicken = false;
+    //     endboss.isDead = false;
+    //     endboss.otherDirection = false;
+    //     endboss.endbossEnergy = 100;
+    //     this.level.enemies.push(endboss);
+    // }
+
+    // resetEnemies() {
+    //     // Setze alle relevanten Eigenschaften für Endboss und andere Gegner zurück
+    //     this.level.enemies.forEach(enemy => {
+    //         enemy.isDeadChicken = false;
+    //         enemy.otherDirection = false;
+    //         if (enemy instanceof Endboss) {
+    //             enemy.isDead = false;
+    //             enemy.endbossEnergy = 100;
+    //             // Optional: Position zurücksetzen, falls nötig
+    //             // enemy.x = 2600;
+    //         } else {
+    //             // Optional: Position zurücksetzen, falls nötig
+    //             // enemy.x = ...;
+    //         }
+    //     });
+    // }
 }

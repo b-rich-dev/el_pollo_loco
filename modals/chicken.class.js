@@ -79,5 +79,13 @@ class Chicken extends MoveableObject {
         }, 1000); // 1 Sekunde
     }
 
+    // reset() {
+    //     this.isDeadChicken = false;
+    //     this.otherDirection = false;
+    //     this.x = 280 + Math.random() * 2000;
+    //     this.speed = this.moveSpeed;
+    //     this.y = 340;
+    //     // ggf. weitere Eigenschaften zurücksetzen
+    // }
 
 }
