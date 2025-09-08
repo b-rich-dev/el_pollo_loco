@@ -29,3 +29,15 @@ a:hover {
 button:hover {
     cursor: pointer;
 }
+
+.flexdirection_column {
+    flex-direction: column;
+}
+
+.space_between {
+    justify-content: space-between;
+}
+
+.width_100 {
+    width: 100%;
+}

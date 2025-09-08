@@ -14,7 +14,45 @@
 </head>
 
 <body>
-    <canvas id="gameCanvas" width="720" height="480"></canvas>
+    <div class="canvas-wrapper">
+        <canvas id="gameCanvas" width="720" height="480"></canvas>
+        <figure>
+            <figcaption><h2>Game controls</h2></figcaption>
+            <div class="game-controls">
+                <div class="walk-controls">
+                    <div class="control flexdirection_column">
+                        <span>JUMP</span>
+                        <img src="assets/img/keyboard/up.png" id="up" alt="Jump" class="game-controls-img">
+                    </div>
+                    <div class="horizontal-controls">
+                        <div class="control">
+                            <span>LEFT</span>
+                            <img src="assets/img/keyboard/left.png" id="left" alt="Move Left" class="game-controls-img">
+                        </div>
+                        <div class="control">
+                            <img src="assets/img/keyboard/down.png" id="down" alt="Move Down" class="game-controls-img">
+                        </div>
+                        <div class="control">
+                            <img src="assets/img/keyboard/right.png" id="right" alt="Move Right" class="game-controls-img">
+                            <span>RIGHT</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="other-controls">
+                    <div class="control space_between width_100">
+                        <img src="assets/img/keyboard/d.png" id="d" alt="Throw Bottles" class="game-controls-img">
+                        <span>OR</span>
+                        <img src="assets/img/keyboard/num_zero.png" id="num_zero" alt="Throw Bottles" class="game-controls-img">
+                        <span>THROW BOTTLES/COINS</span>
+                    </div>
+                    <div class="control">
+                        <img src="assets/img/keyboard/space.png" id="space" alt="Jump" class="game-controls-img">
+                        <span>JUMP</span>
+                    </div>
+                </div>
+            </div>
+        </figure>
+    </div>
     <main id="main">
         <section id="startScreen">
             <div class="headline">
@@ -110,9 +148,7 @@
     <div id="portrait-overlay">
         <div class="portrait-overlay-logo"></div>
         <div class="portrait-overlay-message">
-            <h2>
-                Please rotate your device to landscape mode to play this game.
-            </h2>
+            <h2>Please rotate your device to landscape mode to play this game.</h2>
         </div>
     </div>
 

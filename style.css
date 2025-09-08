@@ -9,13 +9,90 @@ body {
     background-position: center;
 }
 
+.canvas-wrapper {
+    position: relative;
+    width: 728px;
+    height: 488px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 canvas {
     display: none;
-    position: absolute;
+    position: relative;
     background-color: black;
     border: 4px solid #9E5431;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     border-radius: 40px;
+}
+
+figure {
+    position: absolute;
+    top: 562px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 640px;
+    /* gap: 12px; */
+}
+
+figcaption h2{
+    color: white;
+}
+
+.game-controls {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.game-controls-img {
+    width: auto;
+    height: 40px;
+}
+
+.walk-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.control {
+    display: flex;
+    padding: 2px;
+}
+
+.control span {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.control p {
+    font-family: 'Open Sans';
+    font-weight: bold;
+}
+
+.horizontal-controls {
+    display: flex;
+    justify-content: center;
+    justify-content: flex-end;
+}
+
+.other-controls{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 main {
@@ -280,6 +357,10 @@ dialog {
     display: none;
 }
 
+.portrait-overlay-message h2 {
+    display: none;
+}
+
 @media (max-width: 1024px) {
 
     canvas {
@@ -353,6 +434,7 @@ dialog {
     }
 
     .portrait-overlay-message h2 {
+        display: flex;
         font-size: 24px;
         color: white;
         background: rgba(148, 54, 16, 0.85);
@@ -363,11 +445,6 @@ dialog {
         max-width: 90vw;
         line-height: 1.4;
     }
-
-    #portrait-overlay h2 {
-        display: flex !important;
-    }
-
 }
 
 @media only screen and (max-width: 720px) {

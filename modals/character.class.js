@@ -158,7 +158,7 @@ class Character extends MoveableObject {
         }, 50);
 
         this.idleCheckInterval = setInterval(() => {
-            if (this.isInactive(3000)) {
+            if (this.isInactive(15000)) {
                 this.playAnimation(this.IMAGES_IDLE);
             }
         }, 1000);
