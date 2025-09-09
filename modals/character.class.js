@@ -220,7 +220,7 @@ class Character extends MoveableObject {
         let frame = 0;
         const deadImages = this.IMAGES_DEAD;
         
-        const interval = setInterval(() => {
+        const interval = this.dyingInterval = setInterval(() => {
             this.img = this.imageCache[deadImages[frame]];
             frame++;
             if (frame >= deadImages.length) {

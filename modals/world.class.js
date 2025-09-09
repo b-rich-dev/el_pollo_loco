@@ -23,10 +23,11 @@ class World {
     shootingPossible = true;
     gameOverScreens;
 
-    constructor(canvas, ctx, keyboard) {
+    constructor(canvas, ctx, keyboard, level) {
         this.canvas = canvas;
         this.ctx = ctx;
         this.keyboard = keyboard;
+        this.level = level;
         this.setWorld();
         this.character.setWorld(this);
 

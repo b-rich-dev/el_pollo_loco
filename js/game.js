@@ -2,10 +2,10 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 
-function init() {
+function init(level) {
     canvas = document.getElementById("gameCanvas");
     ctx = canvas.getContext("2d");
-    world = new World(canvas, ctx, keyboard);
+    world = new World(canvas, ctx, keyboard, level);
 }
 
 window.addEventListener('keydown', (e) => {

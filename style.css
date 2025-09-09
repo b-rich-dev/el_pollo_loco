@@ -33,7 +33,7 @@ figure {
     top: 562px;
     left: 50%;
     transform: translate(-50%, -50%);
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     width: 640px;
@@ -397,6 +397,10 @@ dialog {
 
     .final-score-container {
         padding-bottom: 140px;
+    }
+
+    figure{
+        display: none !important;
     }
 }
 

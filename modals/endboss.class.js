@@ -59,6 +59,11 @@ class Endboss extends MoveableObject {
         this.loadImages(this.IMAGES_ATTACK);
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
+        this.x = 2960;
+        this.y = 94;
+        this.otherDirection = false;
+        this.isDeadChicken = false;
+        this.endbossEnergy = 100;
         this.applyGravity();
         // this.animate();
     }
@@ -68,7 +73,7 @@ class Endboss extends MoveableObject {
     }
 
     animate() {
-        setInterval(() => {
+        this.walkingInterval = setInterval(() => {
             if (!this.isDeadChicken) this.playAnimation(this.IMAGES_WALKING);
         }, 1000 / 6);
     }
@@ -160,7 +165,7 @@ class Endboss extends MoveableObject {
         let frame = 0;
         const deadImages = this.IMAGES_DEAD;
         
-        const interval = setInterval(() => {
+        const interval = this.dyingInterval = setInterval(() => {
             this.img = this.imageCache[deadImages[frame]];
             frame++;
             if (frame >= deadImages.length) {
