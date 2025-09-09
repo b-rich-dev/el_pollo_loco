@@ -22,6 +22,7 @@ class World {
     enemyTrackingInterval = null;
     shootingPossible = true;
     gameOverScreens;
+    gameOver = false;
 
     constructor(canvas, ctx, keyboard, level) {
         this.canvas = canvas;
@@ -30,6 +31,7 @@ class World {
         this.level = level;
         this.setWorld();
         this.character.setWorld(this);
+        window.world = this;
 
         // this.initEnemies();
 
@@ -52,7 +54,7 @@ class World {
             this.checkThrowableObjects();
             this.startEndbossBattle();
             this.removeDeadEnemies();
-            // this.enemyTrackingOfCharacter(); // <--- Entfernen!
+            // this.checkGameOver();
         }, 50);
     }
 
@@ -239,6 +241,8 @@ class World {
         }
 
         if (this.endboss && this.endboss.isDeadChicken) {
+            this.gameOver = true;
+            setWinInfo();
             showWinScreen();
             // // Alle Gegner zurücksetzen
             // this.level.enemies.forEach(enemy => {
@@ -453,6 +457,11 @@ class World {
         }
     }
 
+    // checkGameOver() {
+    //     if (this.gameOver) {
+    //         setWinInfo();
+    //     }
+    // }
     // initEnemies() {
     //     // Beispiel: Erzeuge Gegner und Endboss neu mit Startwerten/zufälligen Positionen
     //     this.level.enemies = [];

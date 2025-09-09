@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <div class="canvas-wrapper">
+    <div id="canvasWrapper" class="canvas-wrapper">
         <canvas id="gameCanvas" width="720" height="480"></canvas>
         <figure id="gameControls">
             <figcaption><h2>Game controls</h2></figcaption>
@@ -78,7 +78,7 @@
                 <h2>Gratulations, you won this Game!</h2>
                 <div class="final-score-container">
                     <p>Your final score is: <span id="finalScore">0</span> points.</p>
-                    <p>and that is <span id="finalSentence">hier</span></p>
+                    <p>and that is <span id="finalSentence">great</span></p>
                 </div>
                 <div class="win-screen-btn-container">
                     <button onclick="restartGame()" id="restartButton" class="end-screen-btn">Play again?</button>
@@ -172,6 +172,8 @@
     <script src="./modals/world.class.js"></script>
     <script src="./main.js"></script>
     <script src="./js/portrait-blocker.js"></script>
+    <script src="./js/templates.js"></script>
+    <script src="./js/if-win.js"></script>
 </body>
 
 </html>

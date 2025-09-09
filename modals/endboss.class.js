@@ -135,6 +135,8 @@ class Endboss extends MoveableObject {
     }
 
     hurt() {
+        if (this.isHurting) return; // Starte nur, wenn nicht bereits hurt aktiv
+        this.isHurting = true;
         let frame = 0;
         let repeat = 0;
         const maxRepeats = 3;
@@ -150,21 +152,45 @@ class Endboss extends MoveableObject {
                 if (repeat >= maxRepeats) {
                     clearInterval(this.hurtInterval);
                     this.hurtInterval = null;
+                    this.isHurting = false;
                 }
             }
         }, 100);
     }
 
     die(callback) {
-        if (this.endbossAlertInterval || this.world.endbossTrackInterval) {
+        // Beende alle relevanten Endboss-Intervalle und Flags
+        if (this.endbossAlertInterval) {
             clearInterval(this.endbossAlertInterval);
-            this.world.endbossAttackInterval = null;
+            this.endbossAlertInterval = null;
+        }
+        if (this.hurtInterval) {
+            clearInterval(this.hurtInterval);
+            this.hurtInterval = null;
+            this.isHurting = false;
+        }
+        if (this.attackInterval) {
+            clearInterval(this.attackInterval);
+            this.attackInterval = null;
+        }
+        if (this.dyingInterval) {
+            clearInterval(this.dyingInterval);
+            this.dyingInterval = null;
+        }
+        if (this.fallThroughCanvasInterval) {
+            clearInterval(this.fallThroughCanvasInterval);
+            this.fallThroughCanvasInterval = null;
+        }
+        if (this.world && this.world.endbossTrackInterval) {
             clearInterval(this.world.endbossTrackInterval);
+            this.world.endbossTrackInterval = null;
+        }
+        if (this.world) {
+            this.world.endbossAttackInterval = null;
         }
 
         let frame = 0;
         const deadImages = this.IMAGES_DEAD;
-        
         const interval = this.dyingInterval = setInterval(() => {
             this.img = this.imageCache[deadImages[frame]];
             frame++;
@@ -178,11 +204,12 @@ class Endboss extends MoveableObject {
                     if (this.y > 1000) { // Canvas verlassen (anpassen je nach Canvas-Höhe)
                         clearInterval(this.fallThroughCanvasInterval);
                         this.isDeadChicken = true;
+                        this.world.gameOver = true;
                         if (callback) callback();
                     }
                 }, 60);
             }
-        }, 600); // Zeige jedes Bild für 600ms
+        }, 200); // Zeige jedes Bild für 600ms
     }
 
     walking() {

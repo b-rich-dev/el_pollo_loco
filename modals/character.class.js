@@ -134,8 +134,8 @@ class Character extends MoveableObject {
                 };
                 // Landung: Letztes Bild setzen
                 this.setJumpAnimation(this.IMAGES_JUMPING, false, true);
-            // } else if (this.isDead()) {
-            //     this.playAnimation(this.IMAGES_DEAD);
+                // } else if (this.isDead()) {
+                //     this.playAnimation(this.IMAGES_DEAD);
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
             } else if (this.isAboveGround()) {
@@ -158,13 +158,13 @@ class Character extends MoveableObject {
         }, 50);
 
         this.idleCheckInterval = setInterval(() => {
-            if (this.isInactive(15000)) {
+            if (this.isInactive(9000)) {
                 this.playAnimation(this.IMAGES_IDLE);
             }
         }, 1000);
 
         this.idleLongCheckInterval = setInterval(() => {
-            if (this.isInactive(5000)) {
+            if (this.isInactive(12000)) {
                 this.playAnimation(this.IMAGES_IDLE_LONG);
             }
         }, 1000);
@@ -201,8 +201,8 @@ class Character extends MoveableObject {
     }
 
     die(callback) {
-        if (this.world.runInterval || 
-            this.world.endbossTrackInterval || 
+        if (this.world.runInterval ||
+            this.world.endbossTrackInterval ||
             this.world.endbossAttackInterval ||
             this.controlInterval ||
             this.jumpLandingInterval ||
@@ -219,7 +219,7 @@ class Character extends MoveableObject {
 
         let frame = 0;
         const deadImages = this.IMAGES_DEAD;
-        
+
         const interval = this.dyingInterval = setInterval(() => {
             this.img = this.imageCache[deadImages[frame]];
             frame++;
@@ -248,7 +248,7 @@ class Character extends MoveableObject {
 
     setDead() {
         this.isCharacterDead = true;
-       
+        this.world.gameOver = true;
     }
 
     hasJustLanded() {

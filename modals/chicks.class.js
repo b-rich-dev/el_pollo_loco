@@ -4,8 +4,8 @@ class Chicks extends MoveableObject {
     height = 86;
     offset = {
         top: 14,
-        left: 8,
-        right: 6,
+        left: 4,
+        right: 3,
         bottom: 6
     };
     IMAGES_WALKING = [
