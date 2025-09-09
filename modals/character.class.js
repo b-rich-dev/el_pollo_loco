@@ -76,6 +76,11 @@ class Character extends MoveableObject {
     lastActionTime = Date.now();
     lastWasAboveGround = false;
     isCharacterDead = false;
+    DYING_SOUND = new Audio('assets/audio/dead/dying-sound.mp3');
+    JUMP_SOUND = new Audio('assets/audio/jump/jump.wav');
+    LITTLE_JUMP_SOUND = new Audio('assets/audio/jump/little_jump.wav');
+    HURT_SOUND = new Audio('assets/audio/ouch/hurt.wav');
+    SLEEPING_SOUND = new Audio('assets/audio/sleep/snoring.wav');
 
     constructor() {
         super().loadImage('assets/img/2_character_pepe/2_walk/W-21.png');
@@ -119,6 +124,8 @@ class Character extends MoveableObject {
 
             if (action) {
                 this.lastActionTime = Date.now();
+                this.SLEEPING_SOUND.pause();
+                this.SLEEPING_SOUND.currentTime = 0;
             }
 
             this.world.camera_x = -this.x + 100;
@@ -137,6 +144,7 @@ class Character extends MoveableObject {
                 // } else if (this.isDead()) {
                 //     this.playAnimation(this.IMAGES_DEAD);
             } else if (this.isHurt()) {
+                this.HURT_SOUND.play();
                 this.playAnimation(this.IMAGES_HURT);
             } else if (this.isAboveGround()) {
                 // Sprungphase: Bild je nach Höhe/Sprungstatus setzen
@@ -165,6 +173,7 @@ class Character extends MoveableObject {
 
         this.idleLongCheckInterval = setInterval(() => {
             if (this.isInactive(12000)) {
+                this.SLEEPING_SOUND.play();
                 this.playAnimation(this.IMAGES_IDLE_LONG);
             }
         }, 1000);
@@ -175,11 +184,13 @@ class Character extends MoveableObject {
     }
 
     jump() {
+        this.JUMP_SOUND.play();
         this.speedY = 20;
         this.offset = this.offsetJump;
     }
 
     littleJump() {
+        this.LITTLE_JUMP_SOUND.play();
         this.speedY = 8;
         this.offset = this.offsetJump;
     }
@@ -194,6 +205,7 @@ class Character extends MoveableObject {
         }
         this.speedY = 16.5;
         this.isJumping = true;
+        this.JUMP_SOUND.play();
         this.jumpAnimationIndex = 0;
         this.frameCounter = 0;
         // this.jumpingSound.volume = 0.001;
@@ -201,6 +213,7 @@ class Character extends MoveableObject {
     }
 
     die(callback) {
+        this.DYING_SOUND.play(); // Sound abspielen, wenn Charakter stirbt
         if (this.world.runInterval ||
             this.world.endbossTrackInterval ||
             this.world.endbossAttackInterval ||
@@ -223,6 +236,7 @@ class Character extends MoveableObject {
         const interval = this.dyingInterval = setInterval(() => {
             this.img = this.imageCache[deadImages[frame]];
             frame++;
+            // play(this.DYING_SOUND);
             if (frame >= deadImages.length) {
                 clearInterval(interval);
                 // Zeige das letzte Dead-Bild für 2 Sekunden
