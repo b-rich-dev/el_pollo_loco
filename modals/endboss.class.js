@@ -51,6 +51,16 @@ class Endboss extends MoveableObject {
     isDeadChicken = false;
     endbossEnergy = 100;
     world;
+    ATTACK_SOUND = new Audio('assets/audio/endboss/attack.wav');
+    HURT_SOUND = new Audio('assets/audio/ouch/endboss_hurt.wav');
+    WALK_SOUND = new Audio('assets/audio/walk/endboss_walk.wav');
+    ALERT_SOUND = new Audio('assets/audio/endboss/alarm_call.wav');
+    SONIC_BOMB_SOUND = new Audio('assets/audio/endboss/sonicbomb.wav');
+    FIGHT_SOUND = new Audio('assets/audio/endboss/endboss_fight.mp3');
+    ENDBOSS_DEATH_SOUND = new Audio('assets/audio/dead/endboss_death.wav');
+    ENDBOSS_SLIDE_SOUND = new Audio('assets/audio/dead/endboss_slide.wav');
+    ENDBOSS_JUMP_SOUND = new Audio('assets/audio/jump/endboss_jump.wav');
+    ENDBOSS_LITTLE_JUMP_SOUND = new Audio('assets/audio/jump/endboss_little_jump.wav');
 
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
@@ -102,7 +112,7 @@ class Endboss extends MoveableObject {
         this.speed = totalDist / frames;
 
         let frame = 0;
-
+        this.ATTACK_SOUND.play();
         this.attackInterval = setInterval(() => {
             this.img = this.imageCache[attackImages[frame]];
 
@@ -131,6 +141,8 @@ class Endboss extends MoveableObject {
     }
 
     littleJump() {
+        this.ENDBOSS_LITTLE_JUMP_SOUND.play();
+        this.ENDBOSS_LITTLE_JUMP_SOUND.volume = 1.0;
         this.speedY = 16;
     }
 
@@ -140,6 +152,8 @@ class Endboss extends MoveableObject {
         let frame = 0;
         let repeat = 0;
         const maxRepeats = 3;
+        this.HURT_SOUND.play();
+        this.HURT_SOUND.volume = 0.3;
         if (this.hurtInterval) {
             clearInterval(this.hurtInterval);
         }
@@ -194,12 +208,15 @@ class Endboss extends MoveableObject {
         const interval = this.dyingInterval = setInterval(() => {
             this.img = this.imageCache[deadImages[frame]];
             frame++;
+            this.ENDBOSS_DEATH_SOUND.play();
             if (frame >= deadImages.length) {
                 clearInterval(interval);
                 // Zeige das letzte Dead-Bild für 2 Sekunden
                 this.img = this.imageCache[deadImages[deadImages.length - 1]];
                 // Endboss soll jetzt durch das Canvas fallen
                 this.fallThroughCanvasInterval = setInterval(() => {
+                    this.FIGHT_SOUND.pause();
+                    this.ENDBOSS_SLIDE_SOUND.play();
                     this.y += 12; // Geschwindigkeit des Fallens
                     if (this.y > 1000) { // Canvas verlassen (anpassen je nach Canvas-Höhe)
                         clearInterval(this.fallThroughCanvasInterval);
@@ -213,28 +230,35 @@ class Endboss extends MoveableObject {
     }
 
     walking() {
+        this.WALK_SOUND.play();
+        // this.WALK_SOUND.volume = 0.1;
         this.playAnimation(this.IMAGES_WALKING);
     }
 
     enemyRandomJump() {
         if (!(this.y < 94)) {
             if (!this.isDeadChicken) {
-                if (Math.random() < 0.005) { // 50% Wahrscheinlichkeit pro Aufruf
+                if (Math.random() < 0.01) { // 50% Wahrscheinlichkeit pro Aufruf
+                    this.ENDBOSS_JUMP_SOUND.play();
                     this.speedY = +12;
                 }
             }
         }
     }
 
-    alert(world, callback, intervalTime = 800) {
+    alert(world, callback, intervalTime = 600) {
         this.speed = 0;
         let frame = 0;
         const alertImages = this.IMAGES_ALERT;
+        this.SONIC_BOMB_SOUND.play();
         if (this.endbossAlertInterval) {
             clearInterval(this.endbossAlertInterval);
         }
         this.endbossAlertInterval = setInterval(() => {
             this.img = this.imageCache[alertImages[frame]];
+            if (frame === alertImages.length - 2) {
+                this.ALERT_SOUND.play();
+            }
             frame++;
             if (frame >= alertImages.length) {
                 clearInterval(this.endbossAlertInterval);
@@ -254,16 +278,17 @@ class Endboss extends MoveableObject {
         const slideSpeed = 10; // px pro Frame
 
         const statusBar = world.statusBarBoss;
-        function slide() {
+        const slide = () => {
             if (statusBar.x > targetX) {
                 statusBar.x -= slideSpeed;
                 if (statusBar.x < targetX) statusBar.x = targetX;
                 requestAnimationFrame(slide);
-            } else if (statusBar.x < targetX) {
-                statusBar.x += slideSpeed;
-                if (statusBar.x > targetX) statusBar.x = targetX;
-                requestAnimationFrame(slide);
-            }
+                this.FIGHT_SOUND.play();}
+            // } else if (statusBar.x < targetX) {
+            //     statusBar.x += slideSpeed;
+            //     if (statusBar.x > targetX) statusBar.x = targetX;
+            //     requestAnimationFrame(slide);
+            // }
             // Stoppt automatisch, wenn targetX erreicht ist
         }
         slide();

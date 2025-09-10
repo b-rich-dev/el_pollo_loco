@@ -25,7 +25,6 @@ class StatusBar extends DrawableObject {
     salsaBottleImg = null;
     IMAGE_COIN_PEPERONI = 'assets/img/8_coin/pepper_in_coin.png';
     coinPeperoniImg = null;
-
     x = 20;
     y = 20;
     width = 200;
@@ -34,6 +33,8 @@ class StatusBar extends DrawableObject {
     type = 'health';
     bottles = 0;
     coins = 0;
+    COLLECT_BOTTLE_SOUND = new Audio('assets/audio/collect/collect_bottle.wav');
+    COLLECT_COIN_SOUND = new Audio('assets/audio/collect/collect_coin.ogg');
 
 
 
@@ -85,8 +86,10 @@ class StatusBar extends DrawableObject {
 
     collectItem(type) {
         if (type === 'bottle') {
+            this.COLLECT_BOTTLE_SOUND.play();
             this.bottles += 1;
         } else if (type === 'coin') {
+            this.COLLECT_COIN_SOUND.play();
             this.coins += 1;
         }
     }

@@ -81,6 +81,7 @@ class Character extends MoveableObject {
     LITTLE_JUMP_SOUND = new Audio('assets/audio/jump/little_jump.wav');
     HURT_SOUND = new Audio('assets/audio/ouch/hurt.wav');
     SLEEPING_SOUND = new Audio('assets/audio/sleep/snoring.wav');
+    WALK_SOUND = new Audio('assets/audio/walk/walk.wav');
 
     constructor() {
         super().loadImage('assets/img/2_character_pepe/2_walk/W-21.png');
@@ -104,12 +105,14 @@ class Character extends MoveableObject {
         this.controlInterval = setInterval(() => {
             let action = false;
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+                this.WALK_SOUND.play();
                 this.moveRight();
                 this.otherDirection = false;
                 action = true;
             }
 
             if (this.world.keyboard.LEFT && this.x > 0) {
+                this.WALK_SOUND.play();
                 this.moveLeft();
                 this.otherDirection = true;
                 action = true;
@@ -132,6 +135,7 @@ class Character extends MoveableObject {
         }, 1000 / 60);
 
         this.jumpLandingInterval = setInterval(() => {
+            let action = false;
             if (this.hasJustLanded()) {
                 this.offset = {
                     top: 138,
@@ -144,13 +148,16 @@ class Character extends MoveableObject {
                 // } else if (this.isDead()) {
                 //     this.playAnimation(this.IMAGES_DEAD);
             } else if (this.isHurt()) {
+                action = true;
                 this.HURT_SOUND.play();
                 this.playAnimation(this.IMAGES_HURT);
             } else if (this.isAboveGround()) {
                 // Sprungphase: Bild je nach Höhe/Sprungstatus setzen
+                action = true;
                 this.setJumpAnimation(this.IMAGES_JUMPING, false, false);
             } else {
                 if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+                    action = true;
                     this.playAnimation(this.IMAGES_WALKING);
                 }
             }
@@ -161,6 +168,11 @@ class Character extends MoveableObject {
                     right: 52,
                     bottom: 13
                 };
+            }
+            if (action) {
+                this.lastActionTime = Date.now();
+                this.SLEEPING_SOUND.pause();
+                this.SLEEPING_SOUND.currentTime = 0;
             }
             this.lastWasAboveGround = this.isAboveGround(); // Status aktualisieren
         }, 50);
@@ -191,6 +203,7 @@ class Character extends MoveableObject {
 
     littleJump() {
         this.LITTLE_JUMP_SOUND.play();
+        this.LITTLE_JUMP_SOUND.volume = 0.6;
         this.speedY = 8;
         this.offset = this.offsetJump;
     }
@@ -213,7 +226,7 @@ class Character extends MoveableObject {
     }
 
     die(callback) {
-        this.DYING_SOUND.play(); // Sound abspielen, wenn Charakter stirbt
+        this.DYING_SOUND.play();
         if (this.world.runInterval ||
             this.world.endbossTrackInterval ||
             this.world.endbossAttackInterval ||
@@ -236,7 +249,6 @@ class Character extends MoveableObject {
         const interval = this.dyingInterval = setInterval(() => {
             this.img = this.imageCache[deadImages[frame]];
             frame++;
-            // play(this.DYING_SOUND);
             if (frame >= deadImages.length) {
                 clearInterval(interval);
                 // Zeige das letzte Dead-Bild für 2 Sekunden

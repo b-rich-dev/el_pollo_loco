@@ -26,6 +26,9 @@ class ThrowableObject extends MoveableObject {
     isSplashing = false; // Splash-Status
     splashInterval = null;
     isCoin = false; // NEU: Unterscheidung Coin/Bottle
+    COIN_SOUND = new Audio('assets/audio/coin/coin.wav');
+    BOTTLE_BREAK_SOUND = new Audio('assets/audio/bottle/bottle_break.wav');
+    SHOOTING_SOUND = new Audio('assets/audio/bottle/shoot.wav');
 
     constructor(x, y, world, directionLeft = false) {
         // Entscheide, ob Flasche oder Coin geworfen wird anhand eines Flags oder Typs
@@ -58,6 +61,7 @@ class ThrowableObject extends MoveableObject {
     }
 
     throwBottle() {
+        this.SHOOTING_SOUND.play();
         this.speedY = 18;
         this.applyGravity();
         this.throwBottleInterval = setInterval(() => {
@@ -83,6 +87,7 @@ class ThrowableObject extends MoveableObject {
                 this.speedY = 0; // Gravity deaktivieren
                 this.acceleration = 0; // Falls vorhanden
                 this.animateSplash();
+                
             }
         }, 52);
     }
@@ -95,6 +100,7 @@ class ThrowableObject extends MoveableObject {
     }
 
     throwCoin() {
+        this.COIN_SOUND.play();
         this.speedY = 8;
         this.groundLevel = 800;
         this.applyGravity();
@@ -105,6 +111,8 @@ class ThrowableObject extends MoveableObject {
                 this.x += 30; // Nach rechts werfen
             }
             this.animateRotationCoin();
+            // Kollisionsabfrage mit Enemy
+            const enemy = this.getCollidingEnemy();
             if (this.world && this.world.character && (
                 (!this.directionLeft && this.x >= this.world.character.x + 1000) ||
                 (this.directionLeft && this.x <= this.world.character.x - 1000)
@@ -126,7 +134,8 @@ class ThrowableObject extends MoveableObject {
     }
 
     animateSplash() {
-        // Nur für Bottle ausführen!
+        this.BOTTLE_BREAK_SOUND.play();
+        this.BOTTLE_BREAK_SOUND.volume = 0.6;
         if (this.isCoin) return;
         if (this.isSplashing) return;
         this.isSplashing = true;

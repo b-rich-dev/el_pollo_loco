@@ -23,6 +23,7 @@ class World {
     shootingPossible = true;
     gameOverScreens;
     gameOver = false;
+    MAIN_SOUND = new Audio('assets/audio/main/main_mexican_music.m4a');
 
     constructor(canvas, ctx, keyboard, level) {
         this.canvas = canvas;
@@ -54,7 +55,10 @@ class World {
             this.checkThrowableObjects();
             this.startEndbossBattle();
             this.removeDeadEnemies();
-            // this.checkGameOver();
+            if (!this.endbossStarted && this.MAIN_SOUND.paused) {
+                this.MAIN_SOUND.play();
+                this.MAIN_SOUND.volume = 0.1;
+            }
         }, 50);
     }
 
@@ -310,17 +314,21 @@ class World {
 
     startEndbossBattle() {
         if (!this.endbossStarted && this.character.x >= 2230 && this.endboss) {
+           
+            // this.MAIN_SOUND.currentTime = 0; // Sound komplett stoppen und zurücksetzen
             this.endbossStarted = true;
             this.endbossStartDone = true;
             this.endbossMoveInterval = setInterval(() => {
                 this.shootingPossible = false;
                 if (this.character.x > 2240) {
+                    // this.MAIN_SOUND.pause();
                     this.endboss.speed = 16;
                     this.endboss.walking();
                     this.endboss.moveLeft();
                 }
                 if (this.endboss.x <= 2496) {
                     clearInterval(this.endbossMoveInterval);
+                    this.MAIN_SOUND.pause();
                     // Callback wird übergeben, trackEndbossToCharacter startet nach Alert!
                     this.endboss.alert(this, () => this.trackEndbossToCharacter());
                     // this.trackEndbossToCharacter(); // <--- Entfernen!

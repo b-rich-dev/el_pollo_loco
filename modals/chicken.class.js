@@ -17,6 +17,7 @@ class Chicken extends MoveableObject {
 
     IMAGE_DEAD = 'assets/img/3_enemies_chicken/chicken_normal/2_dead/dead.png';
     isDeadChicken = false;
+    DEATH_SOUND = new Audio('assets/audio/jump/751340__qubodup__slime-death.flac');
 
     constructor() {
         super().loadImage('assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
@@ -77,6 +78,8 @@ class Chicken extends MoveableObject {
     die(callback) {
         this.img = this.imageCache[this.IMAGE_DEAD];
         this.isDeadChicken = true;
+        this.DEATH_SOUND.play();
+        this.DEATH_SOUND.volume = 0.6;
         setTimeout(() => {
             if (callback) callback();
         }, 1000); // 1 Sekunde

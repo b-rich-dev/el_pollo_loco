@@ -15,6 +15,7 @@ class Chicks extends MoveableObject {
     ];
     IMAGE_DEAD = 'assets/img/3_enemies_chicken/chicken_small/2_dead/dead.png';
     isDeadChicken = false;
+    CHICKS_HURT_SOUND = new Audio('assets/audio/chicks/chicks_dead.wav');
 
     constructor() {
         super().loadImage('assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
@@ -75,6 +76,8 @@ class Chicks extends MoveableObject {
     die(callback) {
         this.img = this.imageCache[this.IMAGE_DEAD];
         this.isDeadChicken = true;
+        this.CHICKS_HURT_SOUND.play();
+        this.CHICKS_HURT_SOUND.volume = 1.0;
         setTimeout(() => {
             if (callback) callback();
         }, 1000); // 1 Sekunde
