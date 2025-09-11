@@ -82,6 +82,7 @@ class Character extends MoveableObject {
     HURT_SOUND = new Audio('assets/audio/ouch/hurt.wav');
     SLEEPING_SOUND = new Audio('assets/audio/sleep/snoring.wav');
     WALK_SOUND = new Audio('assets/audio/walk/walk.wav');
+    WIN_SOUND = new Audio('assets/audio/win/win.mp3');
 
     constructor() {
         super().loadImage('assets/img/2_character_pepe/2_walk/W-21.png');
@@ -92,6 +93,13 @@ class Character extends MoveableObject {
         this.loadImages(this.IMAGES_HURT);
         this.loadImages(this.IMAGES_DEAD);
         this.applyGravity();
+        window.CHARACTER_DYING_SOUND = this.DYING_SOUND;
+        window.CHARACTER_JUMP_SOUND = this.JUMP_SOUND;
+        window.CHARACTER_LITTLE_JUMP_SOUND = this.LITTLE_JUMP_SOUND;
+        window.CHARACTER_HURT_SOUND = this.HURT_SOUND;
+        window.CHARACTER_SLEEPING_SOUND = this.SLEEPING_SOUND;
+        window.CHARACTER_WALK_SOUND = this.WALK_SOUND;
+        window.CHARACTER_WIN_SOUND = this.WIN_SOUND;
         // this.animate(); // Entfernt, Animation wird später gestartet
     }
 

@@ -61,6 +61,7 @@ class Endboss extends MoveableObject {
     ENDBOSS_SLIDE_SOUND = new Audio('assets/audio/dead/endboss_slide.wav');
     ENDBOSS_JUMP_SOUND = new Audio('assets/audio/jump/endboss_jump.wav');
     ENDBOSS_LITTLE_JUMP_SOUND = new Audio('assets/audio/jump/endboss_little_jump.wav');
+    ENDBOSS_WIN_SOUND = new Audio('assets/audio/endboss/win.wav');
 
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
@@ -75,7 +76,17 @@ class Endboss extends MoveableObject {
         this.isDeadChicken = false;
         this.endbossEnergy = 100;
         this.applyGravity();
-        // this.animate();
+        window.ENDBOSS_ATTACK_SOUND = this.ATTACK_SOUND;
+        window.ENDBOSS_HURT_SOUND = this.HURT_SOUND;
+        window.ENDBOSS_WALK_SOUND = this.WALK_SOUND;
+        window.ENDBOSS_ALERT_SOUND = this.ALERT_SOUND;
+        window.ENDBOSS_SONIC_BOMB_SOUND = this.SONIC_BOMB_SOUND;
+        window.ENDBOSS_FIGHT_SOUND = this.FIGHT_SOUND;
+        window.ENDBOSS_DEATH_SOUND = this.ENDBOSS_DEATH_SOUND;
+        window.ENDBOSS_SLIDE_SOUND = this.ENDBOSS_SLIDE_SOUND;
+        window.ENDBOSS_JUMP_SOUND = this.ENDBOSS_JUMP_SOUND;
+        window.ENDBOSS_LITTLE_JUMP_SOUND = this.ENDBOSS_LITTLE_JUMP_SOUND;
+        window.ENDBOSS_WIN_SOUND = this.ENDBOSS_WIN_SOUND;
     }
 
     setWorld(world) {

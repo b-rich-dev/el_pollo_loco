@@ -7,7 +7,7 @@ let winScreen = document.getElementById('winEndScreen');
 // let gameControls = document.getElementById('gameControls');
 let canvasWrapper = document.getElementById('canvasWrapper');
 const smilies = [trashSmile(), lameSmile(), mehSmile(), basicSmile(), alrightSmile(), chillSmile(), coolSmile(), awesomeSmile(), epicSmile(), absolutelyGreatSmile()];
-
+const muteButton = document.getElementById('muteButton');
 
 function startGame() {
     main.style.display = "none";
@@ -207,7 +207,7 @@ function getWinScreen() {
     return winScreen;
 }
 
-function setWinInfo(){
+function setWinInfo() {
     const finalScore = document.getElementById("finalScore");
     const finalSentence = document.getElementById("finalSentence");
     if (window.world && window.world.gameOver) {
@@ -224,6 +224,121 @@ function setWinInfo(){
         }
     }
 }
+
+function toggleMute() {
+    if (muteButton) {
+        muteButton.classList.toggle('muted');
+    }
+    if (window.MAIN_SOUND) {
+        window.MAIN_SOUND.muted = !window.MAIN_SOUND.muted;
+    }
+
+
+    if (window.COIN_SOUND) {
+        window.COIN_SOUND.muted = !window.COIN_SOUND.muted;
+    }
+    if (window.BOTTLE_BREAK_SOUND) {
+        window.BOTTLE_BREAK_SOUND.muted = !window.BOTTLE_BREAK_SOUND.muted;
+    }
+    if (window.SHOOTING_SOUND) {
+        window.SHOOTING_SOUND.muted = !window.SHOOTING_SOUND.muted;
+    }
+
+
+    if (window.COLLECT_BOTTLE_SOUND) {
+        window.COLLECT_BOTTLE_SOUND.muted = !window.COLLECT_BOTTLE_SOUND.muted;
+    }
+    if (window.COLLECT_COIN_SOUND) {
+        window.COLLECT_COIN_SOUND.muted = !window.COLLECT_COIN_SOUND.muted;
+    }
+
+
+    if (window.ENDBOSS_ATTACK_SOUND) {
+        window.ENDBOSS_ATTACK_SOUND.muted = !window.ENDBOSS_ATTACK_SOUND.muted;
+    }
+    if (window.ENDBOSS_HURT_SOUND) {
+        window.ENDBOSS_HURT_SOUND.muted = !window.ENDBOSS_HURT_SOUND.muted;
+    }
+    if (window.ENDBOSS_WALK_SOUND) {
+        window.ENDBOSS_WALK_SOUND.muted = !window.ENDBOSS_WALK_SOUND.muted;
+    }
+    if (window.ENDBOSS_ALERT_SOUND) {
+        window.ENDBOSS_ALERT_SOUND.muted = !window.ENDBOSS_ALERT_SOUND.muted;
+    }
+    if (window.ENDBOSS_SONIC_BOMB_SOUND) {
+        window.ENDBOSS_SONIC_BOMB_SOUND.muted = !window.ENDBOSS_SONIC_BOMB_SOUND.muted;
+    }
+    if (window.ENDBOSS_FIGHT_SOUND) {
+        window.ENDBOSS_FIGHT_SOUND.muted = !window.ENDBOSS_FIGHT_SOUND.muted;
+    }
+    if (window.ENDBOSS_DEATH_SOUND) {
+        window.ENDBOSS_DEATH_SOUND.muted = !window.ENDBOSS_DEATH_SOUND.muted;
+    }
+    if (window.ENDBOSS_SLIDE_SOUND) {
+        window.ENDBOSS_SLIDE_SOUND.muted = !window.ENDBOSS_SLIDE_SOUND.muted;
+    }
+    if (window.ENDBOSS_JUMP_SOUND) {
+        window.ENDBOSS_JUMP_SOUND.muted = !window.ENDBOSS_JUMP_SOUND.muted;
+    }
+    if (window.ENDBOSS_LITTLE_JUMP_SOUND) {
+        window.ENDBOSS_LITTLE_JUMP_SOUND.muted = !window.ENDBOSS_LITTLE_JUMP_SOUND.muted;
+    }
+    if (window.ENDBOSS_WIN_SOUND) {
+        window.ENDBOSS_WIN_SOUND.muted = !window.ENDBOSS_WIN_SOUND.muted;
+    }
+
+
+    if (window.CHICKS_HURT_SOUND) {
+        window.CHICKS_HURT_SOUND.muted = !window.CHICKS_HURT_SOUND.muted;
+    }
+    if (window.CHICKS_JUMP_SOUND) {
+        window.CHICKS_JUMP_SOUND.muted = !window.CHICKS_JUMP_SOUND.muted;
+    }
+    if (window.CHICKS_WALK_SOUND) {
+        window.CHICKS_WALK_SOUND.muted = !window.CHICKS_WALK_SOUND.muted;
+    }
+    if (window.CHICKS_GENERAL_SOUND) {
+        window.CHICKS_GENERAL_SOUND.muted = !window.CHICKS_GENERAL_SOUND.muted;
+    }
+
+
+    if (window.CHICKEN_DEATH_SOUND) {
+        window.CHICKEN_DEATH_SOUND.muted = !window.CHICKEN_DEATH_SOUND.muted;
+    }
+    if (window.CHICKEN_JUMP_SOUND) {
+        window.CHICKEN_JUMP_SOUND.muted = !window.CHICKEN_JUMP_SOUND.muted;
+    }
+    if (window.CHICKEN_WALK_SOUND) {
+        window.CHICKEN_WALK_SOUND.muted = !window.CHICKEN_WALK_SOUND.muted;
+    }
+    if (window.CHICKEN_GENERAL_SOUND) {
+        window.CHICKEN_GENERAL_SOUND.muted = !window.CHICKEN_GENERAL_SOUND.muted;
+    }
+
+    if (window.CHARACTER_DYING_SOUND) {
+        window.CHARACTER_DYING_SOUND.muted = !window.CHARACTER_DYING_SOUND.muted;
+    }
+    if (window.CHARACTER_JUMP_SOUND) {
+        window.CHARACTER_JUMP_SOUND.muted = !window.CHARACTER_JUMP_SOUND.muted;
+    }
+    if (window.CHARACTER_LITTLE_JUMP_SOUND) {
+        window.CHARACTER_LITTLE_JUMP_SOUND.muted = !window.CHARACTER_LITTLE_JUMP_SOUND.muted;
+    }
+    if (window.CHARACTER_HURT_SOUND) {
+        window.CHARACTER_HURT_SOUND.muted = !window.CHARACTER_HURT_SOUND.muted;
+    }
+    if (window.CHARACTER_SLEEPING_SOUND) {
+        window.CHARACTER_SLEEPING_SOUND.muted = !window.CHARACTER_SLEEPING_SOUND.muted;
+    }
+    if (window.CHARACTER_WALK_SOUND) {
+        window.CHARACTER_WALK_SOUND.muted = !window.CHARACTER_WALK_SOUND.muted;
+    }
+    if (window.CHARACTER_WIN_SOUND) {
+        window.CHARACTER_WIN_SOUND.muted = !window.CHARACTER_WIN_SOUND.muted;
+    }
+}
+
+muteButton.addEventListener('click', toggleMute);
 
 document.getElementById('howToPlayDialog').addEventListener('click', function (event) {
     const dialogContent = document.getElementById('dialogContent');

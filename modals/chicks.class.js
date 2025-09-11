@@ -16,6 +16,9 @@ class Chicks extends MoveableObject {
     IMAGE_DEAD = 'assets/img/3_enemies_chicken/chicken_small/2_dead/dead.png';
     isDeadChicken = false;
     CHICKS_HURT_SOUND = new Audio('assets/audio/chicks/chicks_dead.wav');
+    CHICKS_JUMP_SOUND = new Audio('assets/audio/jump/chicks_jump.wav');
+    GENERAL_SOUND = new Audio('assets/audio/chicks/chicks_chirp.wav');
+    CHICKS_WALK_SOUND = new Audio('assets/audio/walk/chicks_walk.wav');
 
     constructor() {
         super().loadImage('assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png');
@@ -31,6 +34,23 @@ class Chicks extends MoveableObject {
         this.isDeadChicken = false;
         this.animate();
         this.applyGravity();
+        this.addGeneralSoundLoop();
+        window.CHICKS_HURT_SOUND = this.CHICKS_HURT_SOUND;
+        window.CHICKS_JUMP_SOUND = this.CHICKS_JUMP_SOUND;
+        window.CHICKS_WALK_SOUND = this.CHICKS_WALK_SOUND;
+        window.CHICKS_GENERAL_SOUND = this.GENERAL_SOUND;
+    }
+
+    addGeneralSoundLoop() {
+        const playGeneralSound = () => {
+            if (!this.isDeadChicken) {
+                this.GENERAL_SOUND.play();
+                this.GENERAL_SOUND.volume = 0.2;
+            }
+            const nextDelay = 3000 + Math.random() * 9000; // 3-12 Sekunden
+            setTimeout(playGeneralSound, nextDelay);
+        };
+        playGeneralSound();
     }
 
     animate() {
@@ -45,6 +65,8 @@ class Chicks extends MoveableObject {
 
     moveLeft() {
         if (!this.isDeadChicken) {
+            this.CHICKS_WALK_SOUND.play();
+            this.CHICKS_WALK_SOUND.volume = 0.8;
             this.otherDirection = false;
             this.speed = this.moveSpeed; // Immer die initiale Geschwindigkeit verwenden
             super.moveLeft();
@@ -56,6 +78,8 @@ class Chicks extends MoveableObject {
 
     moveRight() {
         if (!this.isDeadChicken) {
+            this.CHICKS_WALK_SOUND.play();
+            this.CHICKS_WALK_SOUND.volume = 0.8;
             this.otherDirection = true;
             this.speed = this.moveSpeed; // Immer die initiale Geschwindigkeit verwenden
             super.moveRight();
@@ -68,6 +92,8 @@ class Chicks extends MoveableObject {
     enemyRandomJump() {
         if (!this.isDeadChicken) {
             if (Math.random() < 0.01) { // 1% Wahrscheinlichkeit pro Aufruf
+                this.CHICKS_JUMP_SOUND.play();
+                this.CHICKS_JUMP_SOUND.volume = 0.1;
                 this.speedY = +12;
             }
         }

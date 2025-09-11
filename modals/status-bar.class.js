@@ -33,8 +33,8 @@ class StatusBar extends DrawableObject {
     type = 'health';
     bottles = 0;
     coins = 0;
-    COLLECT_BOTTLE_SOUND = new Audio('assets/audio/collect/collect_bottle.wav');
-    COLLECT_COIN_SOUND = new Audio('assets/audio/collect/collect_coin.ogg');
+    COLLECT_BOTTLE_SOUND = new Audio('assets/audio/collect/collect_bottle.ogg');
+    COLLECT_COIN_SOUND = new Audio('assets/audio/collect/collect_coin.wav');
 
 
 
@@ -52,6 +52,8 @@ class StatusBar extends DrawableObject {
         this.salsaBottleImg.src = this.IMAGE_SALSA_BOTTLE;
         this.coinPeperoniImg = new Image();
         this.coinPeperoniImg.src = this.IMAGE_COIN_PEPERONI;
+        window.COLLECT_BOTTLE_SOUND = this.COLLECT_BOTTLE_SOUND;
+        window.COLLECT_COIN_SOUND = this.COLLECT_COIN_SOUND;
     }
 
     getImages() {

@@ -105,6 +105,10 @@ figcaption h2{
     z-index: 10;
 }
 
+#muteButton.muted {
+    background: url('assets/img/sound/mute.png') center/cover no-repeat;
+}
+
 main {
     position: absolute;
     top: 50%;

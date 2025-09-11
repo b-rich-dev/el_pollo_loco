@@ -17,7 +17,10 @@ class Chicken extends MoveableObject {
 
     IMAGE_DEAD = 'assets/img/3_enemies_chicken/chicken_normal/2_dead/dead.png';
     isDeadChicken = false;
-    DEATH_SOUND = new Audio('assets/audio/jump/751340__qubodup__slime-death.flac');
+    DEATH_SOUND = new Audio('assets/audio/dead/chicken_death.flac');
+    GENERAL_SOUND = new Audio('assets/audio/chicken/general.wav');
+    CHICKEN_JUMP_SOUND = new Audio('assets/audio/jump/chicken_jump.wav');
+    CHICKEN_WALK_SOUND = new Audio('assets/audio/walk/chicken_walk.mp3');
 
     constructor() {
         super().loadImage('assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
@@ -33,6 +36,23 @@ class Chicken extends MoveableObject {
         this.isDeadChicken = false;
         this.animate();
         this.applyGravity();
+        this.addGeneralSoundLoop();
+        window.CHICKEN_DEATH_SOUND = this.DEATH_SOUND;
+        window.CHICKEN_JUMP_SOUND = this.CHICKEN_JUMP_SOUND;
+        window.CHICKEN_WALK_SOUND = this.CHICKEN_WALK_SOUND;
+        window.CHICKEN_GENERAL_SOUND = this.GENERAL_SOUND;
+    }
+
+    addGeneralSoundLoop() {
+        const playGeneralSound = () => {
+            if (!this.isDeadChicken) {
+                this.GENERAL_SOUND.play();
+                this.GENERAL_SOUND.volume = 0.3;
+            }
+            const nextDelay = 3000 + Math.random() * 9000; // 3-12 Sekunden
+            setTimeout(playGeneralSound, nextDelay);
+        };
+        playGeneralSound();
     }
 
     animate() {
@@ -47,6 +67,8 @@ class Chicken extends MoveableObject {
 
     moveLeft() {
         if (!this.isDeadChicken) {
+            this.CHICKEN_WALK_SOUND.play();
+            this.CHICKEN_WALK_SOUND.volume = 0.06;
             this.otherDirection = false;
             this.speed = this.moveSpeed;
             super.moveLeft();
@@ -58,6 +80,8 @@ class Chicken extends MoveableObject {
 
     moveRight() {
         if (!this.isDeadChicken) {
+            this.CHICKEN_WALK_SOUND.play();
+            this.CHICKEN_WALK_SOUND.volume = 0.06;
             this.otherDirection = true;
             this.speed = this.moveSpeed;
             super.moveRight();
@@ -70,6 +94,8 @@ class Chicken extends MoveableObject {
     enemyRandomJump() {
         if (!this.isDeadChicken) {
             if (Math.random() < 0.005) { // 0.5% Wahrscheinlichkeit pro Aufruf
+                this.CHICKEN_JUMP_SOUND.play();
+                this.CHICKEN_JUMP_SOUND.volume = 0.1;
                 this.speedY = +8;
             }
         }

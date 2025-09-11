@@ -58,6 +58,10 @@ class ThrowableObject extends MoveableObject {
         } else {
             this.throwCoin();
         }
+
+        window.COIN_SOUND = this.COIN_SOUND;
+        window.BOTTLE_BREAK_SOUND = this.BOTTLE_BREAK_SOUND;
+        window.SHOOTING_SOUND = this.SHOOTING_SOUND;
     }
 
     throwBottle() {
