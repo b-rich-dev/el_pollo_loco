@@ -1,4 +1,5 @@
 import { checkEnemyCollisions, checkBottleCollisions, checkCoinCollisions, checkThrowableObjectEnemyCollisions } from './collision.helper.js';
+import { trackEndbossToCharacter, enemyTrackingOfCharacter } from './enemy.tracking.helper.js';
 
 class World {
     character = new Character();
@@ -68,8 +69,8 @@ class World {
 
     startEnemyTrackingInterval() {
         this.enemyTrackingInterval = setInterval(() => {
-            this.enemyTrackingOfCharacter();
-            // this.trackEndbossToCharacter();
+            enemyTrackingOfCharacter(this);
+            // trackEndbossToCharacter(this);
         }, 1000);
     }
 
@@ -219,14 +220,11 @@ class World {
 
     startEndbossBattle() {
         if (!this.endbossStarted && this.character.x >= 2230 && this.endboss) {
-           
-            // this.MAIN_SOUND.currentTime = 0; // Sound komplett stoppen und zurücksetzen
             this.endbossStarted = true;
             this.endbossStartDone = true;
             this.endbossMoveInterval = setInterval(() => {
                 this.shootingPossible = false;
                 if (this.character.x > 2240) {
-                    // this.MAIN_SOUND.pause();
                     this.endboss.speed = 16;
                     this.endboss.walking();
                     this.endboss.moveLeft();
@@ -234,139 +232,9 @@ class World {
                 if (this.endboss.x <= 2496) {
                     clearInterval(this.endbossMoveInterval);
                     this.MAIN_SOUND.pause();
-                    // Callback wird übergeben, trackEndbossToCharacter startet nach Alert!
-                    this.endboss.alert(this, () => this.trackEndbossToCharacter());
-                    // this.trackEndbossToCharacter(); // <--- Entfernen!
+                    this.endboss.alert(this, () => trackEndbossToCharacter(this));
                 }
             }, 1000 / 6);
-        }
-    }
-
-    trackEndbossToCharacter() {
-        if (this.endbossTrackInterval) {
-            clearInterval(this.endbossTrackInterval);
-        }
-        let attackPlayed = false;
-        this.endbossTrackInterval = setInterval(() => {
-            if (!this.endboss || this.endboss.isDeadChicken) {
-                clearInterval(this.endbossTrackInterval);
-                return;
-            }
-            // Endboss nur bewegen, wenn keine Attack-Animation läuft!
-            if (!this.endboss.attackInterval) {
-                if (this.endboss.x > this.character.x + 240) {
-                    this.endboss.otherDirection = false;
-                    this.endboss.speed = 5;
-                    this.endboss.moveLeft();
-                    this.endboss.walking();
-                    this.endboss.enemyRandomJump();
-                    attackPlayed = false;
-                } else if (this.endboss.x < this.character.x - 340) {
-                    this.endboss.otherDirection = true;
-                    this.endboss.speed = 5;
-                    this.endboss.moveRight();
-                    this.endboss.walking();
-                    this.endboss.enemyRandomJump();
-                    attackPlayed = false;
-                } else {
-                    // Endboss ist in der Nähe (<100px): Attack-Animation einmal abspielen
-                    if (!attackPlayed) {
-                        attackPlayed = true;
-                        // Attacke mit Callback, falls vorhanden
-                        if (typeof this.endboss.attack === 'function' && this.endboss.attack.length > 0) {
-                            this.endboss.attack(() => {
-                                if (this.endboss.x < this.character.x + 240 || this.endboss.x > this.character.x - 340) {
-                                    clearInterval(this.endbossTrackInterval);
-                                    // Hier: Schnellerer Alert-Intervall (z.B. 300ms statt 800ms)
-                                    this.endboss.alert(this, () => this.trackEndbossToCharacter(), 300);
-                                }
-                            });
-                        } else {
-                            // Fallback: Wartezeit nach Attacke (z.B. 1 Sekunde)
-                            this.endboss.attack();
-                            setTimeout(() => {
-                                if (this.endboss.x < this.character.x + 240 || this.endboss.x > this.character.x - 340) {
-                                    clearInterval(this.endbossTrackInterval);
-                                    // Hier: Schnellerer Alert-Intervall (z.B. 300ms statt 800ms)
-                                    this.endboss.alert(this, () => this.trackEndbossToCharacter(), 300);
-                                }
-                            }, 2000);
-                        }
-                    }
-                }
-            }
-        }, 100);
-    }
-
-    enemyTrackingOfCharacter() {
-        const directionCooldown = 2000; // ms Wartezeit nach Überholen
-        if (this.character.x) {
-            this.level.enemies.forEach(enemy => {
-                // Prüfe, ob es sich um den Endboss handelt
-                if (enemy instanceof Endboss) {
-                    return; // Endboss wird nicht verfolgt
-                }
-
-                // Initialisiere lastDirectionChange nur, wenn NICHT gesetzt
-                if (typeof enemy.lastDirectionChange !== 'number') {
-                    enemy.lastDirectionChange = 0;
-                }
-                const now = Date.now();
-
-                let directionChanged = false;
-
-                // Charakter ist links vom Gegner
-                if (enemy.x > this.character.x && enemy.otherDirection !== false) {
-                    if (enemy._pendingDirection !== 'left') {
-                        enemy._pendingDirection = 'left';
-                        enemy._pendingSince = now;
-                    }
-                    if (now - enemy._pendingSince > directionCooldown) {
-                        enemy.otherDirection = false;
-                        enemy.lastDirectionChange = now;
-                        enemy._pendingDirection = null;
-                        enemy._pendingSince = null;
-                        directionChanged = true;
-                    }
-                }
-                // Charakter ist rechts vom Gegner
-                else if (enemy.x < this.character.x && enemy.otherDirection !== true) {
-                    if (enemy._pendingDirection !== 'right') {
-                        enemy._pendingDirection = 'right';
-                        enemy._pendingSince = now;
-                    }
-                    if (now - enemy._pendingSince > directionCooldown) {
-                        enemy.otherDirection = true;
-                        enemy.lastDirectionChange = now;
-                        enemy._pendingDirection = null;
-                        enemy._pendingSince = null;
-                        directionChanged = true;
-                    }
-                } else {
-                    // Richtung stimmt, Warte-Flags zurücksetzen
-                    enemy._pendingDirection = null;
-                    enemy._pendingSince = null;
-                }
-
-                // Sicherung: Bewegungsintervall pro Gegner verwalten
-                if (directionChanged) {
-                    clearInterval(enemy.moveLeftAnimateIntervalEnemy);
-                    if (enemy.moveInterval) {
-                        clearInterval(enemy.moveInterval);
-                        enemy.moveInterval = null;
-                    }
-                    enemy.speed = enemy.moveSpeed;
-                    if (enemy.otherDirection === true) {
-                        enemy.moveInterval = setInterval(() => {
-                            enemy.moveRight();
-                        }, 50);
-                    } else {
-                        enemy.moveInterval = setInterval(() => {
-                            enemy.moveLeft();
-                        }, 50);
-                    }
-                }
-            });
         }
     }
 }
