@@ -288,4 +288,6 @@ class Character extends MoveableObject {
     hasJustLanded() {
         return this.lastWasAboveGround && !this.isAboveGround();
     }
+
+ 
 }

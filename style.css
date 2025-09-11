@@ -38,7 +38,7 @@ canvas {
     /* gap: 12px; */
 }
 
-figcaption h2{
+figcaption h2 {
     color: white;
 }
 
@@ -86,7 +86,7 @@ figcaption h2{
     justify-content: flex-end;
 }
 
-.other-controls{
+.other-controls {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -107,6 +107,77 @@ figcaption h2{
 
 #muteButton.muted {
     background: url('assets/img/sound/mute.png') center/cover no-repeat;
+}
+
+.move-buttons {
+    display: none;
+    position: absolute;
+    bottom: 60px;
+    left: 60px;
+    width: 140px;
+    height: 140px;
+    z-index: 10;
+}
+
+.move-button-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.move-button-container button:first-child {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.move-button-container button:last-child {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.action-buttons {
+    display: none;
+    position: absolute;
+    bottom: 60px;
+    right: 60px;
+    width: 140px;
+    height: 140px;
+    z-index: 10;
+}
+
+.action-button-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.action-buttons button:first-child {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.action-buttons button:last-child {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.controller-button {
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    border: none;
+}
+
+.controller-button img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-left: -6px;
+    margin-top: -1px;
 }
 
 main {
@@ -376,9 +447,18 @@ dialog {
 }
 
 @media (max-width: 1024px) {
-    figure{
+    .move-buttons {
+        display: flex;
+    }
+
+    .action-buttons {
+        display: flex;
+    }
+
+    #gameControls {
         display: none;
     }
+
     canvas {
         border-radius: 0;
     }
@@ -461,6 +541,33 @@ dialog {
         max-width: 90vw;
         line-height: 1.4;
     }
+}
+
+@media (max-height: 767px) {
+    .move-buttons {
+        bottom: 30px;
+        left: 30px;
+        width: 100px;
+        height: 100px;
+    }
+
+    .action-buttons {
+        bottom: 30px;
+        right: 30px;
+        width: 100px;
+        height: 100px;
+    }
+
+    .controller-button {
+        height: 40px;
+        width: 40px;
+    }
+
+    .controller-button img {
+        width: 40px;
+        height: 40px;
+    }
+
 }
 
 @media only screen and (max-width: 720px) {

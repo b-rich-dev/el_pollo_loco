@@ -8,5 +8,4 @@ class Keyboard {
     NUMPAD_ZERO = false;
 }
 
-// Keyboard global verfügbar machen
 window.keyboard = new Keyboard();

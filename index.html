@@ -13,40 +13,60 @@
     <link rel="stylesheet" href="./styles/font.css">
 </head>
 
-<body>
+<body translate="no">
+    <div class="move-buttons">
+        <div class="move-button-container">
+            <button id="moveLeftButton" class="controller-button"><img src="./assets/img/buttons/button-left.png"
+                    alt="move left button"></button>
+            <button id="moveRightButton" class="controller-button"><img src="./assets/img/buttons/button-right.png"
+                    alt="move right button"></button>
+        </div>
+    </div>
+    <div class="action-buttons">
+        <div class="action-button-container">
+            <button id="jumpButton" class="controller-button"><img src="./assets/img/buttons/button-jump.png"
+                    alt="jump button"></button>
+            <button id="throwButton" class="controller-button"><img src="./assets/img/buttons/button-action.png"
+                    alt="throw button"></button>
+        </div>
+    </div>
     <div id="canvasWrapper" class="canvas-wrapper">
         <canvas id="gameCanvas" width="720" height="480"></canvas>
         <figure id="gameControls">
-            <figcaption><h2>Game controls</h2></figcaption>
+            <figcaption>
+                <h2>Game controls</h2>
+            </figcaption>
             <div class="game-controls">
                 <div class="walk-controls">
                     <div class="control flexdirection_column">
                         <span>JUMP</span>
-                        <img src="assets/img/keyboard/up.png" id="up" alt="Jump" class="game-controls-img">
+                        <img src="assets/img/keyboard/up.png" alt="Jump" class="game-controls-img">
                     </div>
                     <div class="horizontal-controls">
                         <div class="control">
                             <span>LEFT</span>
-                            <img src="assets/img/keyboard/left.png" id="left" alt="Move Left" class="game-controls-img">
+                            <img src="assets/img/keyboard/left.png" alt="Move Left" class="game-controls-img">
                         </div>
                         <div class="control">
-                            <img src="assets/img/keyboard/down.png" id="down" alt="Move Down" class="game-controls-img">
+                            <img src="assets/img/keyboard/down.png" alt="Move Down" class="game-controls-img">
                         </div>
                         <div class="control">
-                            <img src="assets/img/keyboard/right.png" id="right" alt="Move Right" class="game-controls-img">
+                            <img src="assets/img/keyboard/right.png" alt="Move Right"
+                                class="game-controls-img">
                             <span>RIGHT</span>
                         </div>
                     </div>
                 </div>
                 <div class="other-controls">
                     <div class="control space_between width_100">
-                        <img src="assets/img/keyboard/d.png" id="d" alt="Throw Bottles" class="game-controls-img">
+                        <img src="assets/img/keyboard/d.png" alt="Throw Bottles" class="game-controls-img">
                         <span>OR</span>
-                        <img src="assets/img/keyboard/num_zero.png" id="num_zero" alt="Throw Bottles" class="game-controls-img">
+                        <img src="assets/img/keyboard/num_zero.png" alt="Throw Bottles"
+                            class="game-controls-img">
                         <span>THROW BOTTLES/COINS</span>
                     </div>
                     <div class="control">
-                        <img src="assets/img/keyboard/space.png" id="space" alt="Jump" class="game-controls-img">
+                        <img src="assets/img/keyboard/space.png" alt="Jump" class="game-controls-img">
                         <span>JUMP</span>
                     </div>
                 </div>

@@ -1,6 +1,10 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let moveLeft = document.getElementById("moveLeftButton");
+let moveRight = document.getElementById("moveRightButton");
+let jump = document.getElementById("jumpButton");
+let throwObject = document.getElementById("throwButton");
 
 function init(level) {
     canvas = document.getElementById("gameCanvas");
@@ -54,4 +58,68 @@ window.addEventListener('keyup', (e) => {
     if (e.code === 'Numpad0') {
         keyboard.NUMPAD_ZERO = false;
     }
+});
+
+moveLeft.addEventListener('mousedown', () => {
+    keyboard.LEFT = true;
+});
+moveLeft.addEventListener('touchstart', () => {
+    keyboard.LEFT = true;
+});
+moveLeft.addEventListener('mouseup', () => {
+    keyboard.LEFT = false;
+});
+moveLeft.addEventListener('touchend', () => {
+    keyboard.LEFT = false;
+});
+moveLeft.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+});
+
+moveRight.addEventListener('mousedown', () => {
+    keyboard.RIGHT = true;
+});
+moveRight.addEventListener('touchstart', () => {
+    keyboard.RIGHT = true;
+});
+moveRight.addEventListener('mouseup', () => {
+    keyboard.RIGHT = false;
+});
+moveRight.addEventListener('touchend', () => {
+    keyboard.RIGHT = false;
+});
+moveRight.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+});
+
+jump.addEventListener('mousedown', () => {
+    keyboard.SPACE = true;
+});
+jump.addEventListener('touchstart', () => {
+    keyboard.SPACE = true;
+});
+jump.addEventListener('mouseup', () => {
+    keyboard.SPACE = false;
+});
+jump.addEventListener('touchend', () => {
+    keyboard.SPACE = false;
+});
+jump.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+});
+
+throwObject.addEventListener('mousedown', () => {
+    keyboard.D = true;
+});
+throwObject.addEventListener('touchstart', () => {
+    keyboard.D = true;
+});
+throwObject.addEventListener('mouseup', () => {
+    keyboard.D = false;
+});
+throwObject.addEventListener('touchend', () => {
+    keyboard.D = false;
+});
+throwObject.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
 });
