@@ -1,3 +1,5 @@
+import { checkEnemyCollisions, checkBottleCollisions, checkCoinCollisions, checkThrowableObjectEnemyCollisions } from './collision.helper.js';
+
 class World {
     character = new Character();
     level = typeof level1 !== 'undefined' ? level1 : null; // Fallback
@@ -90,113 +92,10 @@ class World {
     }
 
     checkCollisions() {
-        this.checkEnemyCollisions();
-        this.checkBottleCollisions();
-        this.checkCoinCollisions();
-        this.checkThrowableObjectEnemyCollisions(); // NEU: Eigene Prüfung für geworfene Objekte
-    }
-
-    checkEnemyCollisions() {
-        this.level.enemies.forEach((enemy, index) => {
-            if (this.character.isColliding(enemy)) {
-                if (this.character.isCollidingFromAbove(enemy)) {
-                    // Charakter springt von oben: Enemy stirbt, Charakter bekommt KEINEN Schaden
-                    if (typeof enemy.die === 'function' && !enemy.isDeadChicken) {
-                        enemy.die(() => {
-                            enemy._remove = true; // Markiere für Entfernung
-                        });
-                        this.character.littleJump(); // Charakter springt nach dem Töten hoch
-                    }
-                } else {
-                    // Seitliche Kollision: Charakter bekommt Schaden, Enemy bleibt
-                    if (!enemy.isDeadChicken && !this.character.isHurt()) { // NEU: Nur wenn nicht hurt
-                        this.character.hit();
-                        this.statusBarHealth.setPercentage(this.character.energy);
-                        if (this.character.energy <= 0) {
-                            this.character.die();
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    checkBottleCollisions() {
-        this.level.bottles.forEach((bottle, index) => {
-            if (this.character.isColliding(bottle)) {
-                this.statusBarBottle.collectItem('bottle');
-                this.level.bottles.splice(index, 1);
-            }
-        });
-    }
-
-    checkCoinCollisions() {
-        this.level.coins.forEach((coin, index) => {
-            if (this.character.isColliding(coin)) {
-                this.statusBarCoins.collectItem('coin');
-                this.level.coins.splice(index, 1);
-            }
-        });
-    }
-
-    checkThrowableObjectEnemyCollisions() {
-        this.throwableObject.forEach((obj, objIndex) => {
-            let hit = false;
-            this.level.enemies.forEach((enemy, enemyIndex) => {
-                if (!hit && obj.isColliding && obj.isColliding(enemy) && !enemy.isDeadChicken) {
-                    if (enemy instanceof Endboss) {
-                        if (enemy.endbossEnergy > 0) {
-                            // Prüfe ob Coin oder Bottle
-                            if (obj.isCoin) {
-                                enemy.endbossEnergy -= 10;
-                            } else {
-                                enemy.endbossEnergy -= 20;
-                            }
-                            if (enemy.endbossEnergy < 0) enemy.endbossEnergy = 0;
-                            enemy.hurt();
-                            this.statusBarBoss.setPercentage(enemy.endbossEnergy);
-                            if (obj.IMAGES_BOTTLE_ROTATION && !obj.isCoin && !obj.isSplashing) {
-                                obj.x = enemy.x;
-                                obj.y = enemy.y;
-                                obj.speedY = 0;
-                                obj.acceleration = 0;
-                                obj.animateSplash();
-                                hit = true;
-                                // Flasche entfernt sich selbst nach Splash!
-                                // KEIN splice hier!
-                            } else {
-                                hit = true;
-                                this.throwableObject.splice(objIndex, 1);
-                            }
-                            if (enemy.endbossEnergy === 0) {
-                                enemy.die(() => {
-                                    enemy._remove = true;
-                                });
-                            }
-                        }
-                    } else {
-                        if (typeof enemy.die === 'function') {
-                            enemy.die(() => {
-                                enemy._remove = true;
-                            });
-                        }
-                        if (obj.IMAGES_BOTTLE_ROTATION && !obj.isCoin && !obj.isSplashing) {
-                            obj.x = enemy.x;
-                            obj.y = enemy.y;
-                            obj.speedY = 0;
-                            obj.acceleration = 0;
-                            obj.animateSplash();
-                            hit = true;
-                            // Flasche entfernt sich selbst nach Splash!
-                            // KEIN splice hier!
-                        } else {
-                            hit = true;
-                            this.throwableObject.splice(objIndex, 1);
-                        }
-                    }
-                }
-            });
-        });
+        checkEnemyCollisions(this);
+        checkBottleCollisions(this);
+        checkCoinCollisions(this);
+        checkThrowableObjectEnemyCollisions(this);
     }
 
     checkThrowableObjects() {
@@ -471,3 +370,5 @@ class World {
         }
     }
 }
+
+window.World = World;
