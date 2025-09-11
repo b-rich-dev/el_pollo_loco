@@ -34,7 +34,7 @@ class World {
         this.character.setWorld(this);
         window.world = this;
         window.MAIN_SOUND = this.MAIN_SOUND;
-
+        setSoundMuted(this.MAIN_SOUND);
         // this.initEnemies();
 
         this.draw();
@@ -44,6 +44,7 @@ class World {
         if (this.endboss) {
             this.endboss.setWorld(this); // <--- Welt-Referenz für Endboss setzen!
         }
+        
     }
 
     setWorld() {
@@ -57,7 +58,7 @@ class World {
             this.startEndbossBattle();
             this.removeDeadEnemies();
             if (!this.endbossStarted && this.MAIN_SOUND.paused) {
-                this.MAIN_SOUND.play();
+                if (!window.isMuted) this.MAIN_SOUND.play();
                 this.MAIN_SOUND.volume = 0.1;
             }
         }, 50);
@@ -237,7 +238,7 @@ class World {
         if (this.character.isCharacterDead) {
             showLoseScreen();
             if (this.endbossStartDone) {
-                window.ENDBOSS_WIN_SOUND.play();
+                if (!window.isMuted) window.ENDBOSS_WIN_SOUND.play();
             }
             // // Alle Gegner zurücksetzen
             // this.level.enemies.forEach(enemy => {
@@ -252,7 +253,7 @@ class World {
             this.gameOver = true;
             setWinInfo();
             showWinScreen();
-            window.CHARACTER_WIN_SOUND.play();
+            if (!window.isMuted) window.CHARACTER_WIN_SOUND.play();
             // // Alle Gegner zurücksetzen
             // this.level.enemies.forEach(enemy => {
             //     if (typeof enemy.reset === 'function') {

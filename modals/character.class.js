@@ -100,7 +100,13 @@ class Character extends MoveableObject {
         window.CHARACTER_SLEEPING_SOUND = this.SLEEPING_SOUND;
         window.CHARACTER_WALK_SOUND = this.WALK_SOUND;
         window.CHARACTER_WIN_SOUND = this.WIN_SOUND;
-        // this.animate(); // Entfernt, Animation wird später gestartet
+        setSoundMuted(this.DYING_SOUND);
+        setSoundMuted(this.JUMP_SOUND);
+        setSoundMuted(this.LITTLE_JUMP_SOUND);
+        setSoundMuted(this.HURT_SOUND);
+        setSoundMuted(this.SLEEPING_SOUND);
+        setSoundMuted(this.WALK_SOUND);
+        setSoundMuted(this.WIN_SOUND);
     }
 
     setWorld() {
@@ -113,14 +119,14 @@ class Character extends MoveableObject {
         this.controlInterval = setInterval(() => {
             let action = false;
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-                this.WALK_SOUND.play();
+                if (!window.isMuted) this.WALK_SOUND.play();
                 this.moveRight();
                 this.otherDirection = false;
                 action = true;
             }
 
             if (this.world.keyboard.LEFT && this.x > 0) {
-                this.WALK_SOUND.play();
+                if (!window.isMuted) this.WALK_SOUND.play();
                 this.moveLeft();
                 this.otherDirection = true;
                 action = true;
@@ -157,7 +163,7 @@ class Character extends MoveableObject {
                 //     this.playAnimation(this.IMAGES_DEAD);
             } else if (this.isHurt()) {
                 action = true;
-                this.HURT_SOUND.play();
+                if (!window.isMuted) this.HURT_SOUND.play();
                 this.playAnimation(this.IMAGES_HURT);
             } else if (this.isAboveGround()) {
                 // Sprungphase: Bild je nach Höhe/Sprungstatus setzen
@@ -193,7 +199,7 @@ class Character extends MoveableObject {
 
         this.idleLongCheckInterval = setInterval(() => {
             if (this.isInactive(12000)) {
-                this.SLEEPING_SOUND.play();
+                if (!window.isMuted) this.SLEEPING_SOUND.play();
                 this.playAnimation(this.IMAGES_IDLE_LONG);
             }
         }, 1000);
@@ -204,13 +210,13 @@ class Character extends MoveableObject {
     }
 
     jump() {
-        this.JUMP_SOUND.play();
+        if (!window.isMuted) this.JUMP_SOUND.play();
         this.speedY = 20;
         this.offset = this.offsetJump;
     }
 
     littleJump() {
-        this.LITTLE_JUMP_SOUND.play();
+        if (!window.isMuted) this.LITTLE_JUMP_SOUND.play();
         this.LITTLE_JUMP_SOUND.volume = 0.6;
         this.speedY = 8;
         this.offset = this.offsetJump;
@@ -226,7 +232,7 @@ class Character extends MoveableObject {
         }
         this.speedY = 16.5;
         this.isJumping = true;
-        this.JUMP_SOUND.play();
+        if (!window.isMuted) this.JUMP_SOUND.play();
         this.jumpAnimationIndex = 0;
         this.frameCounter = 0;
         // this.jumpingSound.volume = 0.001;
@@ -234,7 +240,7 @@ class Character extends MoveableObject {
     }
 
     die(callback) {
-        this.DYING_SOUND.play();
+        if (!window.isMuted) this.DYING_SOUND.play();
         if (this.world.runInterval ||
             this.world.endbossTrackInterval ||
             this.world.endbossAttackInterval ||

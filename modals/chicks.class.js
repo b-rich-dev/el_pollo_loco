@@ -39,11 +39,15 @@ class Chicks extends MoveableObject {
         window.CHICKS_JUMP_SOUND = this.CHICKS_JUMP_SOUND;
         window.CHICKS_WALK_SOUND = this.CHICKS_WALK_SOUND;
         window.CHICKS_GENERAL_SOUND = this.GENERAL_SOUND;
+        setSoundMuted(this.CHICKS_HURT_SOUND);
+        setSoundMuted(this.CHICKS_JUMP_SOUND);
+        setSoundMuted(this.CHICKS_WALK_SOUND);
+        setSoundMuted(this.GENERAL_SOUND);
     }
 
     addGeneralSoundLoop() {
         const playGeneralSound = () => {
-            if (!this.isDeadChicken) {
+            if (!this.isDeadChicken && !window.isMuted) {
                 this.GENERAL_SOUND.play();
                 this.GENERAL_SOUND.volume = 0.2;
             }
@@ -65,7 +69,7 @@ class Chicks extends MoveableObject {
 
     moveLeft() {
         if (!this.isDeadChicken) {
-            this.CHICKS_WALK_SOUND.play();
+            if (!window.isMuted) this.CHICKS_WALK_SOUND.play();
             this.CHICKS_WALK_SOUND.volume = 0.8;
             this.otherDirection = false;
             this.speed = this.moveSpeed; // Immer die initiale Geschwindigkeit verwenden
@@ -78,7 +82,7 @@ class Chicks extends MoveableObject {
 
     moveRight() {
         if (!this.isDeadChicken) {
-            this.CHICKS_WALK_SOUND.play();
+            if (!window.isMuted) this.CHICKS_WALK_SOUND.play();
             this.CHICKS_WALK_SOUND.volume = 0.8;
             this.otherDirection = true;
             this.speed = this.moveSpeed; // Immer die initiale Geschwindigkeit verwenden
@@ -92,7 +96,7 @@ class Chicks extends MoveableObject {
     enemyRandomJump() {
         if (!this.isDeadChicken) {
             if (Math.random() < 0.01) { // 1% Wahrscheinlichkeit pro Aufruf
-                this.CHICKS_JUMP_SOUND.play();
+                if (!window.isMuted) this.CHICKS_JUMP_SOUND.play();
                 this.CHICKS_JUMP_SOUND.volume = 0.1;
                 this.speedY = +12;
             }
@@ -102,7 +106,7 @@ class Chicks extends MoveableObject {
     die(callback) {
         this.img = this.imageCache[this.IMAGE_DEAD];
         this.isDeadChicken = true;
-        this.CHICKS_HURT_SOUND.play();
+        if (!window.isMuted) this.CHICKS_HURT_SOUND.play();
         this.CHICKS_HURT_SOUND.volume = 1.0;
         setTimeout(() => {
             if (callback) callback();

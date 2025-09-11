@@ -54,6 +54,8 @@ class StatusBar extends DrawableObject {
         this.coinPeperoniImg.src = this.IMAGE_COIN_PEPERONI;
         window.COLLECT_BOTTLE_SOUND = this.COLLECT_BOTTLE_SOUND;
         window.COLLECT_COIN_SOUND = this.COLLECT_COIN_SOUND;
+        setSoundMuted(this.COLLECT_BOTTLE_SOUND);
+        setSoundMuted(this.COLLECT_COIN_SOUND);
     }
 
     getImages() {
@@ -88,10 +90,10 @@ class StatusBar extends DrawableObject {
 
     collectItem(type) {
         if (type === 'bottle') {
-            this.COLLECT_BOTTLE_SOUND.play();
+            if (!window.isMuted) this.COLLECT_BOTTLE_SOUND.play();
             this.bottles += 1;
         } else if (type === 'coin') {
-            this.COLLECT_COIN_SOUND.play();
+            if (!window.isMuted) this.COLLECT_COIN_SOUND.play();
             this.coins += 1;
         }
     }

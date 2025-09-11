@@ -62,10 +62,13 @@ class ThrowableObject extends MoveableObject {
         window.COIN_SOUND = this.COIN_SOUND;
         window.BOTTLE_BREAK_SOUND = this.BOTTLE_BREAK_SOUND;
         window.SHOOTING_SOUND = this.SHOOTING_SOUND;
+        setSoundMuted(this.COIN_SOUND);
+        setSoundMuted(this.BOTTLE_BREAK_SOUND);
+        setSoundMuted(this.SHOOTING_SOUND);
     }
 
     throwBottle() {
-        this.SHOOTING_SOUND.play();
+        if (!window.isMuted) this.SHOOTING_SOUND.play();
         this.speedY = 18;
         this.applyGravity();
         this.throwBottleInterval = setInterval(() => {
@@ -104,7 +107,7 @@ class ThrowableObject extends MoveableObject {
     }
 
     throwCoin() {
-        this.COIN_SOUND.play();
+        if (!window.isMuted) this.COIN_SOUND.play();
         this.speedY = 8;
         this.groundLevel = 800;
         this.applyGravity();
@@ -138,7 +141,7 @@ class ThrowableObject extends MoveableObject {
     }
 
     animateSplash() {
-        this.BOTTLE_BREAK_SOUND.play();
+        if (!window.isMuted) this.BOTTLE_BREAK_SOUND.play();
         this.BOTTLE_BREAK_SOUND.volume = 0.6;
         if (this.isCoin) return;
         if (this.isSplashing) return;

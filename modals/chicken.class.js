@@ -41,11 +41,15 @@ class Chicken extends MoveableObject {
         window.CHICKEN_JUMP_SOUND = this.CHICKEN_JUMP_SOUND;
         window.CHICKEN_WALK_SOUND = this.CHICKEN_WALK_SOUND;
         window.CHICKEN_GENERAL_SOUND = this.GENERAL_SOUND;
+        setSoundMuted(this.DEATH_SOUND);
+        setSoundMuted(this.CHICKEN_JUMP_SOUND);
+        setSoundMuted(this.CHICKEN_WALK_SOUND);
+        setSoundMuted(this.GENERAL_SOUND); 
     }
 
     addGeneralSoundLoop() {
         const playGeneralSound = () => {
-            if (!this.isDeadChicken) {
+            if (!this.isDeadChicken && !window.isMuted) {
                 this.GENERAL_SOUND.play();
                 this.GENERAL_SOUND.volume = 0.3;
             }
@@ -67,7 +71,7 @@ class Chicken extends MoveableObject {
 
     moveLeft() {
         if (!this.isDeadChicken) {
-            this.CHICKEN_WALK_SOUND.play();
+            if (!window.isMuted) this.CHICKEN_WALK_SOUND.play();
             this.CHICKEN_WALK_SOUND.volume = 0.06;
             this.otherDirection = false;
             this.speed = this.moveSpeed;
@@ -80,7 +84,7 @@ class Chicken extends MoveableObject {
 
     moveRight() {
         if (!this.isDeadChicken) {
-            this.CHICKEN_WALK_SOUND.play();
+            if (!window.isMuted) this.CHICKEN_WALK_SOUND.play();
             this.CHICKEN_WALK_SOUND.volume = 0.06;
             this.otherDirection = true;
             this.speed = this.moveSpeed;
@@ -94,7 +98,7 @@ class Chicken extends MoveableObject {
     enemyRandomJump() {
         if (!this.isDeadChicken) {
             if (Math.random() < 0.005) { // 0.5% Wahrscheinlichkeit pro Aufruf
-                this.CHICKEN_JUMP_SOUND.play();
+                if (!window.isMuted) this.CHICKEN_JUMP_SOUND.play();
                 this.CHICKEN_JUMP_SOUND.volume = 0.1;
                 this.speedY = +8;
             }
@@ -104,7 +108,7 @@ class Chicken extends MoveableObject {
     die(callback) {
         this.img = this.imageCache[this.IMAGE_DEAD];
         this.isDeadChicken = true;
-        this.DEATH_SOUND.play();
+        if (!window.isMuted) this.DEATH_SOUND.play();
         this.DEATH_SOUND.volume = 0.6;
         setTimeout(() => {
             if (callback) callback();
