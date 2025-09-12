@@ -11,6 +11,8 @@ class MoveableObject extends DrawableObject {
     };
     energy = 20; // 100
     lastHit = 0;
+    jumpLandTimer = null;     // Timer für Bildwechsel bei Landung
+    jumpLandLocked = false;   // solange true, werden andere Animationen nicht überschreiben
 
     applyGravity() {
         if (this.gravityInterval) return; // Nur einmal starten!
@@ -97,22 +99,71 @@ class MoveableObject extends DrawableObject {
     }
 
     setJumpAnimation(images, jumpStart = false, landing = false) {
+        // Reset/Start-Fall
         if (jumpStart) {
-            // Erstes Bild beim Sprungstart
             this.img = this.imageCache[images[0]];
-        } else if (landing) {
-            // Letztes Bild bei Landung
-            this.img = this.imageCache[images[images.length - 1]];
-        } else {
-            // Höchster Punkt: Bild mit J-34.png (Index 3)
-            if (Math.abs(this.speedY) < 1) {
-                this.img = this.imageCache[images[3]];
-            } else {
-                // Dazwischen: Verteile Bilder nach Y-Position/Sprungphase
-                let phase = Math.floor((this.speedY + 20) / 40 * (images.length - 2));
-                phase = Math.max(1, Math.min(images.length - 2, phase));
-                this.img = this.imageCache[images[phase]];
+            if (this.jumpLandTimer) {
+                clearTimeout(this.jumpLandTimer);
+                this.jumpLandTimer = null;
             }
+            this.jumpLandLocked = false; // neuer Sprung beginnt -> entsperren
+            return;
+        }
+
+        // Landung: zuerst Bild 7 kurz zeigen, dann Bild 8
+        if (landing) {
+            // Wenn bereits gesperrt, nichts ändern (zeigt weiterhin 7 oder 8)
+            if (this.jumpLandLocked) return;
+
+            // Sperren und zuerst Bild 7 setzen
+            this.jumpLandLocked = true;
+            this.img = this.imageCache[images[7]];
+
+            // Timer: nach kurzer Zeit Bild 8 setzen, danach entsperren
+            if (this.jumpLandTimer) clearTimeout(this.jumpLandTimer);
+            this.jumpLandTimer = setTimeout(() => {
+                this.img = this.imageCache[images[8]];
+                // kurze Anzeige von Bild 8, dann entsperren
+                this.jumpLandTimer = setTimeout(() => {
+                    this.jumpLandLocked = false;
+                    this.jumpLandTimer = null;
+                }, 80); // Dauer, wie lange Bild 8 gehalten wird (anpassen)
+            }, 80); // Wartezeit zwischen 7 und 8 (anpassen)
+            return;
+        }
+
+        // Wenn gesperrt, nichts überschreiben (zeigt weiterhin 7 oder 8)
+        if (this.jumpLandLocked) return;
+
+        // Sprungphase bestimmen anhand speedY
+        if (this.isAboveGround()) {
+            if (this.speedY > 15) {
+                // Noch am Boden, Sprung startet: 0 bis 2
+                this.img = this.imageCache[images[1]];
+            } else if (this.speedY > 10) {
+                this.img = this.imageCache[images[2]];
+            } else if (this.speedY > 5) {
+                // Auf dem Weg zum höchsten Punkt: 3
+                this.img = this.imageCache[images[3]];
+            } else if (this.speedY > 0) {
+                // Kurz vor dem höchsten Punkt: 3
+                this.img = this.imageCache[images[3]];
+            } else if (this.speedY === 0) {
+                // Höchster Punkt: 4
+                this.img = this.imageCache[images[4]];
+            } else if (this.speedY < 0 && this.speedY > -10) {
+                // Nach dem höchsten Punkt: 4 und 5
+                this.img = this.imageCache[images[5]];
+            } else if (this.speedY <= -13 && this.speedY > -19) {
+                // Kurz vorm Boden: 6
+                this.img = this.imageCache[images[6]];
+            } else if (this.speedY <= -18) {
+                // Am Boden: 7 und 8
+                this.img = this.imageCache[images[7]];
+            }
+        } else {
+            // Am Boden: 7 und 8
+            this.img = this.imageCache[images[8]];
         }
     }
 

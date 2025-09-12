@@ -1,3 +1,4 @@
+/** Class for the main character in the game */
 class Character extends MoveableObject {
     y = 148;
     width = 180;
@@ -60,7 +61,7 @@ class Character extends MoveableObject {
         'assets/img/2_character_pepe/5_dead/D-56.png'
     ];
     world;
-    speed = 10; // normal 2 schnell 20
+    speed = 2;
     offset = {
         top: 138,
         left: 36,
@@ -73,6 +74,12 @@ class Character extends MoveableObject {
         right: 42,
         bottom: 13
     };
+    setOffset = {
+        top: 138,
+        left: 36,
+        right: 52,
+        bottom: 13
+    };
     lastActionTime = Date.now();
     lastWasAboveGround = false;
     isCharacterDead = false;
@@ -83,6 +90,7 @@ class Character extends MoveableObject {
     SLEEPING_SOUND = new Audio('assets/audio/sleep/snoring.wav');
     WALK_SOUND = new Audio('assets/audio/walk/walk.wav');
     WIN_SOUND = new Audio('assets/audio/win/win.mp3');
+    action = false;
 
     constructor() {
         super().loadImage('assets/img/2_character_pepe/2_walk/W-21.png');
@@ -107,204 +115,261 @@ class Character extends MoveableObject {
         setSoundMuted(this.SLEEPING_SOUND);
         setSoundMuted(this.WALK_SOUND);
         setSoundMuted(this.WIN_SOUND);
+        this.DYING_SOUND.persistentOnGameOver = true;
     }
 
+    /* Sets the world for the character and starts the animation loop */
     setWorld() {
-        // this.world = world;
         this.animate();
     }
 
+    /* Main animation loop for character actions */
     animate() {
-        this.controlInterval = setInterval(() => {
-            // Steuerung nur, wenn das Spiel nicht gestoppt ist!
-            if (window.world && window.world.gameStopped) return;
-
-            let action = false;
-            if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-                if (!window.isMuted) this.WALK_SOUND.play();
-                this.moveRight();
-                this.otherDirection = false;
-                action = true;
-            }
-
-            if (this.world.keyboard.LEFT && this.x > 0) {
-                if (!window.isMuted) this.WALK_SOUND.play();
-                this.moveLeft();
-                this.otherDirection = true;
-                action = true;
-            }
-
-            if ((this.world.keyboard.UP || this.world.keyboard.SPACE) && !this.isAboveGround()) {
-                this.jump();
-                action = true;
-                // Sprungstart: Erstes Bild setzen
-                this.setJumpAnimation(this.IMAGES_JUMPING, true, false);
-            }
-
-            if (action) {
-                this.lastActionTime = Date.now();
-                this.SLEEPING_SOUND.pause();
-                this.SLEEPING_SOUND.currentTime = 0;
-            }
-
-            this.world.camera_x = -this.x + 100;
-        }, 1000 / 60);
-
-        this.jumpLandingInterval = setInterval(() => {
-            if (window.world && window.world.gameStopped) return;
-
-            let action = false;
-            if (this.hasJustLanded()) {
-                this.offset = {
-                    top: 138,
-                    left: 36,
-                    right: 52,
-                    bottom: 13
-                };
-                // Landung: Letztes Bild setzen
-                this.setJumpAnimation(this.IMAGES_JUMPING, false, true);
-                // } else if (this.isDead()) {
-                //     this.playAnimation(this.IMAGES_DEAD);
-            } else if (this.isHurt()) {
-                action = true;
-                if (!window.isMuted) this.HURT_SOUND.play();
-                this.playAnimation(this.IMAGES_HURT);
-            } else if (this.isAboveGround()) {
-                // Sprungphase: Bild je nach Höhe/Sprungstatus setzen
-                action = true;
-                this.setJumpAnimation(this.IMAGES_JUMPING, false, false);
-            } else {
-                if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                    action = true;
-                    this.playAnimation(this.IMAGES_WALKING);
-                }
-            }
-            if (!this.isAboveGround()) {
-                this.offset = {
-                    top: 138,
-                    left: 36,
-                    right: 52,
-                    bottom: 13
-                };
-            }
-            if (action) {
-                this.lastActionTime = Date.now();
-                this.SLEEPING_SOUND.pause();
-                this.SLEEPING_SOUND.currentTime = 0;
-            }
-            this.lastWasAboveGround = this.isAboveGround(); // Status aktualisieren
-        }, 50);
-
-        this.idleCheckInterval = setInterval(() => {
-            if (window.world && window.world.gameStopped) return;
-            if (this.isInactive(9000)) {
-                this.playAnimation(this.IMAGES_IDLE);
-            }
-        }, 1000);
-
-        this.idleLongCheckInterval = setInterval(() => {
-            if (window.world && window.world.gameStopped) return;
-            if (this.isInactive(12000)) {
-                if (!window.isMuted) this.SLEEPING_SOUND.play();
-                this.playAnimation(this.IMAGES_IDLE_LONG);
-            }
-        }, 1000);
+        this.controlInterval = setInterval(() => this.moveCharacter(), 1000 / 60);
+        this.jumpLandingInterval = setInterval(() => this.jumpLandingCheck(), 50);
+        this.idleCheckInterval = setInterval(() => this.characterIdleCheck(), 1000);
+        this.idleLongCheckInterval = setInterval(() => this.characterLongIdleCheck(), 1000);
     }
 
+    /* Moves the character based on keyboard input */
+    moveCharacter() {
+        if (isGameStopped()) return;
+
+        this.action = false;
+        if (this.canMoveRight()) this.moveRight();
+        if (this.canMoveLeft()) this.moveLeft();
+        if (this.canJump()) this.setJump();
+        if (this.action) this.resetIdleTimer();
+
+        this.world.camera_x = -this.x + 100;
+    }
+
+    /* Checks if the character can move right */
+    canMoveRight() {
+        return this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x;
+    }
+
+    /* Moves the character to the right */
+    moveRight() {
+        if (!window.isMuted) this.WALK_SOUND.play();
+        super.moveRight();
+        this.otherDirection = false;
+        this.action = true;
+    }
+
+    /* Checks if the character can move left */
+    canMoveLeft() {
+        return this.world.keyboard.LEFT && this.x > 0;
+    }
+
+    /* Moves the character to the left */
+    moveLeft() {
+        if (!window.isMuted) this.WALK_SOUND.play();
+        super.moveLeft();
+        this.otherDirection = true;
+        this.action = true;
+    }
+
+    /* Checks if the character can jump */
+    canJump() {
+        return (this.world.keyboard.UP || this.world.keyboard.SPACE) && !this.isAboveGround();
+    }
+
+    /* Initiates the jump action */
+    setJump() {
+        this.jump();
+        this.setJumpAnimation(this.IMAGES_JUMPING, true, false);
+        this.action = true;
+    }
+
+    /* Sets the jump animation */
+    resetIdleTimer() {
+        this.lastActionTime = Date.now();
+        this.SLEEPING_SOUND.pause();
+        this.SLEEPING_SOUND.currentTime = 0;
+    }
+
+    /* Sets the jump animation with options for looping and landing */
+    jumpLandingCheck() {
+        if (isGameStopped()) return;
+
+        this.action = false;
+        if (this.hasJustLanded()) {
+            this.hasJustLandedAction();
+        } else if (this.isHurt()) {
+            this.isHurtAction();
+        } else if (this.isAboveGround()) {
+            this.isAboveGroundAction();
+        } else {
+            if (this.isMoving()) this.move();
+        }
+        if (this.action) this.resetIdleTimer();
+        this.lastWasAboveGround = this.isAboveGround();
+    }
+
+    /* Checks if the character is moving left or right */
+    isMoving() {
+        return this.world.keyboard.RIGHT || this.world.keyboard.LEFT
+    }
+
+    /* Plays the walking animation */
+    move() {
+        this.action = true;
+        this.playAnimation(this.IMAGES_WALKING);
+    }
+
+    /* Handles the action when the character has just landed */
+    hasJustLandedAction() {
+        this.offset = this.setOffset;
+        this.setJumpAnimation(this.IMAGES_JUMPING, false, true);
+    }
+
+    /* Handles the action when the character is hurt */
+    isHurtAction() {
+        this.action = true;
+        if (!window.isMuted) this.HURT_SOUND.play();
+        this.playAnimation(this.IMAGES_HURT);
+    }
+
+    /* Handles the action when the character is above ground */
+    isAboveGroundAction() {
+        this.action = true;
+        this.setJumpAnimation(this.IMAGES_JUMPING, false, false);
+    }
+
+    /* Checks if the character has been inactive for a certain time and plays idle animations */
+    characterIdleCheck() {
+        if (isGameStopped()) return;
+        if (this.isInactive(9000)) {
+            this.playAnimation(this.IMAGES_IDLE);
+        }
+    }
+
+    /* Checks if the character has been inactive for a longer time and plays long idle animations */
+    characterLongIdleCheck() {
+        if (isGameStopped()) return;
+        if (this.isInactive(12000)) {
+            if (!window.isMuted) this.SLEEPING_SOUND.play();
+            this.playAnimation(this.IMAGES_IDLE_LONG);
+        }
+    }
+
+    /* Checks if the character has been inactive for a specified time */
     isInactive(time) {
         return (Date.now() - this.lastActionTime) > time;
     }
 
+    /* Sets the jump animation with options for looping and landing */
     jump() {
-        if (window.world && window.world.gameStopped) return;
+        if (isGameStopped()) return;
         if (!window.isMuted) this.JUMP_SOUND.play();
         this.speedY = 20;
         this.offset = this.offsetJump;
     }
 
+    /* Sets a smaller jump, e.g., when hitting an enemy */
     littleJump() {
-        if (window.world && window.world.gameStopped) return;
+        if (isGameStopped()) return;
         if (!window.isMuted) this.LITTLE_JUMP_SOUND.play();
         this.LITTLE_JUMP_SOUND.volume = 0.6;
         this.speedY = 8;
         this.offset = this.offsetJump;
     }
 
+    /* Initiates the death sequence for the character */
     deadJump() {
-        if (window.world && window.world.gameStopped) return;
+        if (isGameStopped()) return;
         this.speedY = 16;
     }
 
-    jumpCharacter() {
-        if (window.world && window.world.gameStopped) return false;
-        if (this.isJumping == true) {
-            return false;
-        }
-        this.speedY = 16.5;
-        this.isJumping = true;
-        if (!window.isMuted) this.JUMP_SOUND.play();
-        this.jumpAnimationIndex = 0;
-        this.frameCounter = 0;
-        // this.jumpingSound.volume = 0.001;
-        // this.jumpingSound.play();
+    /* Initiates the death sequence for the character with animation and callback 
+    * @param {Function} callback - Function to call after death sequence completes
+    */
+    die(callback) {
+        if (isGameStopped()) return;
+        this.prepareDie();
+        const deadImages = this.IMAGES_DEAD;
+        this.animateDeath(deadImages, callback);
     }
 
-    die(callback) {
-        if (window.world && window.world.gameStopped) return;
+    /* Prepares the character for death by playing sound and clearing intervals */
+    prepareDie() {
         if (!window.isMuted) this.DYING_SOUND.play();
-        if (this.world.runInterval ||
-            this.world.endbossTrackInterval ||
-            this.world.endbossAttackInterval ||
-            this.controlInterval ||
-            this.jumpLandingInterval ||
-            this.idleCheckInterval ||
-            this.idleLongCheckInterval) {
-            clearInterval(this.world.runInterval);
-            clearInterval(this.world.endbossAttackInterval);
-            clearInterval(this.world.endbossTrackInterval);
-            clearInterval(this.controlInterval);
-            clearInterval(this.jumpLandingInterval);
-            clearInterval(this.idleCheckInterval);
-            clearInterval(this.idleLongCheckInterval);
-        }
+        if (this.isIntervalOn()) this.clearThisIntervals();
+    }
 
+    /* Plays the death animation and starts the fall through canvas sequence
+     * @param {Array} deadImages - Array of image paths for death animation
+     * @param {Function} callback - Function to call after death sequence completes
+     */
+    animateDeath(deadImages, callback) {
         let frame = 0;
-        const deadImages = this.IMAGES_DEAD;
-
         const interval = this.dyingInterval = setInterval(() => {
             this.img = this.imageCache[deadImages[frame]];
             frame++;
             if (frame >= deadImages.length) {
                 clearInterval(interval);
-                // Zeige das letzte Dead-Bild für 2 Sekunden
                 this.img = this.imageCache[deadImages[deadImages.length - 1]];
-                // Endboss soll jetzt durch das Canvas fallen
                 if (this.img === this.imageCache[deadImages[deadImages.length - 1]]) {
-                    this.deadJump();
-                    setTimeout(() => {
-                        this.fallThroughCanvasInterval = setInterval(() => {
-                            this.x += 1;
-                            this.y += 6; // Geschwindigkeit des Fallens
-                            if (this.y > 1000) { // Canvas verlassen (anpassen je nach Canvas-Höhe)
-                                clearInterval(this.fallThroughCanvasInterval);
-                                this.setDead(); // <-- Hier wird isCharacterDead gesetzt
-                                if (callback) callback();
-                            }
-                        }, 10);
-                    }, 600); // Wartezeit nach deadJump
+                    this.startDeathFall(callback);
                 }
             }
-        }, 1000 / 60); // Zeige jedes Bild für 300ms
+        }, 1000 / 60);
     }
 
+    /* Starts the death fall sequence with a jump and then falling through the canvas
+     * @param {Function} callback - Function to call after death sequence completes
+     */
+    startDeathFall(callback) {
+        this.deadJump();
+        setTimeout(() => {
+            this.startFallThroughCanvas(callback);
+        }, 600);
+    }
+
+    /* Starts the fall through canvas sequence */
+    startFallThroughCanvas(callback) {
+        this.fallThroughCanvasInterval = setInterval(() => {
+            this.x += 1;
+            this.y += 6; // Geschwindigkeit des Fallens
+            if (this.y > 1000) { // Canvas verlassen (anpassen je nach Canvas-Höhe)
+                clearInterval(this.fallThroughCanvasInterval);
+                this.setDead(); // <-- Hier wird isCharacterDead gesetzt
+                if (callback) callback();
+            }
+        }, 10);
+    }
+
+    /* Checks if any relevant intervals are currently active */
+    isIntervalOn() {
+        return this.world.runInterval ||
+            this.world.endbossTrackInterval ||
+            this.world.endbossAttackInterval ||
+            this.controlInterval ||
+            this.jumpLandingInterval ||
+            this.idleCheckInterval ||
+            this.idleLongCheckInterval;
+    }
+
+    /* Clears all relevant intervals */
+    clearThisIntervals() {
+        clearInterval(this.world.runInterval);
+        clearInterval(this.world.endbossAttackInterval);
+        clearInterval(this.world.endbossTrackInterval);
+        clearInterval(this.controlInterval);
+        clearInterval(this.jumpLandingInterval);
+        clearInterval(this.idleCheckInterval);
+        clearInterval(this.idleLongCheckInterval);
+    }
+
+    /* Sets the character as dead and triggers game over in the world */
     setDead() {
         this.isCharacterDead = true;
         this.world.gameOver = true;
     }
 
+    /* Checks if the character has just landed */
     hasJustLanded() {
         return this.lastWasAboveGround && !this.isAboveGround();
     }
-
- 
 }

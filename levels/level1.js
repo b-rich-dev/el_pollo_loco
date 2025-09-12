@@ -1,3 +1,5 @@
+/* Level 1 */
+/* Creates and returns a Level object configured for level 1 */
 function createLevel1() {
     return new Level(
         [

@@ -6,12 +6,15 @@ let moveRight = document.getElementById("moveRightButton");
 let jump = document.getElementById("jumpButton");
 let throwObject = document.getElementById("throwButton");
 
+/** Initialize the game 
+ * This function sets up the game environment, including the canvas, context, and world.
+ * @param {Level} level - The level configuration for the game.
+*/
 function init(level) {
     canvas = document.getElementById("gameCanvas");
     ctx = canvas.getContext("2d");
     world = new World(canvas, ctx, keyboard, level);
 
-    // Prevent double-tap zoom on mobile for the whole document
     document.addEventListener('dblclick', function(e) {
         e.preventDefault();
     });
@@ -21,6 +24,11 @@ function init(level) {
         }
     }, { passive: false });
 }
+
+/** Handle keyboard input for character movement 
+ * This section listens for keyboard events and updates the keyboard state accordingly.
+ * It also manages touch and mouse events for on-screen buttons to support mobile gameplay.
+ */
 
 window.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowLeft') {

@@ -1,3 +1,4 @@
+/** Class for background objects in the game */
 class BackgroundObject extends MoveableObject {
 
     width = 720;

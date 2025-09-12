@@ -53,6 +53,18 @@ function startGame() {
     ];
 }
 
+// Mute-Status beim Laden aus localStorage holen
+window.isMuted = localStorage.getItem('isMuted') === 'true';
+if (muteButton) {
+    if (window.isMuted) muteButton.classList.add('muted');
+    else muteButton.classList.remove('muted');
+}
+if (window.ALL_SOUNDS && Array.isArray(window.ALL_SOUNDS)) {
+    window.ALL_SOUNDS.forEach(sound => {
+        if (sound) sound.muted = window.isMuted;
+    });
+}
+
 function showHowToPlay() {
     dialog.showModal();
 }
@@ -301,7 +313,9 @@ function setWinInfo() {
     }
 }
 
-
+function isGameStopped() {
+    return window.world && window.world.gameStopped;
+}
 
 function setSoundMuted(sound) {
     if (sound) sound.muted = window.isMuted;
@@ -312,6 +326,7 @@ function toggleMute() {
         muteButton.classList.toggle('muted');
     }
     window.isMuted = !window.isMuted;
+    localStorage.setItem('isMuted', window.isMuted); // Mute-Status speichern
     if (window.ALL_SOUNDS && Array.isArray(window.ALL_SOUNDS)) {
         window.ALL_SOUNDS.forEach(sound => {
             if (sound) sound.muted = window.isMuted;

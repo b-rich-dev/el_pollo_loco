@@ -194,6 +194,8 @@ class World {
     stopAllSounds() {
         Object.values(window).forEach(sound => {
             if (sound instanceof HTMLAudioElement) {
+                // Überspringe Sounds, die bis zum Ende spielen sollen (z.B. Dying-Sound)
+                if (sound.persistentOnGameOver) return;
                 sound.pause();
                 sound.currentTime = 0;
             }

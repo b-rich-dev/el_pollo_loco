@@ -1,3 +1,4 @@
+/** Template for trash smiley face */
 function trashSmile() {
     return `<span>Trash</span>
             <svg width="28" height="28" viewBox="0 0 64 64">
@@ -7,6 +8,7 @@ function trashSmile() {
             </svg>`
 }
 
+/** Template for lame smiley face */
 function lameSmile() {
     return `<span>Lame</span>
             <svg width="28" height="28" viewBox="0 0 64 64">
@@ -16,6 +18,7 @@ function lameSmile() {
             </svg>`
 }
 
+/** Template for meh smiley face */
 function mehSmile() {
     return `<span>Meh</span>
             <svg width="28" height="28" viewBox="0 0 64 64">
@@ -26,6 +29,7 @@ function mehSmile() {
             </svg>`
 }
 
+/** Template for basic smiley face */
 function basicSmile() {
     return `<span>Basic</span>
             <svg width="28" height="28" viewBox="0 0 64 64">
@@ -36,6 +40,7 @@ function basicSmile() {
             </svg>`
 }
 
+/** Template for alright smiley face */
 function alrightSmile() {
     return `<span>Alright</span>
             <svg width="28" height="28" viewBox="0 0 64 64">
@@ -46,6 +51,7 @@ function alrightSmile() {
             </svg>`
 }
 
+/** Template for chill smiley face */
 function chillSmile() {
     return `<span>Chill</span>
             <svg width="28" height="28" viewBox="0 0 64 64">
@@ -55,6 +61,7 @@ function chillSmile() {
             </svg>`
 }
 
+/** Template for cool smiley face */
 function coolSmile() {
     return `<span>Cool</span>
             <svg width="28" height="28" viewBox="0 0 64 64">
@@ -65,6 +72,7 @@ function coolSmile() {
             </svg>`
 }
 
+/** Template for awesome smiley face */
 function awesomeSmile() {
     return `<span>Awesome</span>
             <svg width="28" height="28" viewBox="0 0 64 64">
@@ -75,6 +83,7 @@ function awesomeSmile() {
             </svg>`
 }
 
+/** Template for epic smiley face */
 function epicSmile() {
     return `<span>Epic</span>
             <svg width="28" height="28" viewBox="0 0 64 64">
@@ -88,6 +97,7 @@ function epicSmile() {
             </svg>`
 }
 
+/** Template for absolutely great smiley face */
 function absolutelyGreatSmile() {
     return `<svg width="28" height="28" viewBox="0 0 40 60">
                 <defs>

@@ -1,3 +1,7 @@
+/** Check for portrait orientation and display overlay if necessary 
+ * This function checks if the device is in portrait mode with a width less than or equal to 768px.
+ * If so, it displays an overlay that blocks interaction with the game. Otherwise, it hides the overlay.
+ */
 async function checkPortraitOverlay() {
   const isPortrait = window.matchMedia("(orientation: portrait) and (max-width: 768px)").matches;
   const overlay = document.getElementById("portrait-overlay");
@@ -11,11 +15,11 @@ async function checkPortraitOverlay() {
   }
 }
 
-// Run once when the page loads
+/* Run when the page is fully loaded */
 window.addEventListener("load", checkPortraitOverlay);
 
-// Run when the screen is resized
+/* Run when the window is resized */
 window.addEventListener("resize", checkPortraitOverlay);
 
-// Run when device is rotated
+/* Run when the device orientation changes */
 window.addEventListener("orientationchange", checkPortraitOverlay);
