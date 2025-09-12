@@ -47,12 +47,14 @@ class Chicks extends MoveableObject {
 
     addGeneralSoundLoop() {
         const playGeneralSound = () => {
-            if (!this.isDeadChicken && !window.isMuted) {
+            if (!this.isDeadChicken && !window.isMuted && !(window.world && window.world.gameStopped)) {
                 this.GENERAL_SOUND.play();
                 this.GENERAL_SOUND.volume = 0.2;
             }
-            const nextDelay = 3000 + Math.random() * 9000; // 3-12 Sekunden
-            setTimeout(playGeneralSound, nextDelay);
+            if (!(window.world && window.world.gameStopped)) {
+                const nextDelay = 3000 + Math.random() * 9000; // 3-12 Sekunden
+                setTimeout(playGeneralSound, nextDelay);
+            }
         };
         playGeneralSound();
     }
@@ -68,7 +70,7 @@ class Chicks extends MoveableObject {
     }
 
     moveLeft() {
-        if (!this.isDeadChicken) {
+        if (!this.isDeadChicken && !(window.world && window.world.gameStopped)) {
             if (!window.isMuted) this.CHICKS_WALK_SOUND.play();
             this.CHICKS_WALK_SOUND.volume = 0.8;
             this.otherDirection = false;
@@ -81,7 +83,7 @@ class Chicks extends MoveableObject {
     }
 
     moveRight() {
-        if (!this.isDeadChicken) {
+        if (!this.isDeadChicken && !(window.world && window.world.gameStopped)) {
             if (!window.isMuted) this.CHICKS_WALK_SOUND.play();
             this.CHICKS_WALK_SOUND.volume = 0.8;
             this.otherDirection = true;
@@ -94,7 +96,7 @@ class Chicks extends MoveableObject {
     }
 
     enemyRandomJump() {
-        if (!this.isDeadChicken) {
+        if (!this.isDeadChicken && !(window.world && window.world.gameStopped)) {
             if (Math.random() < 0.01) { // 1% Wahrscheinlichkeit pro Aufruf
                 if (!window.isMuted) this.CHICKS_JUMP_SOUND.play();
                 this.CHICKS_JUMP_SOUND.volume = 0.1;
@@ -106,7 +108,7 @@ class Chicks extends MoveableObject {
     die(callback) {
         this.img = this.imageCache[this.IMAGE_DEAD];
         this.isDeadChicken = true;
-        if (!window.isMuted) this.CHICKS_HURT_SOUND.play();
+        if (!window.isMuted && !(window.world && window.world.gameStopped)) this.CHICKS_HURT_SOUND.play();
         this.CHICKS_HURT_SOUND.volume = 1.0;
         setTimeout(() => {
             if (callback) callback();

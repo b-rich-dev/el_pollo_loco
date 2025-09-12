@@ -27,6 +27,7 @@ class World {
     gameOverScreens;
     gameOver = false;
     MAIN_SOUND = new Audio('assets/audio/main/main_mexican_music.m4a');
+    gameStopped = false;
 
     constructor(canvas, ctx, keyboard, level) {
         this.canvas = canvas;
@@ -140,12 +141,7 @@ class World {
             if (this.endbossStartDone) {
                 if (!window.isMuted) window.ENDBOSS_WIN_SOUND.play();
             }
-            // // Alle Gegner zurücksetzen
-            // this.level.enemies.forEach(enemy => {
-            //     if (typeof enemy.reset === 'function') {
-            //         enemy.reset();
-            //     }
-            // });
+            this.stopGame();
             return;
         }
 
@@ -153,13 +149,10 @@ class World {
             this.gameOver = true;
             setWinInfo();
             showWinScreen();
+            this.stopGame();
+
             if (!window.isMuted) window.CHARACTER_WIN_SOUND.play();
-            // // Alle Gegner zurücksetzen
-            // this.level.enemies.forEach(enemy => {
-            //     if (typeof enemy.reset === 'function') {
-            //         enemy.reset();
-            //     }
-            // });
+            
             return;
         }
 
@@ -186,7 +179,25 @@ class World {
 
         this.ctx.translate(-this.camera_x, 0);
 
-        requestAnimationFrame(() => this.draw());
+        // Nur weiterzeichnen, wenn das Spiel nicht gestoppt ist!
+        if (!this.gameStopped) {
+            requestAnimationFrame(() => this.draw());
+        }
+    }
+
+    stopGame() {
+        this.gameStopped = true;
+        stopAllIntervals()
+        stopAllSounds();
+    }
+
+    stopAllSounds() {
+        Object.values(window).forEach(sound => {
+            if (sound instanceof HTMLAudioElement) {
+                sound.pause();
+                sound.currentTime = 0;
+            }
+        });
     }
 
     addObjectsToMap(objects) {

@@ -115,8 +115,10 @@ class Character extends MoveableObject {
     }
 
     animate() {
-
         this.controlInterval = setInterval(() => {
+            // Steuerung nur, wenn das Spiel nicht gestoppt ist!
+            if (window.world && window.world.gameStopped) return;
+
             let action = false;
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
                 if (!window.isMuted) this.WALK_SOUND.play();
@@ -149,6 +151,8 @@ class Character extends MoveableObject {
         }, 1000 / 60);
 
         this.jumpLandingInterval = setInterval(() => {
+            if (window.world && window.world.gameStopped) return;
+
             let action = false;
             if (this.hasJustLanded()) {
                 this.offset = {
@@ -192,12 +196,14 @@ class Character extends MoveableObject {
         }, 50);
 
         this.idleCheckInterval = setInterval(() => {
+            if (window.world && window.world.gameStopped) return;
             if (this.isInactive(9000)) {
                 this.playAnimation(this.IMAGES_IDLE);
             }
         }, 1000);
 
         this.idleLongCheckInterval = setInterval(() => {
+            if (window.world && window.world.gameStopped) return;
             if (this.isInactive(12000)) {
                 if (!window.isMuted) this.SLEEPING_SOUND.play();
                 this.playAnimation(this.IMAGES_IDLE_LONG);
@@ -210,12 +216,14 @@ class Character extends MoveableObject {
     }
 
     jump() {
+        if (window.world && window.world.gameStopped) return;
         if (!window.isMuted) this.JUMP_SOUND.play();
         this.speedY = 20;
         this.offset = this.offsetJump;
     }
 
     littleJump() {
+        if (window.world && window.world.gameStopped) return;
         if (!window.isMuted) this.LITTLE_JUMP_SOUND.play();
         this.LITTLE_JUMP_SOUND.volume = 0.6;
         this.speedY = 8;
@@ -223,10 +231,12 @@ class Character extends MoveableObject {
     }
 
     deadJump() {
+        if (window.world && window.world.gameStopped) return;
         this.speedY = 16;
     }
 
     jumpCharacter() {
+        if (window.world && window.world.gameStopped) return false;
         if (this.isJumping == true) {
             return false;
         }
@@ -240,6 +250,7 @@ class Character extends MoveableObject {
     }
 
     die(callback) {
+        if (window.world && window.world.gameStopped) return;
         if (!window.isMuted) this.DYING_SOUND.play();
         if (this.world.runInterval ||
             this.world.endbossTrackInterval ||

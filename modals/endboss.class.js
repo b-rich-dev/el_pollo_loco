@@ -106,11 +106,13 @@ class Endboss extends MoveableObject {
 
     animate() {
         this.walkingInterval = setInterval(() => {
+            if (window.world && window.world.gameStopped) return;
             if (!this.isDeadChicken) this.playAnimation(this.IMAGES_WALKING);
         }, 1000 / 6);
     }
 
     attack(callback) {
+        if (window.world && window.world.gameStopped) return;
         // Stoppt alle anderen Bewegungsintervalle des Endboss, damit die Animation nicht gestört wird.
         // if (this.moveInterval) {
         //     clearInterval(this.moveInterval);
@@ -136,6 +138,12 @@ class Endboss extends MoveableObject {
         let frame = 0;
         if (!window.isMuted) this.ATTACK_SOUND.play();
         this.attackInterval = setInterval(() => {
+            if (window.world && window.world.gameStopped) {
+                clearInterval(this.attackInterval);
+                this.attackInterval = null;
+                return;
+            }
+
             this.img = this.imageCache[attackImages[frame]];
 
             if (this.world && this.world.character) {
@@ -163,12 +171,14 @@ class Endboss extends MoveableObject {
     }
 
     littleJump() {
+        if (window.world && window.world.gameStopped) return;
         if (!window.isMuted) this.ENDBOSS_LITTLE_JUMP_SOUND.play();
         this.ENDBOSS_LITTLE_JUMP_SOUND.volume = 1.0;
         this.speedY = 16;
     }
 
     hurt() {
+        if (window.world && window.world.gameStopped) return;
         if (this.isHurting) return; // Starte nur, wenn nicht bereits hurt aktiv
         this.isHurting = true;
         let frame = 0;
@@ -180,6 +190,12 @@ class Endboss extends MoveableObject {
             clearInterval(this.hurtInterval);
         }
         this.hurtInterval = setInterval(() => {
+            if (window.world && window.world.gameStopped) {
+                clearInterval(this.hurtInterval);
+                this.hurtInterval = null;
+                this.isHurting = false;
+                return;
+            }
             this.img = this.imageCache[this.IMAGES_HURT[frame]];
             frame++;
             if (frame >= this.IMAGES_HURT.length) {
@@ -195,6 +211,7 @@ class Endboss extends MoveableObject {
     }
 
     die(callback) {
+        if (window.world && window.world.gameStopped) return;
         // Beende alle relevanten Endboss-Intervalle und Flags
         if (this.endbossAlertInterval) {
             clearInterval(this.endbossAlertInterval);
@@ -228,6 +245,10 @@ class Endboss extends MoveableObject {
         let frame = 0;
         const deadImages = this.IMAGES_DEAD;
         const interval = this.dyingInterval = setInterval(() => {
+            if (window.world && window.world.gameStopped) {
+                clearInterval(interval);
+                return;
+            }
             this.img = this.imageCache[deadImages[frame]];
             frame++;
             if (!window.isMuted) this.ENDBOSS_DEATH_SOUND.play();
@@ -252,12 +273,14 @@ class Endboss extends MoveableObject {
     }
 
     walking() {
+        if (window.world && window.world.gameStopped) return;
         if (!window.isMuted) this.WALK_SOUND.play();
         // this.WALK_SOUND.volume = 0.1;
         this.playAnimation(this.IMAGES_WALKING);
     }
 
     enemyRandomJump() {
+        if (window.world && window.world.gameStopped) return;
         if (!(this.y < 94)) {
             if (!this.isDeadChicken) {
                 if (Math.random() < 0.01) { // 50% Wahrscheinlichkeit pro Aufruf
@@ -269,6 +292,7 @@ class Endboss extends MoveableObject {
     }
 
     alert(world, callback, intervalTime = 600) {
+        if (window.world && window.world.gameStopped) return;
         this.speed = 0;
         let frame = 0;
         const alertImages = this.IMAGES_ALERT;
@@ -277,6 +301,11 @@ class Endboss extends MoveableObject {
             clearInterval(this.endbossAlertInterval);
         }
         this.endbossAlertInterval = setInterval(() => {
+            if (window.world && window.world.gameStopped) {
+                clearInterval(this.endbossAlertInterval);
+                this.endbossAlertInterval = null;
+                return;
+            }
             this.img = this.imageCache[alertImages[frame]];
             if (frame === alertImages.length - 2) {
                 if (!window.isMuted)  this.ALERT_SOUND.play();
@@ -296,11 +325,13 @@ class Endboss extends MoveableObject {
     }
 
     slideBossStatusbar(world) {
+        if (window.world && window.world.gameStopped) return;
         const targetX = 424;
         const slideSpeed = 10; // px pro Frame
 
         const statusBar = world.statusBarBoss;
         const slide = () => {
+            if (window.world && window.world.gameStopped) return;
             if (statusBar.x > targetX) {
                 statusBar.x -= slideSpeed;
                 if (statusBar.x < targetX) statusBar.x = targetX;

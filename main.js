@@ -95,78 +95,6 @@ function restartGame() {
 }
 
 function stopAllIntervals() {
-    // if (window.character && window.character.controlInterval) {
-    //     clearInterval(window.character.controlInterval);
-    // }
-    // if (window.character && window.character.jumpLandingInterval) {
-    //     clearInterval(window.character.jumpLandingInterval);
-    // }
-    // if (window.character && window.character.idleCheckInterval) {
-    //     clearInterval(window.character.idleCheckInterval);
-    // }
-    // if (window.character && window.character.idleLongCheckInterval) {
-    //     clearInterval(window.character.idleLongCheckInterval);
-    // }
-    // if (window.character && window.character.dyingInterval) {
-    //     clearInterval(window.character.dyingInterval);
-    // }
-    // if (window.character && window.character.fallThroughCanvasInterval) {
-    //     clearInterval(window.character.fallThroughCanvasInterval);
-    // }
-
-
-    // if (window.chicken && window.chicken.moveLeftAnimateIntervalEnemy) {
-    //     clearInterval(window.chicken.moveLeftAnimateIntervalEnemy);
-    // }
-    // if (window.chicken && window.chicken.walkingInterval) {
-    //     clearInterval(window.chicken.walkingInterval);
-    // }
-
-
-    // if (window.chicks && window.chicks.moveLeftAnimateIntervalEnemy) {
-    //     clearInterval(window.chicks.moveLeftAnimateIntervalEnemy);
-    // }
-    // if (window.chicks && window.chicks.walkingInterval) {
-    //     clearInterval(window.chicks.walkingInterval);
-    // }
-
-
-    // if (window.coins && window.coins.animationCoinInterval) {
-    //     clearInterval(window.coins.animationCoinInterval);
-    // }
-
-
-    // if (window.endboss && window.endboss.walkingInterval) {
-    //     clearInterval(window.endboss.walkingInterval);
-    // }
-    // if (window.endboss && window.endboss.attackInterval) {
-    //     clearInterval(window.endboss.attackInterval);
-    // }
-    // if (window.endboss && window.endboss.hurtInterval) {
-    //     clearInterval(window.endboss.hurtInterval);
-    // }
-    // if (window.endboss && window.endboss.dyingInterval) {
-    //     clearInterval(window.endboss.dyingInterval);
-    // }
-    // if (window.endboss && window.endboss.fallThroughCanvasInterval) {
-    //     clearInterval(window.endboss.fallThroughCanvasInterval);
-    // }
-    // if (window.endboss && window.endboss.endbossAlertInterval) {
-    //     clearInterval(window.endboss.endbossAlertInterval);
-    // }
-
-
-    // if (window.throwableObject && window.throwableObject.throwBottleInterval) {
-    //     clearInterval(window.throwableObject.throwBottleInterval);
-    // }
-    // if (window.throwableObject && window.throwableObject.throwCoinInterval) {
-    //     clearInterval(window.throwableObject.throwCoinInterval);
-    // }
-    // if (window.throwableObject && window.throwableObject.splashInterval) {
-    //     clearInterval(window.throwableObject.splashInterval);
-    // }
-
-
     if (window.world && window.world.runInterval) {
         clearInterval(window.world.runInterval);
     }
@@ -182,6 +110,117 @@ function stopAllIntervals() {
     if (window.world && window.world.endbossTrackInterval) {
         clearInterval(window.world.endbossTrackInterval);
     }
+
+    if (window.character && window.character.controlInterval) clearInterval(window.character.controlInterval);
+    if (window.character && window.character.jumpLandingInterval) clearInterval(window.character.jumpLandingInterval);
+    if (window.character && window.character.idleCheckInterval) clearInterval(window.character.idleCheckInterval);
+    if (window.character && window.character.idleLongCheckInterval) clearInterval(window.character.idleLongCheckInterval);
+    if (window.character && window.character.dyingInterval) clearInterval(window.character.dyingInterval);
+    if (window.character && window.character.fallThroughCanvasInterval) clearInterval(window.character.fallThroughCanvasInterval);
+
+    if (window.chicken && window.chicken.moveLeftAnimateIntervalEnemy) clearInterval(window.chicken.moveLeftAnimateIntervalEnemy);
+    if (window.chicken && window.chicken.walkingInterval) clearInterval(window.chicken.walkingInterval);
+
+    if (window.chicks && window.chicks.moveLeftAnimateIntervalEnemy) clearInterval(window.chicks.moveLeftAnimateIntervalEnemy);
+    if (window.chicks && window.chicks.walkingInterval) clearInterval(window.chicks.walkingInterval);
+
+    if (window.coins && window.coins.animationCoinInterval) clearInterval(window.coins.animationCoinInterval);
+
+    if (window.endboss && window.endboss.walkingInterval) clearInterval(window.endboss.walkingInterval);
+    if (window.endboss && window.endboss.attackInterval) clearInterval(window.endboss.attackInterval);
+    if (window.endboss && window.endboss.hurtInterval) clearInterval(window.endboss.hurtInterval);
+    if (window.endboss && window.endboss.endbossAlertInterval) clearInterval(window.endboss.endbossAlertInterval);
+    if (window.endboss && window.endboss.dyingInterval) clearInterval(window.endboss.dyingInterval);
+    if (window.endboss && window.endboss.fallThroughCanvasInterval) clearInterval(window.endboss.fallThroughCanvasInterval);
+
+    if (window.enemy && window.enemy.moveLeftAnimateIntervalEnemy) clearInterval(window.enemy.moveLeftAnimateIntervalEnemy);
+    if (window.enemy && window.enemy.moveInterval) clearInterval(window.enemy.moveInterval);
+
+    if (window.runInterval) clearInterval(window.runInterval);
+    if (window.enemyTrackingInterval) clearInterval(window.enemyTrackingInterval);
+    if (window.fightInterval) clearInterval(window.fightInterval);
+    if (window.endbossMoveInterval) clearInterval(window.endbossMoveInterval);
+    if (window.world && window.world.endbossTrackInterval) clearInterval(window.world.endbossTrackInterval);
+
+    if (window.moveableObject && window.moveableObject.gravityInterval) clearInterval(window.moveableObject.gravityInterval);
+
+    if (window.throwableObject && window.throwableObject.throwBottleInterval) clearInterval(window.throwableObject.throwBottleInterval);
+    if (window.throwableObject && window.throwableObject.throwCoinInterval) clearInterval(window.throwableObject.throwCoinInterval);
+    if (window.throwableObject && window.throwableObject.splashInterval) clearInterval(window.throwableObject.splashInterval);
+}
+
+function stopAllSounds() {
+    if (window.character) {
+        if (window.character.DYING_SOUND) { window.character.DYING_SOUND.pause(); window.character.DYING_SOUND.currentTime = 0; }
+        if (window.character.JUMP_SOUND) { window.character.JUMP_SOUND.pause(); window.character.JUMP_SOUND.currentTime = 0; }
+        if (window.character.LITTLE_JUMP_SOUND) { window.character.LITTLE_JUMP_SOUND.pause(); window.character.LITTLE_JUMP_SOUND.currentTime = 0; }
+        if (window.character.HURT_SOUND) { window.character.HURT_SOUND.pause(); window.character.HURT_SOUND.currentTime = 0; }
+        if (window.character.SLEEPING_SOUND) { window.character.SLEEPING_SOUND.pause(); window.character.SLEEPING_SOUND.currentTime = 0; }
+        if (window.character.WALK_SOUND) { window.character.WALK_SOUND.pause(); window.character.WALK_SOUND.currentTime = 0; }
+        if (window.character.WIN_SOUND) { window.character.WIN_SOUND.pause(); window.character.WIN_SOUND.currentTime = 0; }
+    }
+
+    if (window.chicken) {
+        if (window.chicken.CHICKEN_DEATH_SOUND) { window.chicken.CHICKEN_DEATH_SOUND.pause(); window.chicken.CHICKEN_DEATH_SOUND.currentTime = 0; }
+        if (window.chicken.CHICKEN_JUMP_SOUND) { window.chicken.CHICKEN_JUMP_SOUND.pause(); window.chicken.CHICKEN_JUMP_SOUND.currentTime = 0; }
+        if (window.chicken.CHICKEN_WALK_SOUND) { window.chicken.CHICKEN_WALK_SOUND.pause(); window.chicken.CHICKEN_WALK_SOUND.currentTime = 0; }
+        if (window.chicken.GENERAL_SOUND) { window.chicken.GENERAL_SOUND.pause(); window.chicken.GENERAL_SOUND.currentTime = 0; }
+    }
+
+    if (window.chicks) {
+        if (window.chicks.CHICKS_HURT_SOUND) { window.chicks.CHICKS_HURT_SOUND.pause(); window.chicks.CHICKS_HURT_SOUND.currentTime = 0; }
+        if (window.chicks.CHICKS_JUMP_SOUND) { window.chicks.CHICKS_JUMP_SOUND.pause(); window.chicks.CHICKS_JUMP_SOUND.currentTime = 0; }
+        if (window.chicks.CHICKS_WALK_SOUND) { window.chicks.CHICKS_WALK_SOUND.pause(); window.chicks.CHICKS_WALK_SOUND.currentTime = 0; }
+        if (window.chicks.GENERAL_SOUND) { window.chicks.GENERAL_SOUND.pause(); window.chicks.GENERAL_SOUND.currentTime = 0; }
+    }
+
+    if (window.endboss) {
+        if (window.endboss.ENDBOSS_ATTACK_SOUND) { window.endboss.ENDBOSS_ATTACK_SOUND.pause(); window.endboss.ENDBOSS_ATTACK_SOUND.currentTime = 0; }
+        if (window.endboss.ENDBOSS_HURT_SOUND) { window.endboss.ENDBOSS_HURT_SOUND.pause(); window.endboss.ENDBOSS_HURT_SOUND.currentTime = 0; }
+        if (window.endboss.ENDBOSS_WALK_SOUND) { window.endboss.ENDBOSS_WALK_SOUND.pause(); window.endboss.ENDBOSS_WALK_SOUND.currentTime = 0; }
+        if (window.endboss.ENDBOSS_ALERT_SOUND) { window.endboss.ENDBOSS_ALERT_SOUND.pause(); window.endboss.ENDBOSS_ALERT_SOUND.currentTime = 0; }
+        if (window.endboss.ENDBOSS_SONIC_BOMB_SOUND) { window.endboss.ENDBOSS_SONIC_BOMB_SOUND.pause(); window.endboss.ENDBOSS_SONIC_BOMB_SOUND.currentTime = 0; }
+        if (window.endboss.ENDBOSS_FIGHT_SOUND) { window.endboss.ENDBOSS_FIGHT_SOUND.pause(); window.endboss.ENDBOSS_FIGHT_SOUND.currentTime = 0; }
+        if (window.endboss.ENDBOSS_DEATH_SOUND) { window.endboss.ENDBOSS_DEATH_SOUND.pause(); window.endboss.ENDBOSS_DEATH_SOUND.currentTime = 0; }
+        if (window.endboss.ENDBOSS_SLIDE_SOUND) { window.endboss.ENDBOSS_SLIDE_SOUND.pause(); window.endboss.ENDBOSS_SLIDE_SOUND.currentTime = 0; }
+        if (window.endboss.ENDBOSS_JUMP_SOUND) { window.endboss.ENDBOSS_JUMP_SOUND.pause(); window.endboss.ENDBOSS_JUMP_SOUND.currentTime = 0; }
+        if (window.endboss.ENDBOSS_LITTLE_JUMP_SOUND) { window.endboss.ENDBOSS_LITTLE_JUMP_SOUND.pause(); window.endboss.ENDBOSS_LITTLE_JUMP_SOUND.currentTime = 0; }
+        if (window.endboss.ENDBOSS_WIN_SOUND) { window.endboss.ENDBOSS_WIN_SOUND.pause(); window.endboss.ENDBOSS_WIN_SOUND.currentTime = 0; }
+    }
+
+    if (window.statusbar) {
+        if (window.statusbar.COLLECT_BOTTLE_SOUND) { window.statusbar.COLLECT_BOTTLE_SOUND.pause(); window.statusbar.COLLECT_BOTTLE_SOUND.currentTime = 0; }
+        if (window.statusbar.COLLECT_COIN_SOUND) { window.statusbar.COLLECT_COIN_SOUND.pause(); window.statusbar.COLLECT_COIN_SOUND.currentTime = 0; }
+    }
+
+    if (window.throwableObject) {
+        if (window.throwableObject.COIN_SOUND) { window.throwableObject.COIN_SOUND.pause(); window.throwableObject.COIN_SOUND.currentTime = 0; }
+        if (window.throwableObject.BOTTLE_BREAK_SOUND) { window.throwableObject.BOTTLE_BREAK_SOUND.pause(); window.throwableObject.BOTTLE_BREAK_SOUND.currentTime = 0; }
+        if (window.throwableObject.SHOOTING_SOUND) { window.throwableObject.SHOOTING_SOUND.pause(); window.throwableObject.SHOOTING_SOUND.currentTime = 0; }
+    }
+
+    if (window.world && window.world.MAIN_SOUND) {
+        window.world.MAIN_SOUND.pause();
+        window.world.MAIN_SOUND.currentTime = 0;
+    }
+
+    // Alle Sounds im window.ALL_SOUNDS Array stoppen
+    if (window.ALL_SOUNDS && Array.isArray(window.ALL_SOUNDS)) {
+        window.ALL_SOUNDS.forEach(sound => {
+            if (sound && typeof sound.pause === 'function') {
+                sound.pause();
+                sound.currentTime = 0;
+            }
+        });
+    }
+
+    // Alle globalen Audio-Variablen stoppen
+    Object.keys(window).forEach(key => {
+        if (window[key] instanceof HTMLAudioElement) {
+            window[key].pause();
+            window[key].currentTime = 0;
+        }
+    });
 }
 
 function resetGameVariables() {

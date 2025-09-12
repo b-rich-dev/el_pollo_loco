@@ -10,6 +10,16 @@ function init(level) {
     canvas = document.getElementById("gameCanvas");
     ctx = canvas.getContext("2d");
     world = new World(canvas, ctx, keyboard, level);
+
+    // Prevent double-tap zoom on mobile for the whole document
+    document.addEventListener('dblclick', function(e) {
+        e.preventDefault();
+    });
+    document.addEventListener('touchstart', function(e) {
+        if (e.touches.length > 1) {
+            e.preventDefault();
+        }
+    }, { passive: false });
 }
 
 window.addEventListener('keydown', (e) => {
