@@ -74,7 +74,7 @@
     .portrait-overlay-logo {
         position: absolute;
         inset: 0;
-        background: url('assets/img/others/bg_main_portrait.png') center/cover no-repeat;
+        background: url('../assets/img/others/bg_main_portrait.png') center/cover no-repeat;
         opacity: 0.2;
         filter: blur(2px);
         pointer-events: none;

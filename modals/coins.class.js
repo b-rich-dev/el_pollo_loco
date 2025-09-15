@@ -1,3 +1,4 @@
+/** Coins class for collectible coins */
 class Coins extends MoveableObject {
     y = 200;
     height = 90;
@@ -13,16 +14,18 @@ class Coins extends MoveableObject {
         'assets/img/8_coin/coin_2.png',
     ];
 
+    /** Create a coin object */
     constructor() {
         super().loadImage('assets/img/8_coin/coin_1.png');
         this.loadImages(this.IMAGES_COINS);
 
         this.x = 30 + Math.random() * 2200;
         this.y = 30 + Math.random() * 348;
-        
+
         this.animate();
     }
 
+    /** Animate the coin rotation */
     animate() {
         this.animationCoinInterval = setInterval(() => {
             this.playAnimation(this.IMAGES_COINS);

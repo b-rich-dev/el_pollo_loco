@@ -15,10 +15,10 @@ function init(level) {
     ctx = canvas.getContext("2d");
     world = new World(canvas, ctx, keyboard, level);
 
-    document.addEventListener('dblclick', function(e) {
+    document.addEventListener('dblclick', function (e) {
         e.preventDefault();
     });
-    document.addEventListener('touchstart', function(e) {
+    document.addEventListener('touchstart', function (e) {
         if (e.touches.length > 1) {
             e.preventDefault();
         }

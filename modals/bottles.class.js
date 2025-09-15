@@ -14,6 +14,7 @@ class Bottle extends MoveableObject {
     ];
     IMAGE_SIMPLE_BOTTLE = ['assets/img/6_salsa_bottle/salsa_bottle.png'];
 
+    /** Create a bottle object */
     constructor() {
         super().loadImage('assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png');
         this.x = 30 + Math.random() * 2200;

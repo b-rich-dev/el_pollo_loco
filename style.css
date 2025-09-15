@@ -4,7 +4,7 @@ body {
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-image: url('assets/img/others/bg_main.jpg');
+    background-image: url('./assets/img/others/bg_main.jpg');
     background-size: cover;
     background-position: center;
 }
@@ -98,14 +98,14 @@ figcaption h2 {
     right: 20px;
     width: 40px;
     height: 40px;
-    background: url('assets/img/sound/pngwing.com.png') center/cover no-repeat;
+    background: url('./assets/img/sound/pngwing.com.png') center/cover no-repeat;
     border: none;
     cursor: pointer;
     z-index: 10;
 }
 
 #muteButton.muted {
-    background: url('assets/img/sound/mute.png') center/cover no-repeat;
+    background: url('./assets/img/sound/mute.png') center/cover no-repeat;
 }
 
 .move-buttons {
@@ -206,7 +206,7 @@ main {
     height: 100%;
     width: 100%;
     border-radius: 36px;
-    background-image: url('assets/img/others/bg_img_cactus.jpg');
+    background-image: url('./assets/img/others/bg_img_cactus.jpg');
     background-size: cover;
     background-position: center;
 }
@@ -263,7 +263,7 @@ h1 {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    background-image: url('assets/img/You won, you lost/Game Over.png');
+    background-image: url('./assets/img/You won, you lost/Game Over.png');
     background-size: 460px;
     background-repeat: no-repeat;
     background-position: calc(50% + 0px) calc(50% - 64px);
@@ -305,7 +305,7 @@ h1 {
     justify-content: space-between;
     border-radius: 36px;
     background-color: #1FA5CC;
-    background-image: url('assets/img/You won, you lost/You Win A.png');
+    background-image: url('./assets/img/You won, you lost/You Win A.png');
     background-size: 480px;
     background-repeat: no-repeat;
     background-position: calc(50% + 0px) calc(50% - 0px);

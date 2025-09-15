@@ -1,3 +1,7 @@
+/** StatusBar Class
+ * Represents a status bar in the game, such as health, coins, or bottles.
+ * Inherits from DrawableObject to utilize image loading and drawing capabilities.
+ */
 class StatusBar extends DrawableObject {
     IMAGES_HEALTH = [
         'assets/img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png',
@@ -37,7 +41,12 @@ class StatusBar extends DrawableObject {
     COLLECT_COIN_SOUND = new Audio('assets/audio/collect/collect_coin.wav');
 
 
-
+    /** Constructor to initialize the status bar
+     * @param {string} type - The type of status bar ('health', 'coins', 'bottle', 'boss')
+     * @param {number} x - The x position of the status bar
+     * @param {number} y - The y position of the status bar
+     * @param {number} percentage - The initial percentage of the status bar
+     */
     constructor(type = 'health', x = 20, y = 0, percentage = 100) {
         super();
         this.type = type;
@@ -58,6 +67,7 @@ class StatusBar extends DrawableObject {
         setSoundMuted(this.COLLECT_COIN_SOUND);
     }
 
+    /** Get the appropriate image array based on the status bar type */
     getImages() {
         if (this.type === 'health') return this.IMAGES_HEALTH;
         if (this.type === 'coins') return this.IMAGES_COINS;
@@ -65,6 +75,9 @@ class StatusBar extends DrawableObject {
         if (this.type === 'boss') return this.IMAGES_BOSS_STATUSBAR;
     }
 
+    /** Set the current percentage and update the displayed image accordingly
+    * @param {number} percentage - The new percentage value (0-100)
+    */
     setPercentage(percentage) {
         this.percentage = percentage;
         let images = this.getImages();
@@ -72,6 +85,7 @@ class StatusBar extends DrawableObject {
         this.img = this.imageCache[path];
     }
 
+    /** Determine the correct image index based on the current percentage */
     resolveImageIndex() {
         if (this.percentage >= 100) {
             return 5;
@@ -88,6 +102,9 @@ class StatusBar extends DrawableObject {
         }
     }
 
+    /** Collect an item and update the corresponding count and play sound
+    * @param {string} type - The type of item collected ('bottle' or 'coin')
+    */
     collectItem(type) {
         if (type === 'bottle') {
             if (!window.isMuted) this.COLLECT_BOTTLE_SOUND.play();
@@ -98,12 +115,18 @@ class StatusBar extends DrawableObject {
         }
     }
 
+    /** Draw the status bar and collected items on the canvas
+    * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+    */
     draw(ctx) {
         ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
         this.drawMiniBottles(ctx);
         this.drawCoinPeperonis(ctx);
     }
 
+    /** Draw mini bottles representing collected bottles
+    * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+    */
     drawMiniBottles(ctx) {
         let itemSize = 36;
         let spacing = -20;
@@ -115,6 +138,9 @@ class StatusBar extends DrawableObject {
         }
     }
 
+    /** Draw mini coins representing collected coins
+    * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+    */
     drawCoinPeperonis(ctx) {
         let itemSize = 18;
         let spacing = -3;

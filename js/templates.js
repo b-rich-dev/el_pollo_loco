@@ -107,24 +107,23 @@ function absolutelyGreatSmile() {
                     </linearGradient>
                 </defs>
 
-            <!-- Pokalkörper -->
+            <!-- Cup body -->
                 <path d="M10 8h20v16c0 8-6 14-10 16-4-2-10-8-10-16V8z" 
                     fill="url(#g-trophy)" stroke="#2F2F2F" stroke-width="2"/>
 
-            <!-- Henkel links -->
+            <!-- Handle left -->
                 <path d="M10 12c-6 0-6 12 0 12" 
                     fill="none" stroke="#2F2F2F" stroke-width="2"/>
 
-            <!-- Henkel rechts -->
+            <!-- Handle right -->
                 <path d="M30 12c6 0 6 12 0 12" 
                     fill="none" stroke="#2F2F2F" stroke-width="2"/>
 
-            <!-- Stiel -->
+            <!-- Stem -->
                 <rect x="18" y="40" width="4" height="6" fill="url(#g-trophy)" stroke="#2F2F2F" stroke-width="1"/>
 
-            <!-- Sockel -->
+            <!-- Base -->
                 <rect x="12" y="48" width="16" height="6" fill="#6D4C41" stroke="#2F2F2F" stroke-width="2"/>
             </svg>
-
-        <span>Absolutely Great</span>`
+            <span>Absolutely Great</span>`
 }

@@ -1,3 +1,4 @@
+/** CollidableObject class extending MoveableObject */
 class CollidableObject extends MoveableObject {
     collidable = true;
 
@@ -10,4 +11,3 @@ class CollidableObject extends MoveableObject {
         bottom: 0
     };
 }
-

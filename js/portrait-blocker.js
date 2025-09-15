@@ -15,11 +15,11 @@ async function checkPortraitOverlay() {
   }
 }
 
-/* Run when the page is fully loaded */
+/** Run when the page is fully loaded */
 window.addEventListener("load", checkPortraitOverlay);
 
-/* Run when the window is resized */
+/** Run when the window is resized */
 window.addEventListener("resize", checkPortraitOverlay);
 
-/* Run when the device orientation changes */
+/** Run when the device orientation changes */
 window.addEventListener("orientationchange", checkPortraitOverlay);

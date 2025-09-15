@@ -61,7 +61,7 @@ class Character extends MoveableObject {
         'assets/img/2_character_pepe/5_dead/D-56.png'
     ];
     world;
-    speed = 2;
+    speed = 20;
     offset = {
         top: 138,
         left: 36,
@@ -92,6 +92,7 @@ class Character extends MoveableObject {
     WIN_SOUND = new Audio('assets/audio/win/win.mp3');
     action = false;
 
+    /** Create the character object */
     constructor() {
         super().loadImage('assets/img/2_character_pepe/2_walk/W-21.png');
         this.loadImages(this.IMAGES_IDLE);
@@ -118,12 +119,12 @@ class Character extends MoveableObject {
         this.DYING_SOUND.persistentOnGameOver = true;
     }
 
-    /* Sets the world for the character and starts the animation loop */
+    /** Sets the world for the character and starts the animation loop */
     setWorld() {
         this.animate();
     }
 
-    /* Main animation loop for character actions */
+    /** Main animation loop for character actions */
     animate() {
         this.controlInterval = setInterval(() => this.moveCharacter(), 1000 / 60);
         this.jumpLandingInterval = setInterval(() => this.jumpLandingCheck(), 50);
@@ -131,7 +132,7 @@ class Character extends MoveableObject {
         this.idleLongCheckInterval = setInterval(() => this.characterLongIdleCheck(), 1000);
     }
 
-    /* Moves the character based on keyboard input */
+    /** Moves the character based on keyboard input */
     moveCharacter() {
         if (isGameStopped()) return;
 
@@ -144,12 +145,12 @@ class Character extends MoveableObject {
         this.world.camera_x = -this.x + 100;
     }
 
-    /* Checks if the character can move right */
+    /** Checks if the character can move right */
     canMoveRight() {
         return this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x;
     }
 
-    /* Moves the character to the right */
+    /** Moves the character to the right */
     moveRight() {
         if (!window.isMuted) this.WALK_SOUND.play();
         super.moveRight();
@@ -157,12 +158,12 @@ class Character extends MoveableObject {
         this.action = true;
     }
 
-    /* Checks if the character can move left */
+    /** Checks if the character can move left */
     canMoveLeft() {
         return this.world.keyboard.LEFT && this.x > 0;
     }
 
-    /* Moves the character to the left */
+    /** Moves the character to the left */
     moveLeft() {
         if (!window.isMuted) this.WALK_SOUND.play();
         super.moveLeft();
@@ -170,26 +171,26 @@ class Character extends MoveableObject {
         this.action = true;
     }
 
-    /* Checks if the character can jump */
+    /** Checks if the character can jump */
     canJump() {
         return (this.world.keyboard.UP || this.world.keyboard.SPACE) && !this.isAboveGround();
     }
 
-    /* Initiates the jump action */
+    /** Initiates the jump action */
     setJump() {
         this.jump();
         this.setJumpAnimation(this.IMAGES_JUMPING, true, false);
         this.action = true;
     }
 
-    /* Sets the jump animation */
+    /** Sets the jump animation */
     resetIdleTimer() {
         this.lastActionTime = Date.now();
         this.SLEEPING_SOUND.pause();
         this.SLEEPING_SOUND.currentTime = 0;
     }
 
-    /* Sets the jump animation with options for looping and landing */
+    /** Sets the jump animation with options for looping and landing */
     jumpLandingCheck() {
         if (isGameStopped()) return;
 
@@ -207,37 +208,37 @@ class Character extends MoveableObject {
         this.lastWasAboveGround = this.isAboveGround();
     }
 
-    /* Checks if the character is moving left or right */
+    /** Checks if the character is moving left or right */
     isMoving() {
         return this.world.keyboard.RIGHT || this.world.keyboard.LEFT
     }
 
-    /* Plays the walking animation */
+    /** Plays the walking animation */
     move() {
         this.action = true;
         this.playAnimation(this.IMAGES_WALKING);
     }
 
-    /* Handles the action when the character has just landed */
+    /** Handles the action when the character has just landed */
     hasJustLandedAction() {
         this.offset = this.setOffset;
         this.setJumpAnimation(this.IMAGES_JUMPING, false, true);
     }
 
-    /* Handles the action when the character is hurt */
+    /** Handles the action when the character is hurt */
     isHurtAction() {
         this.action = true;
         if (!window.isMuted) this.HURT_SOUND.play();
         this.playAnimation(this.IMAGES_HURT);
     }
 
-    /* Handles the action when the character is above ground */
+    /** Handles the action when the character is above ground */
     isAboveGroundAction() {
         this.action = true;
         this.setJumpAnimation(this.IMAGES_JUMPING, false, false);
     }
 
-    /* Checks if the character has been inactive for a certain time and plays idle animations */
+    /** Checks if the character has been inactive for a certain time and plays idle animations */
     characterIdleCheck() {
         if (isGameStopped()) return;
         if (this.isInactive(9000)) {
@@ -245,7 +246,7 @@ class Character extends MoveableObject {
         }
     }
 
-    /* Checks if the character has been inactive for a longer time and plays long idle animations */
+    /** Checks if the character has been inactive for a longer time and plays long idle animations */
     characterLongIdleCheck() {
         if (isGameStopped()) return;
         if (this.isInactive(12000)) {
@@ -254,12 +255,15 @@ class Character extends MoveableObject {
         }
     }
 
-    /* Checks if the character has been inactive for a specified time */
+    /** Checks if the character has been inactive for a specified time 
+     * @param {number} time - Time in milliseconds to check for inactivity
+     * @returns {boolean} - True if inactive for the specified time, false otherwise
+    */
     isInactive(time) {
         return (Date.now() - this.lastActionTime) > time;
     }
 
-    /* Sets the jump animation with options for looping and landing */
+    /** Sets the jump animation with options for looping and landing */
     jump() {
         if (isGameStopped()) return;
         if (!window.isMuted) this.JUMP_SOUND.play();
@@ -267,7 +271,7 @@ class Character extends MoveableObject {
         this.offset = this.offsetJump;
     }
 
-    /* Sets a smaller jump, e.g., when hitting an enemy */
+    /** Sets a smaller jump, e.g., when hitting an enemy */
     littleJump() {
         if (isGameStopped()) return;
         if (!window.isMuted) this.LITTLE_JUMP_SOUND.play();
@@ -276,13 +280,13 @@ class Character extends MoveableObject {
         this.offset = this.offsetJump;
     }
 
-    /* Initiates the death sequence for the character */
+    /** Initiates the death sequence for the character */
     deadJump() {
         if (isGameStopped()) return;
         this.speedY = 16;
     }
 
-    /* Initiates the death sequence for the character with animation and callback 
+    /** Initiates the death sequence for the character with animation and callback 
     * @param {Function} callback - Function to call after death sequence completes
     */
     die(callback) {
@@ -292,13 +296,13 @@ class Character extends MoveableObject {
         this.animateDeath(deadImages, callback);
     }
 
-    /* Prepares the character for death by playing sound and clearing intervals */
+    /** Prepares the character for death by playing sound and clearing intervals */
     prepareDie() {
         if (!window.isMuted) this.DYING_SOUND.play();
         if (this.isIntervalOn()) this.clearThisIntervals();
     }
 
-    /* Plays the death animation and starts the fall through canvas sequence
+    /** Plays the death animation and starts the fall through canvas sequence
      * @param {Array} deadImages - Array of image paths for death animation
      * @param {Function} callback - Function to call after death sequence completes
      */
@@ -317,7 +321,7 @@ class Character extends MoveableObject {
         }, 1000 / 60);
     }
 
-    /* Starts the death fall sequence with a jump and then falling through the canvas
+    /** Starts the death fall sequence with a jump and then falling through the canvas
      * @param {Function} callback - Function to call after death sequence completes
      */
     startDeathFall(callback) {
@@ -327,7 +331,9 @@ class Character extends MoveableObject {
         }, 600);
     }
 
-    /* Starts the fall through canvas sequence */
+    /** Starts the fall through canvas sequence 
+     * @param {Function} callback - Function to call after death sequence completes
+    */
     startFallThroughCanvas(callback) {
         this.fallThroughCanvasInterval = setInterval(() => {
             this.x += 1;
@@ -340,7 +346,7 @@ class Character extends MoveableObject {
         }, 10);
     }
 
-    /* Checks if any relevant intervals are currently active */
+    /** Checks if any relevant intervals are currently active */
     isIntervalOn() {
         return this.world.runInterval ||
             this.world.endbossTrackInterval ||
@@ -351,7 +357,7 @@ class Character extends MoveableObject {
             this.idleLongCheckInterval;
     }
 
-    /* Clears all relevant intervals */
+    /** Clears all relevant intervals */
     clearThisIntervals() {
         clearInterval(this.world.runInterval);
         clearInterval(this.world.endbossAttackInterval);
@@ -362,13 +368,13 @@ class Character extends MoveableObject {
         clearInterval(this.idleLongCheckInterval);
     }
 
-    /* Sets the character as dead and triggers game over in the world */
+    /** Sets the character as dead and triggers game over in the world */
     setDead() {
         this.isCharacterDead = true;
         this.world.gameOver = true;
     }
 
-    /* Checks if the character has just landed */
+    /** Checks if the character has just landed */
     hasJustLanded() {
         return this.lastWasAboveGround && !this.isAboveGround();
     }

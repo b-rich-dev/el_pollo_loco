@@ -1,5 +1,5 @@
-/* Level 1 */
-/* Creates and returns a Level object configured for level 1 */
+/** Level 1 
+ * Creates and returns a Level object configured for level 1 */
 function createLevel1() {
     return new Level(
         [
@@ -56,4 +56,5 @@ function createLevel1() {
     );
 }
 
+/** Export the createLevel1 function for use in other modules */
 this.createLevel1 = createLevel1;

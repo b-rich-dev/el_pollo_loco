@@ -1,3 +1,4 @@
+/** Chicken class representing a chicken enemy in the game. */
 class Chicken extends MoveableObject {
     y = 340;
     width = 68;
@@ -22,6 +23,7 @@ class Chicken extends MoveableObject {
     CHICKEN_JUMP_SOUND = new Audio('assets/audio/jump/chicken_jump.wav');
     CHICKEN_WALK_SOUND = new Audio('assets/audio/walk/chicken_walk.mp3');
 
+    /** Create a chicken object */
     constructor() {
         super().loadImage('assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
         this.loadImages(this.IMAGES_WALKING);
@@ -44,25 +46,25 @@ class Chicken extends MoveableObject {
         setSoundMuted(this.DEATH_SOUND);
         setSoundMuted(this.CHICKEN_JUMP_SOUND);
         setSoundMuted(this.CHICKEN_WALK_SOUND);
-        setSoundMuted(this.GENERAL_SOUND); 
+        setSoundMuted(this.GENERAL_SOUND);
     }
 
+    /** Loop to play general chicken sounds at random intervals */
     addGeneralSoundLoop() {
         const playGeneralSound = () => {
-            // Prüfe, ob das Spiel gestoppt ist!
             if (!this.isDeadChicken && !window.isMuted && !(window.world && window.world.gameStopped)) {
                 this.GENERAL_SOUND.play();
                 this.GENERAL_SOUND.volume = 0.3;
             }
-            // Timeout nur setzen, wenn das Spiel nicht gestoppt ist!
             if (!(window.world && window.world.gameStopped)) {
-                const nextDelay = 3000 + Math.random() * 9000; // 3-12 Sekunden
+                const nextDelay = 3000 + Math.random() * 9000;
                 setTimeout(playGeneralSound, nextDelay);
             }
         };
         playGeneralSound();
     }
 
+    /** Animate the chicken's movement and walking */
     animate() {
         this.moveLeftAnimateIntervalEnemy = setInterval(() => {
             this.moveLeft();
@@ -73,6 +75,7 @@ class Chicken extends MoveableObject {
         }, 1000 / 6);
     }
 
+    /** Move the chicken to the left */
     moveLeft() {
         if (!this.isDeadChicken && !(window.world && window.world.gameStopped)) {
             if (!window.isMuted) this.CHICKEN_WALK_SOUND.play();
@@ -86,6 +89,7 @@ class Chicken extends MoveableObject {
         }
     }
 
+    /** Move the chicken to the right */
     moveRight() {
         if (!this.isDeadChicken && !(window.world && window.world.gameStopped)) {
             if (!window.isMuted) this.CHICKEN_WALK_SOUND.play();
@@ -99,6 +103,7 @@ class Chicken extends MoveableObject {
         }
     }
 
+    /** Make the chicken jump at random intervals */
     enemyRandomJump() {
         if (!this.isDeadChicken && !(window.world && window.world.gameStopped)) {
             if (Math.random() < 0.005) { // 0.5% Wahrscheinlichkeit pro Aufruf
@@ -109,6 +114,9 @@ class Chicken extends MoveableObject {
         }
     }
 
+    /** Handle the death of the chicken 
+     * @param {Function} callback - Optional callback to execute after death animation
+    */
     die(callback) {
         this.img = this.imageCache[this.IMAGE_DEAD];
         this.isDeadChicken = true;
@@ -116,16 +124,6 @@ class Chicken extends MoveableObject {
         this.DEATH_SOUND.volume = 0.6;
         setTimeout(() => {
             if (callback) callback();
-        }, 1000); // 1 Sekunde
+        }, 1000);
     }
-
-    // reset() {
-    //     this.isDeadChicken = false;
-    //     this.otherDirection = false;
-    //     this.x = 280 + Math.random() * 2000;
-    //     this.speed = this.moveSpeed;
-    //     this.y = 340;
-    //     // ggf. weitere Eigenschaften zurücksetzen
-    // }
-
 }

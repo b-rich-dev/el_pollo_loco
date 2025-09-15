@@ -1,9 +1,10 @@
 import { checkEnemyCollisions, checkBottleCollisions, checkCoinCollisions, checkThrowableObjectEnemyCollisions } from './collision.helper.js';
 import { trackEndbossToCharacter, enemyTrackingOfCharacter } from './enemy.tracking.helper.js';
 
+/** Class representing the entire game world */
 class World {
     character = new Character();
-    level = typeof level1 !== 'undefined' ? level1 : null; // Fallback
+    level = typeof level1 !== 'undefined' ? level1 : null;
     canvas;
     ctx;
     keyboard;
@@ -21,7 +22,7 @@ class World {
     endbossAttackInterval = null;
     endbossAlert = false;
     lastThrowTime = 0;
-    objectThrowCooldown = 600; // Millisekunden Pause zwischen Würfen
+    objectThrowCooldown = 600;
     enemyTrackingInterval = null;
     shootingPossible = true;
     gameOverScreens;
@@ -29,6 +30,7 @@ class World {
     MAIN_SOUND = new Audio('assets/audio/main/main_mexican_music.m4a');
     gameStopped = false;
 
+    /** Initialize the game world */
     constructor(canvas, ctx, keyboard, level) {
         this.canvas = canvas;
         this.ctx = ctx;
@@ -39,22 +41,22 @@ class World {
         window.world = this;
         window.MAIN_SOUND = this.MAIN_SOUND;
         setSoundMuted(this.MAIN_SOUND);
-        // this.initEnemies();
 
         this.draw();
         this.run();
         this.startEnemyTrackingInterval();
         this.endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);
         if (this.endboss) {
-            this.endboss.setWorld(this); // <--- Welt-Referenz für Endboss setzen!
+            this.endboss.setWorld(this);
         }
-        
     }
 
+    /** Set the world reference in the character */
     setWorld() {
         this.character.world = this;
     }
 
+    /** Main game loop running at regular intervals */
     run() {
         this.runInterval = setInterval(() => {
             this.checkCollisions();
@@ -68,31 +70,31 @@ class World {
         }, 50);
     }
 
+    /** Start the interval to track enemies towards the character */
     startEnemyTrackingInterval() {
         this.enemyTrackingInterval = setInterval(() => {
             enemyTrackingOfCharacter(this);
-            // trackEndbossToCharacter(this);
         }, 1000);
     }
 
+    /** Start the interval for the endboss to attack the character */
     startFightInterval() {
         if (this.endbossStartDone) {
             if (this.fightInterval) {
                 clearInterval(this.fightInterval);
             }
             this.fightInterval = setInterval(() => {
-                if (this.endboss && !this.endboss.isDeadChicken) {
-                    this.endboss.attack();
-                }
-            }, 2000); // Endboss greift alle 2 Sekunden an
+                if (this.endboss && !this.endboss.isDeadChicken) this.endboss.attack();
+            }, 2000);
         }
     }
 
+    /** Remove dead enemies from the level's enemy array */
     removeDeadEnemies() {
-        // Entferne alle Gegner, die isDeadChicken=true UND deren Callback bereits aufgerufen wurden
         this.level.enemies = this.level.enemies.filter(enemy => !enemy.isDeadChicken || (enemy.isDeadChicken && !enemy._remove));
     }
 
+    /** Check for collisions between character, enemies, and throwable objects */
     checkCollisions() {
         checkEnemyCollisions(this);
         checkBottleCollisions(this);
@@ -100,51 +102,104 @@ class World {
         checkThrowableObjectEnemyCollisions(this);
     }
 
+    /** Check if the player can throw a bottle or coin */
     checkThrowableObjects() {
-        if (this.shootingPossible) {
-            const now = Date.now();
-            if ((this.keyboard.D || this.keyboard.NUMPAD_ZERO) &&
-                this.statusBarBottle.bottles > 0 &&
-                now - this.lastThrowTime > this.objectThrowCooldown) {
-                let bottle = new ThrowableObject(
-                    this.character.x + 100,
-                    this.character.y + 120,
-                    this,
-                    this.character.otherDirection // Blickrichtung übergeben
-                );
-                this.throwableObject.push(bottle);
-                this.statusBarBottle.bottles--;
-                this.statusBarBottle.setPercentage(this.statusBarBottle.bottles);
-                this.lastThrowTime = now;
-            }
-            if ((this.keyboard.D || this.keyboard.NUMPAD_ZERO) &&
-                this.statusBarBottle.bottles === 0 &&
-                this.statusBarCoins.coins > 0 &&
-                now - this.lastThrowTime > this.objectThrowCooldown) {
-                let coin = new ThrowableObject(
-                    this.character.x + 100,
-                    this.character.y + 120,
-                    this,
-                    this.character.otherDirection // Blickrichtung übergeben
-                );
-                this.throwableObject.push(coin);
-                this.statusBarCoins.coins--;
-                this.statusBarCoins.setPercentage(this.statusBarCoins.coins);
-                this.lastThrowTime = now;
-            }
+        if (!this.shootingPossible) return;
+        const now = Date.now();
+        this.trySpawnThrowable(now);
+    }
+
+    /** Attempt to spawn a throwable object if conditions are met
+    * @param {number} now - The current time in milliseconds
+    */
+    trySpawnThrowable(now) {
+        const pressed = this.keyboard.D || this.keyboard.NUMPAD_ZERO;
+        if (!pressed || now - this.lastThrowTime <= this.objectThrowCooldown) return;
+
+        if (this.statusBarBottle.bottles > 0) {
+            this.spawnThrowable(true, now);
+        } else if (this.statusBarCoins.coins > 0) {
+            this.spawnThrowable(false, now);
         }
     }
 
+    /** Spawn a throwable object (bottle or coin)
+    * @param {boolean} isBottle - True if spawning a bottle, false for a coin
+    * @param {number} now - The current time in milliseconds
+    */
+    spawnThrowable(isBottle, now) {
+        let obj = new ThrowableObject(
+            this.character.x + 100,
+            this.character.y + 120,
+            this,
+            this.character.otherDirection
+        );
+        this.throwableObject.push(obj);
+
+        if (isBottle) this.minusBottleFromStatusBar(this.statusBarBottle);
+        else this.minusCoinFromStatusBar(this.statusBarCoins);
+
+        this.lastThrowTime = now;
+    }
+
+    /** Decrease bottle count in status bar */
+    minusBottleFromStatusBar(statusBarBottle) {
+        statusBarBottle.bottles--;
+        statusBarBottle.setPercentage(statusBarBottle.bottles);
+    }
+
+    /** Decrease coin count in status bar */
+    minusCoinFromStatusBar(statusBarCoins) {
+        statusBarCoins.coins--;
+        statusBarCoins.setPercentage(statusBarCoins.coins);
+    }
+
+    /** Main draw loop for rendering the game */
     draw() {
+        if (this.handleEndConditions()) return;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        this.ctx.translate(this.camera_x, 0);
+        this.renderBackgrounfdAndClouds();
+
+        this.ctx.translate(-this.camera_x, 0);
+        this.renderFixedUI();
+        this.ctx.translate(this.camera_x, 0);
+
+        this.renderSceneObjects();
+        this.ctx.translate(-this.camera_x, 0);
+
+        if (!this.gameStopped) requestAnimationFrame(() => this.draw());
+    }
+
+    /** Render background and clouds */
+    renderBackgrounfdAndClouds() {
+        this.addObjectsToMap(this.level.backgroundObjects);
+        this.addObjectsToMap(this.level.clouds);
+    }
+
+    /** Check for end game conditions (win/lose) */
+    handleEndConditions() {
+        if (this.checkLoseCondition()) return true;
+        if (this.checkWinCondition()) return true;
+        return false;
+    }
+
+    /** Check if the player has lost the game */
+    checkLoseCondition() {
         if (this.character.isCharacterDead) {
             showLoseScreen();
             if (this.endbossStartDone) {
                 if (!window.isMuted) window.ENDBOSS_WIN_SOUND.play();
             }
             this.stopGame();
-            return;
+            return true;
         }
+        return false;
+    }
 
+    /** Check if the player has won the game */
+    checkWinCondition() {
         if (this.endboss && this.endboss.isDeadChicken) {
             this.gameOver = true;
             setWinInfo();
@@ -152,49 +207,39 @@ class World {
             this.stopGame();
 
             if (!window.isMuted) window.CHARACTER_WIN_SOUND.play();
-            
-            return;
+            return true;
         }
+        return false;
+    }
 
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        this.ctx.translate(this.camera_x, 0);
-
-        this.addObjectsToMap(this.level.backgroundObjects);
-        this.addObjectsToMap(this.level.clouds);
-
-        this.ctx.translate(-this.camera_x, 0);
-        // ------ Space for fixed objects ------
+    /** Render fixed UI elements like status bars */
+    renderFixedUI() {
         this.addToMap(this.statusBarHealth);
         this.addToMap(this.statusBarCoins);
         this.addToMap(this.statusBarBottle);
         this.addToMap(this.statusBarBoss);
-        this.ctx.translate(this.camera_x, 0);
+    }
 
+    /** Render character, enemies, and collectible objects */
+    renderSceneObjects() {
         this.addToMap(this.character);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.throwableObject);
         this.addObjectsToMap(this.level.coins);
         this.addObjectsToMap(this.level.bottles);
-
-        this.ctx.translate(-this.camera_x, 0);
-
-        // Nur weiterzeichnen, wenn das Spiel nicht gestoppt ist!
-        if (!this.gameStopped) {
-            requestAnimationFrame(() => this.draw());
-        }
     }
 
+    /** Stop the game and all associated intervals and sounds */
     stopGame() {
         this.gameStopped = true;
-        stopAllIntervals()
+        stopAllIntervals();
         stopAllSounds();
     }
 
+    /** Stop all non-persistent sounds in the game */
     stopAllSounds() {
         Object.values(window).forEach(sound => {
             if (sound instanceof HTMLAudioElement) {
-                // Überspringe Sounds, die bis zum Ende spielen sollen (z.B. Dying-Sound)
                 if (sound.persistentOnGameOver) return;
                 sound.pause();
                 sound.currentTime = 0;
@@ -202,23 +247,28 @@ class World {
         });
     }
 
+    /** Add multiple objects to the map for rendering
+    * @param {Array} objects - Array of objects to add to the map
+    */
     addObjectsToMap(objects) {
         objects.forEach(obj => this.addToMap(obj));
     }
 
+    /** Add a single object to the map for rendering
+    * @param {Object} mo - The object to add to the map
+    */
     addToMap(mo) {
-        if (mo.otherDirection) {
-            this.flipImage(mo);
-        }
+        if (mo.otherDirection) this.flipImage(mo);
 
         mo.draw(this.ctx);
         mo.drawBoundingBox(this.ctx);
 
-        if (mo.otherDirection) {
-            this.flipImageBack(mo);
-        }
+        if (mo.otherDirection) this.flipImageBack(mo);
     }
 
+    /** Flip the image horizontally for right-facing characters
+    * @param {Object} mo - The object to flip
+    */
     flipImage(mo) {
         this.ctx.save();
         this.ctx.translate(mo.width, 0);
@@ -226,30 +276,41 @@ class World {
         mo.x = mo.x * -1;
     }
 
+    /** Restore the image orientation after flipping
+    * @param {Object} mo - The object to restore
+    */
     flipImageBack(mo) {
         mo.x = mo.x * -1;
         this.ctx.restore();
     }
 
+    /** Start the endboss battle when the character reaches a certain position */
     startEndbossBattle() {
         if (!this.endbossStarted && this.character.x >= 2230 && this.endboss) {
             this.endbossStarted = true;
             this.endbossStartDone = true;
             this.endbossMoveInterval = setInterval(() => {
                 this.shootingPossible = false;
-                if (this.character.x > 2240) {
-                    this.endboss.speed = 16;
-                    this.endboss.walking();
-                    this.endboss.moveLeft();
-                }
-                if (this.endboss.x <= 2496) {
-                    clearInterval(this.endbossMoveInterval);
-                    this.MAIN_SOUND.pause();
-                    this.endboss.alert(this, () => trackEndbossToCharacter(this));
-                }
+                if (this.character.x > 2240) this.startWalking();
+                if (this.endboss.x <= 2496) this.startAlert();
             }, 1000 / 6);
         }
     }
+
+    /** Start walking towards the character */
+    startWalking() {
+        this.endboss.speed = 16;
+        this.endboss.walking();
+        this.endboss.moveLeft();
+    }
+
+    /** Start the endboss alert sequence */
+    startAlert() {
+        clearInterval(this.endbossMoveInterval);
+        this.MAIN_SOUND.pause();
+        this.endboss.alert(this, () => trackEndbossToCharacter(this));
+    }
 }
 
+/** Set the main sound to be muted or unmuted based on global setting */
 window.World = World;
