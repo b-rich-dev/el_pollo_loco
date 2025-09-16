@@ -4,7 +4,7 @@
  */
 async function checkPortraitOverlay() {
   const isPortrait = window.matchMedia("(orientation: portrait) and (max-width: 768px)").matches;
-  const overlay = document.getElementById("portrait-overlay");
+  const overlay = document.getElementById("portraitOverlay");
   if (!overlay) return;
   if (isPortrait) {
     overlay.classList.add("show");

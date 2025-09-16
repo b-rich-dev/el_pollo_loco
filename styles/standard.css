@@ -41,3 +41,7 @@ button:hover {
 .width_100 {
     width: 100%;
 }
+
+.padding_zero{
+    padding: 0 0 0 0;
+}

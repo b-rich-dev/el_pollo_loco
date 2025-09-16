@@ -1,6 +1,6 @@
 let main = document.getElementById("main");
 let startScreen = document.getElementById("startScreen");
-let dialog = document.getElementById("howToPlayDialog");
+// let dialog = document.getElementById("howToPlayDialog");
 let loseScreen = document.getElementById('loseEndScreen');
 let winScreen = document.getElementById('winEndScreen');
 let canvasWrapper = document.getElementById('canvasWrapper');
@@ -64,18 +64,15 @@ if (window.ALL_SOUNDS && Array.isArray(window.ALL_SOUNDS)) {
 }
 
 /** Show the "How to Play" dialog */
-function showHowToPlay() {
+function openDialog(id) {
+    dialog = document.getElementById(id);
     dialog.showModal();
 }
 
 /** Close the "How to Play" dialog */
-function closeHowToPlayDialog() {
+function closeDialog(id) {
+    dialog = document.getElementById(id);
     dialog.close();
-}
-
-/** Redirect to the imprint page */
-function showImprint() {
-    window.location.href = "imprint.html";
 }
 
 /** Show the lose screen and hide other screens */
@@ -257,6 +254,14 @@ muteButton.addEventListener('click', toggleMute);
 document.getElementById('howToPlayDialog').addEventListener('click', function (event) {
     const dialogContent = document.getElementById('dialogContent');
     if (!dialogContent.contains(event.target)) {
-        closeHowToPlayDialog();
+        closeDialog('howToPlayDialog');
+    }
+});
+
+/** Close the "imprint" dialog when clicking outside the content area */
+document.getElementById('imprintDialog').addEventListener('click', function (event) {
+    const dialogContent = document.getElementById('imprintDialogContent');
+    if (!dialogContent.contains(event.target)) {
+        closeDialog('imprintDialog');
     }
 });
