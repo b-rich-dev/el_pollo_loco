@@ -4,10 +4,10 @@ class Chicks extends MoveableObject {
     width = 68;
     height = 86;
     offset = {
-        top: 14,
-        left: 4,
-        right: 3,
-        bottom: 6
+        top: 13,
+        left: 3,
+        right: 2,
+        bottom: 5
     };
     IMAGES_WALKING = [
         'assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png',

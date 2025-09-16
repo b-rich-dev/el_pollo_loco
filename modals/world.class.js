@@ -159,10 +159,14 @@ class World {
         if (this.handleEndConditions()) return;
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.ctx.translate(this.camera_x, 0);
+        const camXRounded = Math.round(this.camera_x);
+        const prevSmoothing = this.ctx.imageSmoothingEnabled;
+        this.ctx.imageSmoothingEnabled = false;
+        this.ctx.translate(camXRounded, 0);
         this.renderBackgrounfdAndClouds();
+        this.ctx.translate(-camXRounded, 0);
+        this.ctx.imageSmoothingEnabled = prevSmoothing;
 
-        this.ctx.translate(-this.camera_x, 0);
         this.renderFixedUI();
         this.ctx.translate(this.camera_x, 0);
 
