@@ -61,7 +61,7 @@ class Character extends MoveableObject {
         'assets/img/2_character_pepe/5_dead/D-56.png'
     ];
     world;
-    speed = 20;
+    speed = 2.2;
     offset = {
         top: 138,
         left: 36,
@@ -152,7 +152,10 @@ class Character extends MoveableObject {
 
     /** Moves the character to the right */
     moveRight() {
-        if (!window.isMuted) this.WALK_SOUND.play();
+        if (!window.isMuted && !this.isAboveGround()) {
+            if (this.WALK_SOUND.paused) this.WALK_SOUND.play();
+            this.WALK_SOUND.volume = 0.2;
+        }
         super.moveRight();
         this.otherDirection = false;
         this.action = true;
@@ -165,7 +168,10 @@ class Character extends MoveableObject {
 
     /** Moves the character to the left */
     moveLeft() {
-        if (!window.isMuted) this.WALK_SOUND.play();
+        if (!window.isMuted && !this.isAboveGround()) {
+            if (this.WALK_SOUND.paused) this.WALK_SOUND.play();
+            this.WALK_SOUND.volume = 0.2;
+        }
         super.moveLeft();
         this.otherDirection = true;
         this.action = true;
@@ -267,6 +273,8 @@ class Character extends MoveableObject {
     jump() {
         if (isGameStopped()) return;
         if (!window.isMuted) this.JUMP_SOUND.play();
+        if (!this.WALK_SOUND.paused) this.WALK_SOUND.pause();
+        this.WALK_SOUND.currentTime = 0;
         this.speedY = 20;
         this.offset = this.offsetJump;
     }
@@ -276,6 +284,8 @@ class Character extends MoveableObject {
         if (isGameStopped()) return;
         if (!window.isMuted) this.LITTLE_JUMP_SOUND.play();
         this.LITTLE_JUMP_SOUND.volume = 0.6;
+        if (!this.WALK_SOUND.paused) this.WALK_SOUND.pause();
+        this.WALK_SOUND.currentTime = 0;
         this.speedY = 8;
         this.offset = this.offsetJump;
     }

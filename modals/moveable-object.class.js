@@ -14,6 +14,7 @@ class MoveableObject extends DrawableObject {
     lastHit = 0;
     jumpLandTimer = null;
     jumpLandLocked = false;
+    isJumping = false;
 
     /** Ground level for the object */
     applyGravity() {
@@ -37,6 +38,7 @@ class MoveableObject extends DrawableObject {
         this.speedY = 0;
         this.acceleration = 0;
         clearInterval(this.gravityInterval);
+        this.isJumping = false;
     }
 
     /** Reduce vertical speed and acceleration due to gravity */
@@ -78,6 +80,7 @@ class MoveableObject extends DrawableObject {
     /** Make the object jump by setting vertical speed */
     jump() {
         this.speedY = 20;
+        this.isJumping = true;
     }
 
     /** Check if this object is colliding with another moveable object
@@ -96,8 +99,15 @@ class MoveableObject extends DrawableObject {
     * @returns {boolean} - True if colliding from above, false otherwise
     */
     isCollidingFromAbove(mo) {
-        const isFromAbove = this.y + this.height - this.offset.bottom <= mo.y + mo.offset.top + 20
-            && this.speedY < 0;
+        const characterBottom = this.y + this.height - this.offset.bottom;
+        const enemyTop = mo.y + mo.offset.top;
+        const isHorizontalOverlap =
+            this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
+            this.x + this.offset.left < mo.x + mo.width - mo.offset.right;
+        const isFromAbove = characterBottom >= enemyTop &&
+            characterBottom <= enemyTop + 26 &&
+            this.speedY < 0 &&
+            isHorizontalOverlap;
         return isFromAbove;
     }
 
@@ -181,12 +191,12 @@ class MoveableObject extends DrawableObject {
     setImageBySpeed(images) {
         if (!this.isAboveGround()) { this.setImage(8, images); return; }
         const s = this.speedY;
-        if (s > 15) this.setImage(1, images);
-        else if (s > 10) this.setImage(2, images);
+        if (s > 19) this.setImage(1, images);
+        else if (s > 18) this.setImage(2, images);
         else if (s > 0) this.setImage(3, images);
         else if (s === 0) this.setImage(4, images);
         else if (s > -10) this.setImage(5, images);
-        else if (s > -19 && s <= -13) this.setImage(6, images);
+        else if (s > -19 && s <= -16) this.setImage(6, images);
         else if (s <= -18) this.setImage(7, images);
     }
 
@@ -200,5 +210,10 @@ class MoveableObject extends DrawableObject {
         if (landing) { if (this.handleLanding(images)) return; }
         if (this.jumpLandLocked) return;
         this.setImageBySpeed(images);
+    }
+
+    /** Helper method: true if object is currently in the air (jump/fall) */
+    isJumpingNow() {
+        return this.isJumping || this.isAboveGround();
     }
 }

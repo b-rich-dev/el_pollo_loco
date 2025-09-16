@@ -77,7 +77,7 @@ class Chicks extends MoveableObject {
     moveLeft() {
         if (!this.isDeadChicken && !(window.world && window.world.gameStopped)) {
             if (!window.isMuted) this.CHICKS_WALK_SOUND.play();
-            this.CHICKS_WALK_SOUND.volume = 0.8;
+            this.CHICKS_WALK_SOUND.volume = 0.6;
             this.otherDirection = false;
             this.speed = this.moveSpeed;
             super.moveLeft();
@@ -91,7 +91,7 @@ class Chicks extends MoveableObject {
     moveRight() {
         if (!this.isDeadChicken && !(window.world && window.world.gameStopped)) {
             if (!window.isMuted) this.CHICKS_WALK_SOUND.play();
-            this.CHICKS_WALK_SOUND.volume = 0.8;
+            this.CHICKS_WALK_SOUND.volume = 0.6;
             this.otherDirection = true;
             this.speed = this.moveSpeed;
             super.moveRight();
