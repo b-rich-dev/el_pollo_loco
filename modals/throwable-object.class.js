@@ -76,6 +76,7 @@ class ThrowableObject extends MoveableObject {
     throwBottle() {
         if (!window.isMuted) this.SHOOTING_SOUND.play();
         this.speedY = 18;
+        if (this.world && this.world.character) this.resetIdleTimer();
         this.applyGravity();
         this.throwBottleInterval = setInterval(() => {
             if (this.isSplashing) return;
@@ -85,6 +86,13 @@ class ThrowableObject extends MoveableObject {
             const enemy = this.getCollidingEnemy();
             if (enemy) this.handleBottleHitEnemy(enemy);
         }, 52);
+    }
+
+    /** Reset the character's idle timer to prevent idle animations */
+    resetIdleTimer() {
+        this.world.character.action = true;
+        if (typeof this.world.character.resetIdleTimer === 'function') this.world.character.resetIdleTimer();
+        else this.world.character.lastActionTime = Date.now();
     }
 
     /** Update bottle horizontal position based on throw direction */
@@ -123,6 +131,7 @@ class ThrowableObject extends MoveableObject {
     throwCoin() {
         if (!window.isMuted) this.COIN_SOUND.play();
         this.speedY = 8;
+        if (this.world && this.world.character) this.resetIdleTimer();
         this.groundLevel = 800;
         this.applyGravity();
         this.throwCoinInterval = setInterval(() => this.updateCoinFrame(), 52);

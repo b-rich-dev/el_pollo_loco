@@ -83,6 +83,7 @@ class Character extends MoveableObject {
     lastActionTime = Date.now();
     lastWasAboveGround = false;
     isCharacterDead = false;
+    idleLongAnimationInterval = null;
     DYING_SOUND = new Audio('assets/audio/dead/dying-sound.mp3');
     JUMP_SOUND = new Audio('assets/audio/jump/jump.wav');
     LITTLE_JUMP_SOUND = new Audio('assets/audio/jump/little_jump.wav');
@@ -128,8 +129,8 @@ class Character extends MoveableObject {
     animate() {
         this.controlInterval = setInterval(() => this.moveCharacter(), 1000 / 60);
         this.jumpLandingInterval = setInterval(() => this.jumpLandingCheck(), 50);
-        this.idleCheckInterval = setInterval(() => this.characterIdleCheck(), 1000);
-        this.idleLongCheckInterval = setInterval(() => this.characterLongIdleCheck(), 1000);
+        this.idleCheckInterval = setInterval(() => this.characterIdleCheck(), 220);
+        this.idleLongCheckInterval = setInterval(() => this.characterLongIdleCheck(), 800);
     }
 
     /** Moves the character based on keyboard input */
@@ -194,6 +195,13 @@ class Character extends MoveableObject {
         this.lastActionTime = Date.now();
         this.SLEEPING_SOUND.pause();
         this.SLEEPING_SOUND.currentTime = 0;
+        if (this.idleLongAnimationInterval) {
+            clearInterval(this.idleLongAnimationInterval);
+            this.idleLongAnimationInterval = null;
+        }
+        if (!this.idleCheckInterval) {
+            this.idleCheckInterval = setInterval(() => this.characterIdleCheck(), 500);
+        }
     }
 
     /** Sets the jump animation with options for looping and landing */
@@ -201,15 +209,11 @@ class Character extends MoveableObject {
         if (isGameStopped()) return;
 
         this.action = false;
-        if (this.hasJustLanded()) {
-            this.hasJustLandedAction();
-        } else if (this.isHurt()) {
-            this.isHurtAction();
-        } else if (this.isAboveGround()) {
-            this.isAboveGroundAction();
-        } else {
-            if (this.isMoving()) this.move();
-        }
+        if (this.hasJustLanded()) this.hasJustLandedAction(); 
+        else if (this.isHurt()) this.isHurtAction();
+        else if (this.isAboveGround()) this.isAboveGroundAction();
+        else if (this.isMoving()) this.move();
+        
         if (this.action) this.resetIdleTimer();
         this.lastWasAboveGround = this.isAboveGround();
     }
@@ -247,7 +251,7 @@ class Character extends MoveableObject {
     /** Checks if the character has been inactive for a certain time and plays idle animations */
     characterIdleCheck() {
         if (isGameStopped()) return;
-        if (this.isInactive(9000)) {
+        if (this.isInactive(100)) {
             this.playAnimation(this.IMAGES_IDLE);
         }
     }
@@ -255,9 +259,15 @@ class Character extends MoveableObject {
     /** Checks if the character has been inactive for a longer time and plays long idle animations */
     characterLongIdleCheck() {
         if (isGameStopped()) return;
-        if (this.isInactive(12000)) {
+        if (this.isInactive(8000) && this.idleCheckInterval) {
+            clearInterval(this.idleCheckInterval);
+            this.idleCheckInterval = null;
             if (!window.isMuted) this.SLEEPING_SOUND.play();
-            this.playAnimation(this.IMAGES_IDLE_LONG);
+            if (!this.idleLongAnimationInterval) {
+                this.idleLongAnimationInterval = setInterval(() => {
+                    this.playAnimation(this.IMAGES_IDLE_LONG);
+                }, 220);
+            }
         }
     }
 
