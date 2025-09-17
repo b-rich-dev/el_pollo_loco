@@ -1,16 +1,63 @@
 /** Collision helper functions for game world 
 * @param {World} world - The game world instance.
 */
-export function checkEnemyCollisions(world) {
-    world.level.enemies.forEach((enemy, index) => {
-        if (world.character.isColliding(enemy)) {
-            if (world.character.isCollidingFromAbove(enemy)) {
-                if (typeof enemy.die === 'function' && !enemy.isDeadChicken) enemyDyingToDos(world, enemy);
-            } else {
-                if (!enemy.isDeadChicken && !world.character.isHurt()) characterDyingToDos(world);
-            }
+function getActiveCollisions(world) {
+    return world.level.enemies.filter(enemy => !enemy.isDeadChicken && world.character.isColliding(enemy));
+}
+
+/** Get enemies that are colliding from above with the character
+* @param {World} world - The game world instance.
+* @param {Enemy[]} collisions - Array of enemy instances colliding with the character.
+* @returns {Enemy[]} - Array of enemy instances colliding from above.
+*/
+function getAboveCollisions(world, collisions) {
+    return collisions.filter(enemy => world.character.isCollidingFromAbove(enemy));
+}
+
+/** Choose the closest enemy above the character
+* @param {World} world - The game world instance.
+* @param {Enemy[]} aboveList - Array of enemy instances colliding from above.
+* @returns {Enemy} - The closest enemy above the character.
+*/
+function chooseClosestAbove(world, aboveList) {
+    const charBottom = world.character.y + world.character.height;
+    let best = aboveList[0];
+    let bestDist = Math.abs(charBottom - best.y);
+    for (let i = 1; i < aboveList.length; i++) {
+        const e = aboveList[i];
+        const dist = Math.abs(charBottom - e.y);
+        if (dist < bestDist) {
+            best = e;
+            bestDist = dist;
         }
-    });
+    }
+    return best;
+}
+
+/** Process side hit collisions between the character and enemies
+* @param {World} world - The game world instance.
+* @param {Enemy[]} collisions - Array of enemy instances colliding with the character.
+*/
+function processSideHit(world, collisions) {
+    const anySideHit = collisions.some(enemy => !enemy.isDeadChicken);
+    if (anySideHit && !world.character.isHurt()) characterDyingToDos(world);
+}
+
+/** Check for collisions between the character and enemies
+* @param {World} world - The game world instance.
+*/
+export function checkEnemyCollisions(world) {
+    const collisions = getActiveCollisions(world);
+    if (collisions.length === 0) return;
+
+    const above = getAboveCollisions(world, collisions);
+    if (above.length > 0) {
+        const best = chooseClosestAbove(world, above);
+        if (typeof best.die === 'function' && !best.isDeadChicken) enemyDyingToDos(world, best);
+        return;
+    }
+
+    processSideHit(world, collisions);
 }
 
 /** Handle the actions when an enemy dies
@@ -88,9 +135,8 @@ function handleEndbossCollision(world, obj, objIndex, enemy, setHit) {
     else enemy.endbossEnergy -= 20;
     if (enemy.endbossEnergy < 0) enemy.endbossEnergy = 0;
     hurtBehavior(world, enemy);
-    if (obj.IMAGES_BOTTLE_ROTATION && !obj.isCoin && !obj.isSplashing) {
-        setObjectAnimation(obj, enemy, setHit);
-    } else {
+    if (obj.IMAGES_BOTTLE_ROTATION && !obj.isCoin && !obj.isSplashing) setObjectAnimation(obj, enemy, setHit);
+    else {
         setHit();
         world.throwableObject.splice(objIndex, 1);
     }
