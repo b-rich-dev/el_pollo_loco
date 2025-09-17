@@ -78,8 +78,8 @@ class Chicken extends MoveableObject {
     /** Move the chicken to the left */
     moveLeft() {
         if (!this.isDeadChicken && !(window.world && window.world.gameStopped)) {
+            if (this.CHICKEN_WALK_SOUND) this.CHICKEN_WALK_SOUND.volume = 0.05;
             if (!window.isMuted) window.safePlay(this.CHICKEN_WALK_SOUND);
-            this.CHICKEN_WALK_SOUND.volume = 0.06;
             this.otherDirection = false;
             this.speed = this.moveSpeed;
             super.moveLeft();
@@ -92,8 +92,8 @@ class Chicken extends MoveableObject {
     /** Move the chicken to the right */
     moveRight() {
         if (!this.isDeadChicken && !(window.world && window.world.gameStopped)) {
-            if (!window.isMuted) this.CHICKEN_WALK_SOUND.play();
-            this.CHICKEN_WALK_SOUND.volume = 0.06;
+            if (this.CHICKEN_WALK_SOUND) this.CHICKEN_WALK_SOUND.volume = 0.05;
+            if (!window.isMuted) window.safePlay(this.CHICKEN_WALK_SOUND);
             this.otherDirection = true;
             this.speed = this.moveSpeed;
             super.moveRight();
@@ -106,9 +106,9 @@ class Chicken extends MoveableObject {
     /** Make the chicken jump at random intervals */
     enemyRandomJump() {
         if (!this.isDeadChicken && !(window.world && window.world.gameStopped)) {
-            if (Math.random() < 0.005) { // 0.5% Wahrscheinlichkeit pro Aufruf
+            if (Math.random() < 0.005) {
+                if (this.CHICKEN_JUMP_SOUND) this.CHICKEN_JUMP_SOUND.volume = 0.1;
                 if (!window.isMuted) window.safePlay(this.CHICKEN_JUMP_SOUND);
-                this.CHICKEN_JUMP_SOUND.volume = 0.1;
                 this.speedY = +8;
             }
         }
@@ -120,8 +120,8 @@ class Chicken extends MoveableObject {
     die(callback) {
         this.img = this.imageCache[this.IMAGE_DEAD];
         this.isDeadChicken = true;
+        if (this.DEATH_SOUND) this.DEATH_SOUND.volume = 0.6;
         if (!window.isMuted && !(window.world && window.world.gameStopped)) window.safePlay(this.DEATH_SOUND);
-        this.DEATH_SOUND.volume = 0.6;
         setTimeout(() => {
             if (callback) callback();
         }, 1000);

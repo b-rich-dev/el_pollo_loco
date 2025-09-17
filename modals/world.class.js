@@ -169,25 +169,46 @@ class World {
         if (this.handleEndConditions()) return;
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+        this.drawBackgroundLayer();
+        this.drawUIAndScene();
+
+        this.scheduleNextFrame();
+    }
+
+    /** Draw the background layer with parallax effect */
+    drawBackgroundLayer() {
         const camXRounded = Math.round(this.camera_x);
         const prevSmoothing = this.ctx.imageSmoothingEnabled;
         this.ctx.imageSmoothingEnabled = false;
         this.ctx.translate(camXRounded, 0);
-        this.renderBackgrounfdAndClouds();
+        this.renderBackgroundAndClouds();
         this.ctx.translate(-camXRounded, 0);
         this.ctx.imageSmoothingEnabled = prevSmoothing;
+        this.ctx.translate(this.camera_x, 0);
+        this.addObjectsToMap(this.level.coins);
+        this.ctx.translate(-this.camera_x, 0);
+    }
 
+    /**
+     * Render fixed UI elements and the movable scene objects
+     * (character, enemies, throwable objects, bottles).
+     */
+    drawUIAndScene() {
         this.renderFixedUI();
         this.ctx.translate(this.camera_x, 0);
-
         this.renderSceneObjects();
         this.ctx.translate(-this.camera_x, 0);
+    }
 
+    /**
+     * Schedule the next frame (or abort if the game has stopped).
+     */
+    scheduleNextFrame() {
         if (!this.gameStopped) requestAnimationFrame(() => this.draw());
     }
 
     /** Render background and clouds */
-    renderBackgrounfdAndClouds() {
+    renderBackgroundAndClouds() {
         this.addObjectsToMap(this.level.backgroundObjects);
         this.addObjectsToMap(this.level.clouds);
     }
@@ -218,6 +239,7 @@ class World {
             showWinScreen();
             this.stopGame();
 
+            if (window.CHARACTER_WIN_SOUND) window.CHARACTER_WIN_SOUND.volume = 0.6;
             if (!window.isMuted) window.CHARACTER_WIN_SOUND.play();
             return true;
         }
@@ -237,7 +259,6 @@ class World {
         this.addToMap(this.character);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.throwableObject);
-        this.addObjectsToMap(this.level.coins);
         this.addObjectsToMap(this.level.bottles);
     }
 

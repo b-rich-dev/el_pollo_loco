@@ -76,8 +76,9 @@ class Chicks extends MoveableObject {
     /** Move the chick to the left */
     moveLeft() {
         if (!this.isDeadChicken && !(window.world && window.world.gameStopped)) {
+
+            if (this.CHICKS_WALK_SOUND) this.CHICKS_WALK_SOUND.volume = 0.5;
             if (!window.isMuted) window.safePlay(this.CHICKS_WALK_SOUND);
-            this.CHICKS_WALK_SOUND.volume = 0.6;
             this.otherDirection = false;
             this.speed = this.moveSpeed;
             super.moveLeft();
@@ -90,8 +91,8 @@ class Chicks extends MoveableObject {
     /** Move the chick to the right */
     moveRight() {
         if (!this.isDeadChicken && !(window.world && window.world.gameStopped)) {
+            if (this.CHICKS_WALK_SOUND) this.CHICKS_WALK_SOUND.volume = 0.6;
             if (!window.isMuted) this.CHICKS_WALK_SOUND.play();
-            this.CHICKS_WALK_SOUND.volume = 0.6;
             this.otherDirection = true;
             this.speed = this.moveSpeed;
             super.moveRight();
@@ -105,8 +106,8 @@ class Chicks extends MoveableObject {
     enemyRandomJump() {
         if (!this.isDeadChicken && !(window.world && window.world.gameStopped)) {
             if (Math.random() < 0.01) {
+                if (this.CHICKS_JUMP_SOUND) this.CHICKS_JUMP_SOUND.volume = 0.1;
                 if (!window.isMuted) this.CHICKS_JUMP_SOUND.play();
-                this.CHICKS_JUMP_SOUND.volume = 0.1;
                 this.speedY = +12;
             }
         }
@@ -116,8 +117,9 @@ class Chicks extends MoveableObject {
     die(callback) {
         this.img = this.imageCache[this.IMAGE_DEAD];
         this.isDeadChicken = true;
+        
+        if (this.CHICKS_HURT_SOUND) this.CHICKS_HURT_SOUND.volume = 0.8;
         if (!window.isMuted && !(window.world && window.world.gameStopped)) window.safePlay(this.CHICKS_HURT_SOUND);
-        this.CHICKS_HURT_SOUND.volume = 1.0;
         setTimeout(() => {
             if (callback) callback();
         }, 1000);
