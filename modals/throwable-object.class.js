@@ -27,9 +27,9 @@ class ThrowableObject extends MoveableObject {
     isSplashing = false;
     splashInterval = null;
     isCoin = false;
-    COIN_SOUND = new Audio('assets/audio/coin/coin.wav');
-    BOTTLE_BREAK_SOUND = new Audio('assets/audio/bottle/bottle_break.wav');
-    SHOOTING_SOUND = new Audio('assets/audio/bottle/shoot.wav');
+    COIN_SOUND = new Audio('assets/audio/coin/coin.mp3');
+    BOTTLE_BREAK_SOUND = new Audio('assets/audio/bottle/bottle_break.mp3');
+    SHOOTING_SOUND = new Audio('assets/audio/bottle/shoot.mp3');
 
     /** Create a throwable object (bottle or coin)
     * @param {number} x - Initial x position

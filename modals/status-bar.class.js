@@ -37,8 +37,8 @@ class StatusBar extends DrawableObject {
     type = 'health';
     bottles = 0;
     coins = 0;
-    COLLECT_BOTTLE_SOUND = new Audio('assets/audio/collect/collect_bottle.ogg');
-    COLLECT_COIN_SOUND = new Audio('assets/audio/collect/collect_coin.wav');
+    COLLECT_BOTTLE_SOUND = new Audio('assets/audio/collect/collect_bottle.mp3');
+    COLLECT_COIN_SOUND = new Audio('assets/audio/collect/collect_coin.mp3');
 
 
     /** Constructor to initialize the status bar

@@ -3,16 +3,16 @@ import { trackEndbossToCharacter, enemyTrackingOfCharacter } from './enemy.track
 
 /** Class representing the entire game world */
 class World {
-    character = new Character();
-    level = typeof level1 !== 'undefined' ? level1 : null;
+    character = null;
+    level = null;
     canvas;
     ctx;
     keyboard;
     camera_x = 0;
-    statusBarHealth = new StatusBar('health', 90, 0, 100);
-    statusBarCoins = new StatusBar('coins', 50, 30, 0);
-    statusBarBottle = new StatusBar('bottle', 20, 60, 0);
-    statusBarBoss = new StatusBar('boss', 720, 7, 100);
+    statusBarHealth = null;
+    statusBarCoins = null;
+    statusBarBottle = null;
+    statusBarBoss = null;
     throwableObject = [];
     endbossStarted = false;
     endbossStartDone = false;
@@ -27,7 +27,7 @@ class World {
     shootingPossible = true;
     gameOverScreens;
     gameOver = false;
-    MAIN_SOUND = new Audio('assets/audio/main/main_mexican_music.m4a');
+    MAIN_SOUND = null;
     gameStopped = false;
 
     /** Initialize the game world */
@@ -36,6 +36,16 @@ class World {
         this.ctx = ctx;
         this.keyboard = keyboard;
         this.level = level;
+
+        this.character = new Character();
+        this.statusBarHealth = new StatusBar('health', 90, 0, 100);
+        this.statusBarCoins = new StatusBar('coins', 50, 30, 0);
+        this.statusBarBottle = new StatusBar('bottle', 20, 60, 0);
+        this.statusBarBoss = new StatusBar('boss', 720, 7, 100);
+
+        this.MAIN_SOUND = new Audio('assets/audio/main/main_mexican_music.mp3');
+        this.MAIN_SOUND.preload = 'none';
+
         this.setWorld();
         this.character.setWorld(this);
         window.world = this;
@@ -64,7 +74,7 @@ class World {
             this.startEndbossBattle();
             this.removeDeadEnemies();
             if (!this.endbossStarted && this.MAIN_SOUND.paused) {
-                if (!window.isMuted) this.MAIN_SOUND.play();
+                if (!window.isMuted) window.safePlay(this.MAIN_SOUND);
                 this.MAIN_SOUND.volume = 0.1;
             }
         }, 50);
@@ -193,9 +203,7 @@ class World {
     checkLoseCondition() {
         if (this.character.isCharacterDead) {
             showLoseScreen();
-            if (this.endbossStartDone) {
-                if (!window.isMuted) window.ENDBOSS_WIN_SOUND.play();
-            }
+            if (this.endbossStartDone && !window.isMuted) window.ENDBOSS_WIN_SOUND.play();
             this.stopGame();
             return true;
         }
@@ -311,7 +319,7 @@ class World {
     /** Start the endboss alert sequence */
     startAlert() {
         clearInterval(this.endbossMoveInterval);
-        this.MAIN_SOUND.pause();
+        window.safePause(this.MAIN_SOUND);
         this.endboss.alert(this, () => trackEndbossToCharacter(this));
     }
 }

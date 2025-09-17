@@ -18,9 +18,9 @@ class Chicken extends MoveableObject {
 
     IMAGE_DEAD = 'assets/img/3_enemies_chicken/chicken_normal/2_dead/dead.png';
     isDeadChicken = false;
-    DEATH_SOUND = new Audio('assets/audio/dead/chicken_death.flac');
-    GENERAL_SOUND = new Audio('assets/audio/chicken/general.wav');
-    CHICKEN_JUMP_SOUND = new Audio('assets/audio/jump/chicken_jump.wav');
+    DEATH_SOUND = new Audio('assets/audio/dead/chicken_death.mp3');
+    GENERAL_SOUND = new Audio('assets/audio/chicken/general.mp3');
+    CHICKEN_JUMP_SOUND = new Audio('assets/audio/jump/chicken_jump.mp3');
     CHICKEN_WALK_SOUND = new Audio('assets/audio/walk/chicken_walk.mp3');
 
     /** Create a chicken object */
@@ -53,7 +53,7 @@ class Chicken extends MoveableObject {
     addGeneralSoundLoop() {
         const playGeneralSound = () => {
             if (!this.isDeadChicken && !window.isMuted && !(window.world && window.world.gameStopped)) {
-                this.GENERAL_SOUND.play();
+                window.safePlay(this.GENERAL_SOUND);
                 this.GENERAL_SOUND.volume = 0.3;
             }
             if (!(window.world && window.world.gameStopped)) {
@@ -78,7 +78,7 @@ class Chicken extends MoveableObject {
     /** Move the chicken to the left */
     moveLeft() {
         if (!this.isDeadChicken && !(window.world && window.world.gameStopped)) {
-            if (!window.isMuted) this.CHICKEN_WALK_SOUND.play();
+            if (!window.isMuted) window.safePlay(this.CHICKEN_WALK_SOUND);
             this.CHICKEN_WALK_SOUND.volume = 0.06;
             this.otherDirection = false;
             this.speed = this.moveSpeed;
@@ -107,7 +107,7 @@ class Chicken extends MoveableObject {
     enemyRandomJump() {
         if (!this.isDeadChicken && !(window.world && window.world.gameStopped)) {
             if (Math.random() < 0.005) { // 0.5% Wahrscheinlichkeit pro Aufruf
-                if (!window.isMuted) this.CHICKEN_JUMP_SOUND.play();
+                if (!window.isMuted) window.safePlay(this.CHICKEN_JUMP_SOUND);
                 this.CHICKEN_JUMP_SOUND.volume = 0.1;
                 this.speedY = +8;
             }
@@ -120,7 +120,7 @@ class Chicken extends MoveableObject {
     die(callback) {
         this.img = this.imageCache[this.IMAGE_DEAD];
         this.isDeadChicken = true;
-        if (!window.isMuted && !(window.world && window.world.gameStopped)) this.DEATH_SOUND.play();
+        if (!window.isMuted && !(window.world && window.world.gameStopped)) window.safePlay(this.DEATH_SOUND);
         this.DEATH_SOUND.volume = 0.6;
         setTimeout(() => {
             if (callback) callback();

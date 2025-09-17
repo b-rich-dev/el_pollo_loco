@@ -85,11 +85,11 @@ class Character extends MoveableObject {
     isCharacterDead = false;
     idleLongAnimationInterval = null;
     DYING_SOUND = new Audio('assets/audio/dead/dying-sound.mp3');
-    JUMP_SOUND = new Audio('assets/audio/jump/jump.wav');
-    LITTLE_JUMP_SOUND = new Audio('assets/audio/jump/little_jump.wav');
-    HURT_SOUND = new Audio('assets/audio/ouch/hurt.wav');
-    SLEEPING_SOUND = new Audio('assets/audio/sleep/snoring.wav');
-    WALK_SOUND = new Audio('assets/audio/walk/walk.wav');
+    JUMP_SOUND = new Audio('assets/audio/jump/jump.mp3');
+    LITTLE_JUMP_SOUND = new Audio('assets/audio/jump/little_jump.mp3');
+    HURT_SOUND = new Audio('assets/audio/ouch/hurt.mp3');
+    SLEEPING_SOUND = new Audio('assets/audio/sleep/snoring.mp3');
+    WALK_SOUND = new Audio('assets/audio/walk/walk.mp3');
     WIN_SOUND = new Audio('assets/audio/win/win.mp3');
     action = false;
 
@@ -154,7 +154,7 @@ class Character extends MoveableObject {
     /** Moves the character to the right */
     moveRight() {
         if (!window.isMuted && !this.isAboveGround()) {
-            if (this.WALK_SOUND.paused) this.WALK_SOUND.play();
+            if (this.WALK_SOUND.paused) window.safePlay(this.WALK_SOUND);
             this.WALK_SOUND.volume = 0.2;
         }
         super.moveRight();
@@ -170,7 +170,7 @@ class Character extends MoveableObject {
     /** Moves the character to the left */
     moveLeft() {
         if (!window.isMuted && !this.isAboveGround()) {
-            if (this.WALK_SOUND.paused) this.WALK_SOUND.play();
+            if (this.WALK_SOUND.paused) window.safePlay(this.WALK_SOUND);
             this.WALK_SOUND.volume = 0.2;
         }
         super.moveLeft();
@@ -193,7 +193,7 @@ class Character extends MoveableObject {
     /** Sets the jump animation */
     resetIdleTimer() {
         this.lastActionTime = Date.now();
-        this.SLEEPING_SOUND.pause();
+        window.safePause(this.SLEEPING_SOUND);
         this.SLEEPING_SOUND.currentTime = 0;
         if (this.idleLongAnimationInterval) {
             clearInterval(this.idleLongAnimationInterval);
@@ -213,7 +213,7 @@ class Character extends MoveableObject {
         else if (this.isHurt()) this.isHurtAction();
         else if (this.isAboveGround()) this.isAboveGroundAction();
         else if (this.isMoving()) this.move();
-        
+
         if (this.action) this.resetIdleTimer();
         this.lastWasAboveGround = this.isAboveGround();
     }
@@ -238,7 +238,7 @@ class Character extends MoveableObject {
     /** Handles the action when the character is hurt */
     isHurtAction() {
         this.action = true;
-        if (!window.isMuted) this.HURT_SOUND.play();
+        if (!window.isMuted) window.safePlay(this.HURT_SOUND);
         this.playAnimation(this.IMAGES_HURT);
     }
 
@@ -262,7 +262,7 @@ class Character extends MoveableObject {
         if (this.isInactive(8000) && this.idleCheckInterval) {
             clearInterval(this.idleCheckInterval);
             this.idleCheckInterval = null;
-            if (!window.isMuted) this.SLEEPING_SOUND.play();
+            if (!window.isMuted) window.safePlay(this.SLEEPING_SOUND);
             if (!this.idleLongAnimationInterval) {
                 this.idleLongAnimationInterval = setInterval(() => {
                     this.playAnimation(this.IMAGES_IDLE_LONG);
@@ -282,8 +282,8 @@ class Character extends MoveableObject {
     /** Sets the jump animation with options for looping and landing */
     jump() {
         if (isGameStopped()) return;
-        if (!window.isMuted) this.JUMP_SOUND.play();
-        if (!this.WALK_SOUND.paused) this.WALK_SOUND.pause();
+        if (!window.isMuted) window.safePlay(this.JUMP_SOUND);
+        window.safePause(this.WALK_SOUND);
         this.WALK_SOUND.currentTime = 0;
         this.speedY = 20;
         this.offset = this.offsetJump;
@@ -292,9 +292,9 @@ class Character extends MoveableObject {
     /** Sets a smaller jump, e.g., when hitting an enemy */
     littleJump() {
         if (isGameStopped()) return;
-        if (!window.isMuted) this.LITTLE_JUMP_SOUND.play();
+        if (!window.isMuted) window.safePlay(this.LITTLE_JUMP_SOUND);
         this.LITTLE_JUMP_SOUND.volume = 0.6;
-        if (!this.WALK_SOUND.paused) this.WALK_SOUND.pause();
+        window.safePause(this.WALK_SOUND);
         this.WALK_SOUND.currentTime = 0;
         this.speedY = 8;
         this.offset = this.offsetJump;
@@ -318,7 +318,7 @@ class Character extends MoveableObject {
 
     /** Prepares the character for death by playing sound and clearing intervals */
     prepareDie() {
-        if (!window.isMuted) this.DYING_SOUND.play();
+        if (!window.isMuted) window.safePlay(this.DYING_SOUND);
         if (this.isIntervalOn()) this.clearThisIntervals();
     }
 
@@ -334,9 +334,7 @@ class Character extends MoveableObject {
             if (frame >= deadImages.length) {
                 clearInterval(interval);
                 this.img = this.imageCache[deadImages[deadImages.length - 1]];
-                if (this.img === this.imageCache[deadImages[deadImages.length - 1]]) {
-                    this.startDeathFall(callback);
-                }
+                if (this.img === this.imageCache[deadImages[deadImages.length - 1]]) this.startDeathFall(callback);
             }
         }, 1000 / 60);
     }

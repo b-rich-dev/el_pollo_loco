@@ -52,17 +52,17 @@ class Endboss extends MoveableObject {
     isDeadChicken = false;
     endbossEnergy = 100;
     world;
-    ATTACK_SOUND = new Audio('assets/audio/endboss/attack.wav');
-    HURT_SOUND = new Audio('assets/audio/ouch/endboss_hurt.wav');
-    WALK_SOUND = new Audio('assets/audio/walk/endboss_walk.wav');
-    ALERT_SOUND = new Audio('assets/audio/endboss/alarm_call.wav');
-    SONIC_BOMB_SOUND = new Audio('assets/audio/endboss/sonicbomb.wav');
+    ATTACK_SOUND = new Audio('assets/audio/endboss/attack.mp3');
+    HURT_SOUND = new Audio('assets/audio/ouch/endboss_hurt.mp3');
+    WALK_SOUND = new Audio('assets/audio/walk/endboss_walk.mp3');
+    ALERT_SOUND = new Audio('assets/audio/endboss/alarm_call.mp3');
+    SONIC_BOMB_SOUND = new Audio('assets/audio/endboss/sonicbomb.mp3');
     FIGHT_SOUND = new Audio('assets/audio/endboss/endboss_fight.mp3');
-    ENDBOSS_DEATH_SOUND = new Audio('assets/audio/dead/endboss_death.wav');
-    ENDBOSS_SLIDE_SOUND = new Audio('assets/audio/dead/endboss_slide.wav');
-    ENDBOSS_JUMP_SOUND = new Audio('assets/audio/jump/endboss_jump.wav');
-    ENDBOSS_LITTLE_JUMP_SOUND = new Audio('assets/audio/jump/endboss_little_jump.wav');
-    ENDBOSS_WIN_SOUND = new Audio('assets/audio/endboss/win.wav');
+    ENDBOSS_DEATH_SOUND = new Audio('assets/audio/dead/endboss_death.mp3');
+    ENDBOSS_SLIDE_SOUND = new Audio('assets/audio/dead/endboss_slide.mp3');
+    ENDBOSS_JUMP_SOUND = new Audio('assets/audio/jump/endboss_jump.mp3');
+    ENDBOSS_LITTLE_JUMP_SOUND = new Audio('assets/audio/jump/endboss_little_jump.mp3');
+    ENDBOSS_WIN_SOUND = new Audio('assets/audio/endboss/win.mp3');
 
     /** Intervals for various animations and actions */
     constructor() {
@@ -132,7 +132,7 @@ class Endboss extends MoveableObject {
         const intervalTime = 1000 / 6;
         this.speed = totalDist / attackImages.length;
 
-        if (!window.isMuted) this.ATTACK_SOUND.play();
+        if (!window.isMuted) window.safePlay(this.ATTACK_SOUND);
         this.startAttackLoop(attackImages, intervalTime, callback);
     }
 
@@ -159,7 +159,7 @@ class Endboss extends MoveableObject {
     /** Small jump during attack */
     littleJump() {
         if (window.world && window.world.gameStopped) return;
-        if (!window.isMuted) this.ENDBOSS_LITTLE_JUMP_SOUND.play();
+        if (!window.isMuted) window.safePlay(this.ENDBOSS_LITTLE_JUMP_SOUND);
         this.ENDBOSS_LITTLE_JUMP_SOUND.volume = 1.0;
         this.speedY = 16;
     }
@@ -170,7 +170,7 @@ class Endboss extends MoveableObject {
         if (this.isHurting) return;
         this.isHurting = true;
         let frame = 0, repeat = 0, maxRepeats = 3;
-        if (!window.isMuted) { this.HURT_SOUND.volume = 0.3; this.HURT_SOUND.play(); }
+        if (!window.isMuted) { this.HURT_SOUND.volume = 0.3; window.safePlay(this.HURT_SOUND); }
         if (this.hurtInterval) clearInterval(this.hurtInterval);
         this.hurtInterval = setInterval(() => {
             if (window.world && window.world.gameStopped) { clearInterval(this.hurtInterval); this.hurtInterval = null; this.isHurting = false; return; }
@@ -207,7 +207,7 @@ class Endboss extends MoveableObject {
         this.dyingInterval = setInterval(() => {
             if (isGameStopped()) { clearInterval(this.dyingInterval); return; }
             this.img = this.imageCache[d[f++]];
-            if (!window.isMuted) this.ENDBOSS_DEATH_SOUND.play();
+            if (!window.isMuted) window.safePlay(this.ENDBOSS_DEATH_SOUND);
             if (f >= d.length) { clearInterval(this.dyingInterval); this.img = this.imageCache[d[d.length - 1]]; this.startFallThroughCanvas(callback); }
         }, 200);
     }
@@ -217,8 +217,8 @@ class Endboss extends MoveableObject {
     */
     startFallThroughCanvas(callback) {
         this.fallThroughCanvasInterval = setInterval(() => {
-            this.FIGHT_SOUND.pause();
-            if (!window.isMuted) this.ENDBOSS_SLIDE_SOUND.play();
+            window.safePause(this.FIGHT_SOUND);
+            if (!window.isMuted) window.safePlay(this.ENDBOSS_SLIDE_SOUND);
             this.y += 12;
             if (this.y > 1000) { clearInterval(this.fallThroughCanvasInterval); this.isDeadChicken = true; if (this.world) this.world.gameOver = true; if (callback) callback(); }
         }, 60);
@@ -227,7 +227,7 @@ class Endboss extends MoveableObject {
     /** Move the endboss to the left and play walking animation */
     walking() {
         if (window.world && window.world.gameStopped) return;
-        if (!window.isMuted) this.WALK_SOUND.play();
+        if (!window.isMuted) window.safePlay(this.WALK_SOUND);
         this.playAnimation(this.IMAGES_WALKING);
     }
 
@@ -252,7 +252,7 @@ class Endboss extends MoveableObject {
     alert(world, callback, intervalTime = 600) {
         if (isGameStopped()) return;
         this.speed = 0;
-        if (!window.isMuted) this.SONIC_BOMB_SOUND.play();
+        if (!window.isMuted) window.safePlay(this.SONIC_BOMB_SOUND);
         if (this.endbossAlertInterval) clearInterval(this.endbossAlertInterval);
         this.startAlertLoop(world, callback, intervalTime);
     }
@@ -267,7 +267,7 @@ class Endboss extends MoveableObject {
         this.endbossAlertInterval = setInterval(() => {
             if (isGameStopped()) { clearInterval(this.endbossAlertInterval); this.endbossAlertInterval = null; return; }
             this.img = this.imageCache[images[frame]];
-            if (frame === images.length - 2 && !window.isMuted) this.ALERT_SOUND.play();
+            if (frame === images.length - 2 && !window.isMuted) window.safePlay(this.ALERT_SOUND);
             if (++frame >= images.length) {
                 this.setStartBoss(world, callback);
             }
@@ -307,7 +307,7 @@ class Endboss extends MoveableObject {
             if (statusBar.x > targetX) {
                 statusBar.x -= slideSpeed;
                 if (statusBar.x < targetX) statusBar.x = targetX;
-                if (!window.isMuted) this.FIGHT_SOUND.play();
+                if (!window.isMuted) window.safePlay(this.FIGHT_SOUND);
                 requestAnimationFrame(step);
             }
         };

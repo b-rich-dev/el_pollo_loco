@@ -247,6 +247,44 @@ function toggleMute() {
     }
 }
 
+/** Set the muted state for a specific sound */
+function setSoundMuted(sound) {
+    if (sound) sound.muted = window.isMuted;
+}
+
+/** Safe play wrapper: startet audio.play() und fängt AbortError ab */
+function safePlay(sound) {
+    if (!sound) return;
+    try {
+        // Nur versuchen zu spielen, wenn aktuell pausiert
+        if (sound.paused) {
+            const p = sound.play();
+            if (p && typeof p.then === 'function') {
+                p.catch(e => {
+                    if (e && e.name !== 'AbortError') console.error(e);
+                    // AbortError ignorieren (Race zwischen play/pause)
+                });
+            }
+        }
+    } catch (e) {
+        if (e && e.name !== 'AbortError') console.error(e);
+    }
+}
+
+/** Safe pause wrapper: pausiert Audio robust */
+function safePause(sound) {
+    if (!sound) return;
+    try {
+        sound.pause();
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+/** Expose helpers globally so Module-Klassen sie nutzen können */
+window.safePlay = safePlay;
+window.safePause = safePause;
+
 /** Add event listeners for mute functionality */
 muteButton.addEventListener('click', toggleMute);
 

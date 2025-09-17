@@ -16,10 +16,10 @@ class Chicks extends MoveableObject {
     ];
     IMAGE_DEAD = 'assets/img/3_enemies_chicken/chicken_small/2_dead/dead.png';
     isDeadChicken = false;
-    CHICKS_HURT_SOUND = new Audio('assets/audio/chicks/chicks_dead.wav');
-    CHICKS_JUMP_SOUND = new Audio('assets/audio/jump/chicks_jump.wav');
-    GENERAL_SOUND = new Audio('assets/audio/chicks/chicks_chirp.wav');
-    CHICKS_WALK_SOUND = new Audio('assets/audio/walk/chicks_walk.wav');
+    CHICKS_HURT_SOUND = new Audio('assets/audio/chicks/chicks_dead.mp3');
+    CHICKS_JUMP_SOUND = new Audio('assets/audio/jump/chicks_jump.mp3');
+    GENERAL_SOUND = new Audio('assets/audio/chicks/chicks_chirp.mp3');
+    CHICKS_WALK_SOUND = new Audio('assets/audio/walk/chicks_walk.mp3');
 
     /** Create a chicks object */
     constructor() {
@@ -51,7 +51,7 @@ class Chicks extends MoveableObject {
     addGeneralSoundLoop() {
         const playGeneralSound = () => {
             if (!this.isDeadChicken && !window.isMuted && !(window.world && window.world.gameStopped)) {
-                this.GENERAL_SOUND.play();
+                window.safePlay(this.GENERAL_SOUND);
                 this.GENERAL_SOUND.volume = 0.2;
             }
             if (!(window.world && window.world.gameStopped)) {
@@ -76,7 +76,7 @@ class Chicks extends MoveableObject {
     /** Move the chick to the left */
     moveLeft() {
         if (!this.isDeadChicken && !(window.world && window.world.gameStopped)) {
-            if (!window.isMuted) this.CHICKS_WALK_SOUND.play();
+            if (!window.isMuted) window.safePlay(this.CHICKS_WALK_SOUND);
             this.CHICKS_WALK_SOUND.volume = 0.6;
             this.otherDirection = false;
             this.speed = this.moveSpeed;
@@ -116,7 +116,7 @@ class Chicks extends MoveableObject {
     die(callback) {
         this.img = this.imageCache[this.IMAGE_DEAD];
         this.isDeadChicken = true;
-        if (!window.isMuted && !(window.world && window.world.gameStopped)) this.CHICKS_HURT_SOUND.play();
+        if (!window.isMuted && !(window.world && window.world.gameStopped)) window.safePlay(this.CHICKS_HURT_SOUND);
         this.CHICKS_HURT_SOUND.volume = 1.0;
         setTimeout(() => {
             if (callback) callback();
