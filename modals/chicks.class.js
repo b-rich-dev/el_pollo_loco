@@ -28,7 +28,7 @@ class Chicks extends MoveableObject {
         this.loadImage(this.IMAGE_DEAD);
         this.imageCache[this.IMAGE_DEAD] = new Image();
         this.imageCache[this.IMAGE_DEAD].src = this.IMAGE_DEAD;
-        this.x = 280 + Math.random() * 2000;
+        this.x = 380 + Math.random() * 2000;
         this.y = 340;
         this.moveSpeed = 2.88 + Math.random() * 0.36;
         this.speed = this.moveSpeed;
@@ -70,7 +70,7 @@ class Chicks extends MoveableObject {
 
         this.walkingInterval = setInterval(() => {
             if (!this.isDeadChicken) this.playAnimation(this.IMAGES_WALKING);
-        }, 1000 / 6);
+        }, 100);
     }
 
     /** Move the chick to the left */
