@@ -87,19 +87,12 @@ class StatusBar extends DrawableObject {
 
     /** Determine the correct image index based on the current percentage */
     resolveImageIndex() {
-        if (this.percentage >= 100) {
-            return 5;
-        } else if (this.percentage >= 80) {
-            return 4;
-        } else if (this.percentage >= 60) {
-            return 3;
-        } else if (this.percentage >= 40) {
-            return 2;
-        } else if (this.percentage >= 20) {
-            return 1;
-        } else {
-            return 0;
-        }
+        if (this.percentage >= 100) return 5;
+        else if (this.percentage >= 80) return 4;
+        else if (this.percentage >= 60) return 3;
+        else if (this.percentage >= 40) return 2;
+        else if (this.percentage >= 20) return 1;
+        else return 0;
     }
 
     /** Collect an item and update the corresponding count and play sound

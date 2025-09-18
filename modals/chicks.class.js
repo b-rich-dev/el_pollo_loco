@@ -76,7 +76,6 @@ class Chicks extends MoveableObject {
     /** Move the chick to the left */
     moveLeft() {
         if (!this.isDeadChicken && !(window.world && window.world.gameStopped)) {
-
             if (this.CHICKS_WALK_SOUND) this.CHICKS_WALK_SOUND.volume = 0.5;
             if (!window.isMuted) window.safePlay(this.CHICKS_WALK_SOUND);
             this.otherDirection = false;

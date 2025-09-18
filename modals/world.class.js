@@ -78,7 +78,7 @@ class World {
                 if (!window.isMuted) window.safePlay(this.MAIN_SOUND);
                 this.MAIN_SOUND.volume = 0.1;
             }
-        }, 50);
+        }, 1000 / 60);
     }
 
     /** Start the interval to track enemies towards the character */
@@ -330,7 +330,7 @@ class World {
             this.endbossStartDone = true;
             this.endbossMoveInterval = setInterval(() => {
                 this.shootingPossible = false;
-                if (this.character.x > 2240) this.startWalking();
+                this.startWalking();
                 if (this.endboss.x <= 2496) this.startAlert();
             }, 1000 / 6);
         }

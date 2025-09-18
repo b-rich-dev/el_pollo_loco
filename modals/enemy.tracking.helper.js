@@ -9,8 +9,8 @@ export function trackEndbossToCharacter(world) {
         if (!e || e.isDeadChicken) { clearInterval(world.endbossTrackInterval); return; }
         if (!e.attackInterval) {
             const cx = world.character.x;
-            if (e.x > cx + 240) { approachLeft(e); attackPlayed = false; }
-            else if (e.x < cx - 340) { approachRight(e); attackPlayed = false; }
+            if (e.x > cx + 440) { approachLeft(e); attackPlayed = false; }
+            else if (e.x < cx - 540) { approachRight(e); attackPlayed = false; }
             else if (!attackPlayed) { attackPlayed = true; startEndbossAttack(e, world); }
         }
     }, 100);
@@ -90,11 +90,9 @@ function handleEnemyDirectionChange(enemy, characterX, directionCooldown) {
     if (typeof enemy.lastDirectionChange !== 'number') enemy.lastDirectionChange = 0;
     const now = Date.now();
     let directionChanged = false;
-    if (enemy.x > characterX && enemy.otherDirection !== false) {
-        directionChanged = handleLeftDirection(enemy, now, directionCooldown);
-    } else if (enemy.x < characterX && enemy.otherDirection !== true) {
-        directionChanged = handleRightDirection(enemy, now, directionCooldown);
-    } else {
+    if (enemy.x > characterX && enemy.otherDirection !== false) directionChanged = handleLeftDirection(enemy, now, directionCooldown);
+    else if (enemy.x < characterX && enemy.otherDirection !== true) directionChanged = handleRightDirection(enemy, now, directionCooldown);
+    else {
         enemy._pendingDirection = null;
         enemy._pendingSince = null;
     }
@@ -111,11 +109,8 @@ function startEnemyMoveInterval(enemy) {
         enemy.moveInterval = null;
     }
     enemy.speed = enemy.moveSpeed;
-    if (enemy.otherDirection === true) {
-        startMoveRightInterval(enemy);
-    } else {
-        startMoveLeftInterval(enemy);
-    }
+    if (enemy.otherDirection === true) startMoveRightInterval(enemy);
+    else startMoveLeftInterval(enemy);
 }
 
 /** Start moving the enemy to the right at regular intervals

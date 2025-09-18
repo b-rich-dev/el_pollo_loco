@@ -1,4 +1,5 @@
-@media (pointer: coarse) {
+/* Responsive Styles for El Pollo Loco Game */
+@media (pointer: coarse), (any-pointer: coarse), (hover: none), (any-hover: none) {
     .move-buttons {
         display: flex;
     }
@@ -10,43 +11,7 @@
     #gameControls {
         display: none;
     }
-}
 
-@media (max-width: 1024px) {
-    canvas {
-        border-radius: 0;
-    }
-
-    main {
-        border-radius: 0;
-    }
-
-    #startScreen {
-        border-radius: 0;
-    }
-
-    .pepe-greeting {
-        display: none;
-    }
-
-    #loseEndScreen {
-        border-radius: 0;
-    }
-
-    .win-screen-container {
-        border-radius: 0;
-
-        h2 {
-            padding-top: 20px;
-        }
-    }
-
-    .final-score-container {
-        padding-bottom: 140px;
-    }
-}
-
-@media screen and (max-width: 768px) and (orientation: portrait) {
     #portraitOverlay {
         position: fixed;
         inset: 0;
@@ -89,6 +54,40 @@
         z-index: 9999;
         max-width: 90vw;
         line-height: 1.4;
+    }
+}
+
+@media (max-width: 1024px) {
+    canvas {
+        border-radius: 0;
+    }
+
+    main {
+        border-radius: 0;
+    }
+
+    #startScreen {
+        border-radius: 0;
+    }
+
+    .pepe-greeting {
+        display: none;
+    }
+
+    #loseEndScreen {
+        border-radius: 0;
+    }
+
+    .win-screen-container {
+        border-radius: 0;
+
+        h2 {
+            padding-top: 20px;
+        }
+    }
+
+    .final-score-container {
+        padding-bottom: 140px;
     }
 }
 
@@ -152,3 +151,31 @@
         background-size: auto 160px;
     }
 }
+
+@media (orientation: portrait) and (pointer: coarse),
+       (orientation: portrait) and (any-pointer: coarse),
+       (orientation: portrait) and (hover: none),
+       (orientation: portrait) and (any-hover: none) {
+    #portraitOverlay {
+        opacity: 1 !important;
+        pointer-events: all !important;
+        z-index: 99999 !important;
+        display: flex !important;
+    }
+
+    #gameControls,
+    canvas,
+    main,
+    #startScreen {
+        pointer-events: none !important;
+        touch-action: none !important;
+        user-select: none !important;
+        -webkit-user-select: none !important;
+    }
+
+    canvas,
+    main {
+        filter: blur(3px);
+    }
+}
+

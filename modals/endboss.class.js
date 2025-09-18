@@ -127,7 +127,7 @@ class Endboss extends MoveableObject {
 
         let targetX = this.world && this.world.character ? this.world.character.x : this.x;
         let totalDist = Math.abs(targetX - this.x);
-        if (totalDist < 40) totalDist = 40;
+        if (totalDist < 400) totalDist = 400;
 
         const attackImages = this.IMAGES_ATTACK;
         const intervalTime = 1000 / 6;
@@ -147,15 +147,35 @@ class Endboss extends MoveableObject {
         let frame = 0;
         this.attackInterval = setInterval(() => {
             if (isGameStopped()) { clearInterval(this.attackInterval); this.attackInterval = null; return; }
-            this.img = this.imageCache[attackImages[frame]];
-            if (this.world && this.world.character) {
-                const dist = this.world.character.x - this.x;
-                this.x += Math.sign(dist) * this.speed;
-                this.otherDirection = dist > 0;
-            }
+            this.updateAttackFrameImage(attackImages, frame);
+            this.updateAttackPosition();
             if (frame === 5 && typeof this.littleJump === 'function') this.littleJump();
-            if (++frame >= attackImages.length) { clearInterval(this.attackInterval); this.attackInterval = null; this.speed = 7.8; if (typeof callback === 'function') callback(); }
+            if (++frame >= attackImages.length) {
+                this.finishAttack(callback);
+            }
         }, intervalTime);
+    }
+
+    /** Update the attack frame image */
+    updateAttackFrameImage(attackImages, frame) {
+        this.img = this.imageCache[attackImages[frame]];
+    }
+
+    /** Update position and direction during attack loop */
+    updateAttackPosition() {
+        if (this.world && this.world.character) {
+            const dist = this.world.character.x - this.x;
+            this.x += Math.sign(dist) * this.speed;
+            this.otherDirection = dist > 0;
+        }
+    }
+
+    /** Finish attack, clear interval and call callback */
+    finishAttack(callback) {
+        clearInterval(this.attackInterval);
+        this.attackInterval = null;
+        this.speed = 7.8;
+        if (typeof callback === 'function') callback();
     }
 
     /** Small jump during attack */

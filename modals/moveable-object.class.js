@@ -44,15 +44,10 @@ class MoveableObject extends DrawableObject {
 
     /** Check if the object is above ground level */
     isAboveGround() {
-        if (this instanceof ThrowableObject) {
-            return true;
-        } else if (this instanceof Endboss) {
-            return this.y < 94;
-        } else if (this instanceof Chicken || this instanceof Chicks) {
-            return this.y < 340;
-        } else {
-            return this.y < 148;
-        }
+        if (this instanceof ThrowableObject) return true;
+        else if (this instanceof Endboss) return this.y < 94;
+        else if (this instanceof Chicken || this instanceof Chicks) return this.y < 340;
+        else return this.y < 148;
     }
 
     /** Play animation by cycling through given images */
@@ -109,11 +104,8 @@ class MoveableObject extends DrawableObject {
     /** Reduce energy when hit and update last hit time */
     hit() {
         this.energy -= 5;
-        if (this.energy < 0) {
-            this.energy = 0;
-        } else {
-            this.lastHit = new Date().getTime();
-        }
+        if (this.energy < 0) this.energy = 0;
+        else this.lastHit = new Date().getTime();
     }
 
     /** Check if the object was recently hurt */
@@ -166,7 +158,13 @@ class MoveableObject extends DrawableObject {
         this.setImage(7, images);
 
         if (this.jumpLandTimer) clearTimeout(this.jumpLandTimer);
+        this.scheduleLandingStages(images);
 
+        return true;
+    }
+
+    /** Schedule the landing animation stages */
+    scheduleLandingStages(images) {
         const first = setTimeout(() => {
             this.setImage(8, images);
             const second = setTimeout(() => {
@@ -177,7 +175,6 @@ class MoveableObject extends DrawableObject {
         }, 80);
 
         this.jumpLandTimer = first;
-        return true;
     }
 
     /** Set the current image based on vertical speed

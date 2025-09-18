@@ -29,53 +29,24 @@ function init(level) {
  * This section listens for keyboard events and updates the keyboard state accordingly.
  * It also manages touch and mouse events for on-screen buttons to support mobile gameplay.
  */
-
 window.addEventListener('keydown', (e) => {
-    if (e.code === 'ArrowLeft') {
-        keyboard.LEFT = true;
-    }
-    if (e.code === 'ArrowUp') {
-        keyboard.UP = true;
-    }
-    if (e.code === 'ArrowRight') {
-        keyboard.RIGHT = true;
-    }
-    if (e.code === 'ArrowDown') {
-        keyboard.DOWN = true;
-    }
-    if (e.code === 'Space') {
-        keyboard.SPACE = true;
-    }
-    if (e.code === 'KeyD') {
-        keyboard.D = true;
-    }
-    if (e.code === 'Numpad0') {
-        keyboard.NUMPAD_ZERO = true;
-    }
+    if (e.code === 'ArrowLeft') keyboard.LEFT = true;
+    if (e.code === 'ArrowUp') keyboard.UP = true;
+    if (e.code === 'ArrowRight') keyboard.RIGHT = true;
+    if (e.code === 'ArrowDown') keyboard.DOWN = true;
+    if (e.code === 'Space') keyboard.SPACE = true;
+    if (e.code === 'KeyD') keyboard.D = true;
+    if (e.code === 'Numpad0') keyboard.NUMPAD_ZERO = true;
 });
 
 window.addEventListener('keyup', (e) => {
-    if (e.code === 'ArrowLeft') {
-        keyboard.LEFT = false;
-    }
-    if (e.code === 'ArrowUp') {
-        keyboard.UP = false;
-    }
-    if (e.code === 'ArrowRight') {
-        keyboard.RIGHT = false;
-    }
-    if (e.code === 'ArrowDown') {
-        keyboard.DOWN = false;
-    }
-    if (e.code === 'Space') {
-        keyboard.SPACE = false;
-    }
-    if (e.code === 'KeyD') {
-        keyboard.D = false;
-    }
-    if (e.code === 'Numpad0') {
-        keyboard.NUMPAD_ZERO = false;
-    }
+    if (e.code === 'ArrowLeft') keyboard.LEFT = false;
+    if (e.code === 'ArrowUp') keyboard.UP = false;
+    if (e.code === 'ArrowRight') keyboard.RIGHT = false;
+    if (e.code === 'ArrowDown') keyboard.DOWN = false;
+    if (e.code === 'Space') keyboard.SPACE = false;
+    if (e.code === 'KeyD') keyboard.D = false;
+    if (e.code === 'Numpad0') keyboard.NUMPAD_ZERO = false;
 });
 
 moveLeft.addEventListener('mousedown', () => {

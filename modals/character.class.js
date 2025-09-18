@@ -61,25 +61,10 @@ class Character extends MoveableObject {
         'assets/img/2_character_pepe/5_dead/D-56.png'
     ];
     world;
-    speed = 4.8;
-    offset = {
-        top: 138,
-        left: 36,
-        right: 52,
-        bottom: 13
-    };
-    offsetJump = {
-        top: 138,
-        left: 38,
-        right: 42,
-        bottom: 13
-    };
-    setOffset = {
-        top: 138,
-        left: 36,
-        right: 52,
-        bottom: 13
-    };
+    speed = 6.8;
+    offset = { top: 138, left: 36, right: 52, bottom: 13 };
+    offsetJump = { top: 138, left: 38, right: 42, bottom: 13 };
+    setOffset = { top: 138, left: 36, right: 52, bottom: 13 };
     lastActionTime = Date.now();
     lastWasAboveGround = false;
     isCharacterDead = false;
@@ -92,6 +77,7 @@ class Character extends MoveableObject {
     WALK_SOUND = new Audio('assets/audio/walk/walk.mp3');
     WIN_SOUND = new Audio('assets/audio/win/win.mp3');
     action = false;
+    showBaseFrameOnce = false;
 
     /** Create the character object */
     constructor() {
@@ -127,7 +113,7 @@ class Character extends MoveableObject {
 
     /** Main animation loop for character actions */
     animate() {
-        this.controlInterval = setInterval(() => this.moveCharacter(), 1000/50);
+        this.controlInterval = setInterval(() => this.moveCharacter(), 1000 / 50);
         this.jumpLandingInterval = setInterval(() => this.jumpLandingCheck(), 50);
         this.idleCheckInterval = setInterval(() => this.characterIdleCheck(), 220);
         this.idleLongCheckInterval = setInterval(() => this.characterLongIdleCheck(), 800);
@@ -209,7 +195,7 @@ class Character extends MoveableObject {
         if (isGameStopped()) return;
 
         this.action = false;
-        if (this.hasJustLanded()) this.hasJustLandedAction(); 
+        if (this.hasJustLanded()) this.hasJustLandedAction();
         else if (this.isHurt()) this.isHurtAction();
         else if (this.isAboveGround()) this.isAboveGroundAction();
         else if (this.isMoving()) this.move();
@@ -251,15 +237,15 @@ class Character extends MoveableObject {
     /** Checks if the character has been inactive for a certain time and plays idle animations */
     characterIdleCheck() {
         if (isGameStopped()) return;
-        if (this.isInactive(100)) {
-            this.playAnimation(this.IMAGES_IDLE);
-        }
+        if (this.showBaseFrameOnce) this.setThrowImage();
+        if (this.isInactive(100)) this.playAnimation(this.IMAGES_IDLE);
     }
 
     /** Checks if the character has been inactive for a longer time and plays long idle animations */
     characterLongIdleCheck() {
         if (isGameStopped()) return;
-        if (this.isInactive(8000) && this.idleCheckInterval) {
+        if (this.showBaseFrameOnce) this.setThrowImage();
+        if (this.isInactive(6000) && this.idleCheckInterval) {
             clearInterval(this.idleCheckInterval);
             this.idleCheckInterval = null;
             if (!window.isMuted) window.safePlay(this.SLEEPING_SOUND);
@@ -269,6 +255,13 @@ class Character extends MoveableObject {
                 }, 220);
             }
         }
+    }
+
+    /** Sets the Throw Image */
+    setThrowImage() {
+        if (this.imageCache && this.imageCache[this.IMAGES_WALKING[0]]) this.img = this.imageCache[this.IMAGES_WALKING[0]];
+        this.showBaseFrameOnce = false;
+        return;
     }
 
     /** Checks if the character has been inactive for a specified time 

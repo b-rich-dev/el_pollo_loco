@@ -55,15 +55,19 @@ class ThrowableObject extends MoveableObject {
         }
         this.x = x;
         this.y = y;
-
         this.world = world;
         this.directionLeft = directionLeft;
+        if (this.world && this.world.character) {
+            const char = this.world.character;
+            const baseKey = 'assets/img/2_character_pepe/2_walk/W-21.png';
+            if (char.imageCache && char.imageCache[baseKey]) char.img = char.imageCache[baseKey];
+            char.showBaseFrameOnce = true;
+        }
         if (world && world.statusBarBottle && world.statusBarBottle.bottles > 0) {
             this.throwBottle();
         } else {
             this.throwCoin();
         }
-
         window.COIN_SOUND = this.COIN_SOUND;
         window.BOTTLE_BREAK_SOUND = this.BOTTLE_BREAK_SOUND;
         window.SHOOTING_SOUND = this.SHOOTING_SOUND;
@@ -91,6 +95,7 @@ class ThrowableObject extends MoveableObject {
     /** Reset the character's idle timer to prevent idle animations */
     resetIdleTimer() {
         this.world.character.action = true;
+        this.world.character.showBaseFrameOnce = true;
         if (typeof this.world.character.resetIdleTimer === 'function') this.world.character.resetIdleTimer();
         else this.world.character.lastActionTime = Date.now();
     }
@@ -145,12 +150,15 @@ class ThrowableObject extends MoveableObject {
         this.animateRotationCoin();
 
         const enemy = this.getCollidingEnemy();
-        if (this.world && this.world.character && (
+        if (this.characterOutOfBounds()) clearInterval(this.throwCoinInterval);
+    }
+
+    /** Check if the coin has moved too far from the character */
+    characterOutOfBounds() {
+        return this.world && this.world.character && (
             (!this.directionLeft && this.x >= this.world.character.x + 1000) ||
             (this.directionLeft && this.x <= this.world.character.x - 1000)
-        )) {
-            clearInterval(this.throwCoinInterval);
-        }
+        )
     }
 
     /** Animate the rotation of the bottle during the throw */

@@ -1,6 +1,5 @@
 let main = document.getElementById("main");
 let startScreen = document.getElementById("startScreen");
-// let dialog = document.getElementById("howToPlayDialog");
 let loseScreen = document.getElementById('loseEndScreen');
 let winScreen = document.getElementById('winEndScreen');
 let canvasWrapper = document.getElementById('canvasWrapper');
@@ -15,40 +14,7 @@ function startGame() {
     main.style.display = "none";
     canvasWrapper.style.display = "flex";
     init(createLevel1());
-    window.ALL_SOUNDS = [
-        window.MAIN_SOUND,
-        window.COIN_SOUND,
-        window.BOTTLE_BREAK_SOUND,
-        window.SHOOTING_SOUND,
-        window.COLLECT_BOTTLE_SOUND,
-        window.COLLECT_COIN_SOUND,
-        window.ENDBOSS_ATTACK_SOUND,
-        window.ENDBOSS_HURT_SOUND,
-        window.ENDBOSS_WALK_SOUND,
-        window.ENDBOSS_ALERT_SOUND,
-        window.ENDBOSS_SONIC_BOMB_SOUND,
-        window.ENDBOSS_FIGHT_SOUND,
-        window.ENDBOSS_DEATH_SOUND,
-        window.ENDBOSS_SLIDE_SOUND,
-        window.ENDBOSS_JUMP_SOUND,
-        window.ENDBOSS_LITTLE_JUMP_SOUND,
-        window.ENDBOSS_WIN_SOUND,
-        window.CHICKS_HURT_SOUND,
-        window.CHICKS_JUMP_SOUND,
-        window.CHICKS_WALK_SOUND,
-        window.CHICKS_GENERAL_SOUND,
-        window.CHICKEN_DEATH_SOUND,
-        window.CHICKEN_JUMP_SOUND,
-        window.CHICKEN_WALK_SOUND,
-        window.CHICKEN_GENERAL_SOUND,
-        window.CHARACTER_DYING_SOUND,
-        window.CHARACTER_JUMP_SOUND,
-        window.CHARACTER_LITTLE_JUMP_SOUND,
-        window.CHARACTER_HURT_SOUND,
-        window.CHARACTER_SLEEPING_SOUND,
-        window.CHARACTER_WALK_SOUND,
-        window.CHARACTER_WIN_SOUND
-    ];
+    window.ALL_SOUNDS = [window.MAIN_SOUND, window.COIN_SOUND, window.BOTTLE_BREAK_SOUND, window.SHOOTING_SOUND, window.COLLECT_BOTTLE_SOUND, window.COLLECT_COIN_SOUND, window.ENDBOSS_ATTACK_SOUND, window.ENDBOSS_HURT_SOUND, window.ENDBOSS_WALK_SOUND, window.ENDBOSS_ALERT_SOUND, window.ENDBOSS_SONIC_BOMB_SOUND, window.ENDBOSS_FIGHT_SOUND, window.ENDBOSS_DEATH_SOUND, window.ENDBOSS_SLIDE_SOUND, window.ENDBOSS_JUMP_SOUND, window.ENDBOSS_LITTLE_JUMP_SOUND, window.ENDBOSS_WIN_SOUND, window.CHICKS_HURT_SOUND, window.CHICKS_JUMP_SOUND, window.CHICKS_WALK_SOUND, window.CHICKS_GENERAL_SOUND, window.CHICKEN_DEATH_SOUND, window.CHICKEN_JUMP_SOUND, window.CHICKEN_WALK_SOUND, window.CHICKEN_GENERAL_SOUND, window.CHARACTER_DYING_SOUND, window.CHARACTER_JUMP_SOUND, window.CHARACTER_LITTLE_JUMP_SOUND, window.CHARACTER_HURT_SOUND, window.CHARACTER_SLEEPING_SOUND, window.CHARACTER_WALK_SOUND, window.CHARACTER_WIN_SOUND];
 }
 
 /** Handle mute functionality for all sounds */
@@ -103,41 +69,7 @@ function restartGame() {
 
 /** Stop all active intervals in the game */
 function stopAllIntervals() {
-    const intervals = [
-        window.world?.runInterval,
-        window.world?.enemyTrackingInterval,
-        window.world?.fightInterval,
-        window.world?.endbossMoveInterval,
-        window.world?.endbossTrackInterval,
-        window.character?.controlInterval,
-        window.character?.jumpLandingInterval,
-        window.character?.idleCheckInterval,
-        window.character?.idleLongCheckInterval,
-        window.character?.dyingInterval,
-        window.character?.fallThroughCanvasInterval,
-        window.chicken?.moveLeftAnimateIntervalEnemy,
-        window.chicken?.walkingInterval,
-        window.chicks?.moveLeftAnimateIntervalEnemy,
-        window.chicks?.walkingInterval,
-        window.coins?.animationCoinInterval,
-        window.endboss?.walkingInterval,
-        window.endboss?.attackInterval,
-        window.endboss?.hurtInterval,
-        window.endboss?.endbossAlertInterval,
-        window.endboss?.dyingInterval,
-        window.endboss?.fallThroughCanvasInterval,
-        window.enemy?.moveLeftAnimateIntervalEnemy,
-        window.enemy?.moveInterval,
-        window.runInterval,
-        window.enemyTrackingInterval,
-        window.fightInterval,
-        window.endbossMoveInterval,
-        window.world?.endbossTrackInterval,
-        window.moveableObject?.gravityInterval,
-        window.throwableObject?.throwBottleInterval,
-        window.throwableObject?.throwCoinInterval,
-        window.throwableObject?.splashInterval
-    ];
+    const intervals = [window.world?.runInterval, window.world?.enemyTrackingInterval, window.world?.fightInterval, window.world?.endbossMoveInterval, window.world?.endbossTrackInterval, window.character?.controlInterval, window.character?.jumpLandingInterval, window.character?.idleCheckInterval, window.character?.idleLongCheckInterval, window.character?.dyingInterval, window.character?.fallThroughCanvasInterval, window.chicken?.moveLeftAnimateIntervalEnemy, window.chicken?.walkingInterval, window.chicks?.moveLeftAnimateIntervalEnemy, window.chicks?.walkingInterval, window.coins?.animationCoinInterval, window.endboss?.walkingInterval, window.endboss?.attackInterval, window.endboss?.hurtInterval, window.endboss?.endbossAlertInterval, window.endboss?.dyingInterval, window.endboss?.fallThroughCanvasInterval, window.enemy?.moveLeftAnimateIntervalEnemy, window.enemy?.moveInterval, window.runInterval, window.enemyTrackingInterval, window.fightInterval, window.endbossMoveInterval, window.world?.endbossTrackInterval, window.moveableObject?.gravityInterval, window.throwableObject?.throwBottleInterval, window.throwableObject?.throwCoinInterval, window.throwableObject?.splashInterval];
 
     intervals.forEach(interval => {
         if (interval) clearInterval(interval);
@@ -147,7 +79,6 @@ function stopAllIntervals() {
 /** Stop all currently playing sounds */
 function stopAllSounds() {
     const sounds = [];
-
     if (window.ALL_SOUNDS && Array.isArray(window.ALL_SOUNDS)) sounds.push(...window.ALL_SOUNDS);
 
     Object.keys(window).forEach(key => {
@@ -164,25 +95,11 @@ function stopAllSounds() {
 
 /** Reset all global game variables to their initial state */
 function resetGameVariables() {
-    ['world', 'level', 'camera_x', 'throwableObject', 'shootingPossible', 'runInterval',
-        'enemyTrackingInterval', 'fightInterval', 'endbossMoveInterval', 'endbossTrackInterval',
-        'endbossStarted', 'endbossStartDone', 'endbossDefeated', 'endbossAttackInterval',
-        'endbossAlert', 'lastThrowTime', 'gameOverScreens'
-    ].forEach(key => window[key] = null);
-
+    ['world', 'level', 'camera_x', 'throwableObject', 'shootingPossible', 'runInterval', 'enemyTrackingInterval', 'fightInterval', 'endbossMoveInterval', 'endbossTrackInterval', 'endbossStarted', 'endbossStartDone', 'endbossDefeated', 'endbossAttackInterval', 'endbossAlert', 'lastThrowTime', 'gameOverScreens'].forEach(key => window[key] = null);
     window.objectThrowCooldown = 300;
-
     ['statusBarHealth', 'statusBarCoins', 'statusBarBottle', 'statusBarBoss'].forEach(key => window[key] = null);
 
-    Object.assign(window, {
-        currentRotation: 0,
-        groundLevel: 400,
-        directionLeft: false,
-        offset: { top: 0, left: 0, right: 0, bottom: 0 },
-        isSplashing: false,
-        splashInterval: null,
-        isCoin: false
-    });
+    Object.assign(window, { currentRotation: 0, groundLevel: 400, directionLeft: false, offset: { top: 0, left: 0, right: 0, bottom: 0 }, isSplashing: false, splashInterval: null, isCoin: false });
 
     ['canvas', 'ctx', 'keyboard'].forEach(key => window[key] = null);
 }
@@ -213,16 +130,20 @@ function setWinInfo() {
     if (window.world && window.world.gameOver) {
         if (finalScore && finalSentence) {
             const coins = window.world.statusBarCoins.coins;
-            finalScore.textContent = `${coins}`;
-            let smileyIndex = coins;
-            if (smileyIndex < 0) smileyIndex = 0;
-            if (smileyIndex >= smilies.length) smileyIndex = smilies.length - 1;
-            finalSentence.innerHTML = "";
-            finalSentence.innerHTML = smilies[smileyIndex];
-        } else {
-            console.warn('finalScore oder finalSentence ist null!');
-        }
+            renderFinalScoreAndSmiley(coins, finalScore, finalSentence);
+        } else console.warn('finalScore oder finalSentence ist null!');
     }
+}
+
+/** Set finalScore and finalSentence with the appropriate smiley */
+function renderFinalScoreAndSmiley(coins, finalScoreElem, finalSentenceElem) {
+	coins = Number(coins) || 0;
+	if (finalScoreElem) finalScoreElem.textContent = `${coins}`;
+	if (!finalSentenceElem) return;
+	let smileyIndex = coins;
+	if (smileyIndex < 0) smileyIndex = 0;
+	if (smileyIndex >= smilies.length) smileyIndex = smilies.length - 1;
+	finalSentenceElem.innerHTML = smilies[smileyIndex] || '';
 }
 
 /** Check if the game is currently stopped */
@@ -256,13 +177,11 @@ function setSoundMuted(sound) {
 function safePlay(sound) {
     if (!sound) return;
     try {
-        // Nur versuchen zu spielen, wenn aktuell pausiert
         if (sound.paused) {
             const p = sound.play();
             if (p && typeof p.then === 'function') {
                 p.catch(e => {
                     if (e && e.name !== 'AbortError') console.error(e);
-                    // AbortError ignorieren (Race zwischen play/pause)
                 });
             }
         }
@@ -271,7 +190,7 @@ function safePlay(sound) {
     }
 }
 
-/** Safe pause wrapper: pausiert Audio robust */
+/** Safe pause wrapper: pauses audio robust */
 function safePause(sound) {
     if (!sound) return;
     try {
