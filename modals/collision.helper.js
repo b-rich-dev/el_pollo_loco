@@ -131,16 +131,15 @@ export function checkThrowableObjectEnemyCollisions(world) {
 */
 function handleEndbossCollision(world, obj, objIndex, enemy, setHit) {
     if (enemy.endbossEnergy <= 0) return;
-    if (obj.isCoin) enemy.endbossEnergy -= 10;
-    else enemy.endbossEnergy -= 20;
-    if (enemy.endbossEnergy < 0) enemy.endbossEnergy = 0;
-    hurtBehavior(world, enemy);
+
+    const damage = obj.isCoin ? 10 : 20;
+    let applied = false;
+    if (typeof enemy.receiveDamage === 'function') applied = enemy.receiveDamage(damage);
+    else applied = toDoIfNoReceiveDamage(world, obj, enemy, damage);
+
+    if (typeof world.statusBarBoss?.setPercentage === 'function') world.statusBarBoss.setPercentage(enemy.endbossEnergy);
     if (obj.IMAGES_BOTTLE_ROTATION && !obj.isCoin && !obj.isSplashing) setObjectAnimation(obj, enemy, setHit);
-    else {
-        setHit();
-        world.throwableObject.splice(objIndex, 1);
-    }
-    if (enemy.endbossEnergy === 0) killEnemy(enemy);
+    else removeThrowableAndSetHit(world, objIndex, setHit);
 }
 
 /** Handle the actions when an enemy is hurt
@@ -165,12 +164,8 @@ function handleEnemyCollision(world, obj, objIndex, enemy, setHit) {
             enemy._remove = true;
         });
     }
-    if (obj.IMAGES_BOTTLE_ROTATION && !obj.isCoin && !obj.isSplashing) {
-        setObjectAnimation(obj, enemy, setHit);
-    } else {
-        setHit();
-        world.throwableObject.splice(objIndex, 1);
-    }
+    if (obj.IMAGES_BOTTLE_ROTATION && !obj.isCoin && !obj.isSplashing) setObjectAnimation(obj, enemy, setHit);
+    else removeThrowableAndSetHit(world, objIndex, setHit);
 }
 
 /** Handle the object animation when it hits an enemy 
@@ -187,6 +182,14 @@ function setObjectAnimation(obj, enemy, setHit) {
     setHit();
 }
 
+/** Remove the throwable object from the world and call setHit */
+function removeThrowableAndSetHit(world, objIndex, setHit) {
+    if (typeof setHit === 'function') setHit();
+    if (world && Array.isArray(world.throwableObject) && typeof objIndex === 'number') {
+        world.throwableObject.splice(objIndex, 1);
+    }
+}
+
 /** Handle the actions when an enemy is hurt
 * @param {Enemy} enemy - The enemy instance.
 */
@@ -194,4 +197,21 @@ function killEnemy(enemy) {
     enemy.die(() => {
         enemy._remove = true;
     });
+}
+
+/** Fallback function to handle damage when no specific receiveDamage function exists
+* @param {World} world - The game world instance.
+* @param {ThrowableObject} obj - The throwable object instance.
+* @param {Enemy} enemy - The enemy instance.
+* @param {number} damage - The amount of damage to apply.
+* @returns {boolean} - Returns true if damage was applied, false otherwise.
+*/
+function toDoIfNoReceiveDamage(world, obj, enemy, damage) {
+    if (!enemy) return false;
+
+    enemy.endbossEnergy -= damage;
+    if (enemy.endbossEnergy < 0) enemy.endbossEnergy = 0;
+    hurtBehavior(world, enemy);
+    if (enemy.endbossEnergy === 0) killEnemy(enemy);
+    return true;
 }

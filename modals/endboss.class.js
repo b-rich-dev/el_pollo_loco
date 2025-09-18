@@ -5,7 +5,7 @@ class Endboss extends MoveableObject {
     height = 360;
     y = 94;
     x = 2960;
-    speed = 2;
+    speed = 5.8;
     offset = {
         top: 64,
         left: 20,
@@ -51,6 +51,7 @@ class Endboss extends MoveableObject {
     ];
     isDeadChicken = false;
     endbossEnergy = 100;
+    invulnerable = false;
     world;
     ATTACK_SOUND = new Audio('assets/audio/endboss/attack.mp3');
     HURT_SOUND = new Audio('assets/audio/ouch/endboss_hurt.mp3');
@@ -153,7 +154,7 @@ class Endboss extends MoveableObject {
                 this.otherDirection = dist > 0;
             }
             if (frame === 5 && typeof this.littleJump === 'function') this.littleJump();
-            if (++frame >= attackImages.length) { clearInterval(this.attackInterval); this.attackInterval = null; this.speed = 5; if (typeof callback === 'function') callback(); }
+            if (++frame >= attackImages.length) { clearInterval(this.attackInterval); this.attackInterval = null; this.speed = 7.8; if (typeof callback === 'function') callback(); }
         }, intervalTime);
     }
 
@@ -170,15 +171,48 @@ class Endboss extends MoveableObject {
         if (window.world && window.world.gameStopped) return;
         if (this.isHurting) return;
         this.isHurting = true;
-        let frame = 0, repeat = 0, maxRepeats = 3;
+        this.invulnerable = true;
         if (this.HURT_SOUND) this.HURT_SOUND.volume = 0.4;
-        if (!window.isMuted)  window.safePlay(this.HURT_SOUND);
+        if (!window.isMuted) window.safePlay(this.HURT_SOUND);
+        this.startHurtAnimation(3, 200);
+    }
+
+    /** Start the hurt animation loop */
+    startHurtAnimation(maxRepeats = 3, frameInterval = 200) {
+        let frame = 0, repeat = 0;
         if (this.hurtInterval) clearInterval(this.hurtInterval);
         this.hurtInterval = setInterval(() => {
-            if (window.world && window.world.gameStopped) { clearInterval(this.hurtInterval); this.hurtInterval = null; this.isHurting = false; return; }
+            if (window.world && window.world.gameStopped) { this.clearHurtIntervals(); return; }
             this.img = this.imageCache[this.IMAGES_HURT[frame++]];
-            if (frame >= this.IMAGES_HURT.length) { frame = 0; if (++repeat >= maxRepeats) { clearInterval(this.hurtInterval); this.hurtInterval = null; this.isHurting = false; } }
-        }, 100);
+            if (frame >= this.IMAGES_HURT.length) {
+                frame = 0;
+                if (++repeat >= maxRepeats) this.clearHurtIntervals();
+            }
+        }, frameInterval);
+    }
+
+    /** Clear all intervals related to hurting */
+    clearHurtIntervals() {
+        clearInterval(this.hurtInterval);
+        this.hurtInterval = null;
+        this.isHurting = false;
+        this.invulnerable = false;
+    }
+
+    /** Receive damage and update energy
+    * @param {number} amount - The amount of damage to receive
+    * @returns {boolean} - True if damage was received, false if invulnerable or already dead
+    */
+    receiveDamage(amount) {
+        if (this.isDeadChicken || this.invulnerable) return false;
+        this.endbossEnergy -= amount;
+        if (this.endbossEnergy <= 0) {
+            this.endbossEnergy = 0;
+            this.die();
+        } else {
+            this.hurt();
+        }
+        return true;
     }
 
     /** Handle the death of the endboss
@@ -286,7 +320,7 @@ class Endboss extends MoveableObject {
         clearInterval(this.endbossAlertInterval); this.endbossAlertInterval = null;
         this.slideBossStatusbar(world);
         if (world) world.shootingPossible = true;
-        this.speed = 5;
+        this.speed = 7.8;
         if (typeof callback === 'function') callback();
     }
 

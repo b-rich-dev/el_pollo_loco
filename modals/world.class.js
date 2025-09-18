@@ -29,6 +29,7 @@ class World {
     gameOver = false;
     MAIN_SOUND = null;
     gameStopped = false;
+    prevThrowPressed = false;
 
     /** Initialize the game world */
     constructor(canvas, ctx, keyboard, level) {
@@ -124,13 +125,18 @@ class World {
     */
     trySpawnThrowable(now) {
         const pressed = this.keyboard.D || this.keyboard.NUMPAD_ZERO;
-        if (!pressed || now - this.lastThrowTime <= this.objectThrowCooldown) return;
 
-        if (this.statusBarBottle.bottles > 0) {
-            this.spawnThrowable(true, now);
-        } else if (this.statusBarCoins.coins > 0) {
-            this.spawnThrowable(false, now);
+        if (!pressed) { this.prevThrowPressed = false; return; }  
+        if (this.prevThrowPressed) return;
+        if (now - this.lastThrowTime <= this.objectThrowCooldown) {
+            this.prevThrowPressed = true;
+            return;
         }
+
+        if (this.statusBarBottle.bottles > 0) this.spawnThrowable(true, now);
+        else if (this.statusBarCoins.coins > 0) this.spawnThrowable(false, now);
+        
+        this.prevThrowPressed = true;
     }
 
     /** Spawn a throwable object (bottle or coin)
@@ -332,7 +338,7 @@ class World {
 
     /** Start walking towards the character */
     startWalking() {
-        this.endboss.speed = 16;
+        this.endboss.speed = 18;
         this.endboss.walking();
         this.endboss.moveLeft();
     }

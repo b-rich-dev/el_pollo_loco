@@ -32,7 +32,7 @@ class Chicken extends MoveableObject {
         this.imageCache[this.IMAGE_DEAD].src = this.IMAGE_DEAD;
         this.x = 280 + Math.random() * 2000;
         this.y = 340;
-        this.moveSpeed = 0.20 + Math.random() * 0.30;
+        this.moveSpeed = 2.80 + Math.random() * 0.30;
         this.speed = this.moveSpeed;
         this.otherDirection = false;
         this.isDeadChicken = false;

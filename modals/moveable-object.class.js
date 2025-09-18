@@ -21,14 +21,9 @@ class MoveableObject extends DrawableObject {
         if (this.gravityInterval) return;
         this.gravityInterval = setInterval(() => {
             if (this instanceof ThrowableObject) {
-                if (this.y >= this.groundLevel) {
-                    this.setGravity();
-                } else if (this.isAboveGround() || this.speedY > 0) {
-                    this.reduceSpeedYandAcceleration();
-                }
-            } else if (this.isAboveGround() || this.speedY > 0) {
-                this.reduceSpeedYandAcceleration();
-            }
+                if (this.y >= this.groundLevel) this.setGravity();
+                else if (this.isAboveGround() || this.speedY > 0) this.reduceSpeedYandAcceleration();
+            } else if (this.isAboveGround() || this.speedY > 0) this.reduceSpeedYandAcceleration();
         }, 1000 / 25);
     }
 

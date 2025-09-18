@@ -61,7 +61,7 @@ class Character extends MoveableObject {
         'assets/img/2_character_pepe/5_dead/D-56.png'
     ];
     world;
-    speed = 2.2;
+    speed = 4.8;
     offset = {
         top: 138,
         left: 36,
@@ -127,7 +127,7 @@ class Character extends MoveableObject {
 
     /** Main animation loop for character actions */
     animate() {
-        this.controlInterval = setInterval(() => this.moveCharacter(), 1000 / 60);
+        this.controlInterval = setInterval(() => this.moveCharacter(), 1000/50);
         this.jumpLandingInterval = setInterval(() => this.jumpLandingCheck(), 50);
         this.idleCheckInterval = setInterval(() => this.characterIdleCheck(), 220);
         this.idleLongCheckInterval = setInterval(() => this.characterLongIdleCheck(), 800);
@@ -355,10 +355,10 @@ class Character extends MoveableObject {
     startFallThroughCanvas(callback) {
         this.fallThroughCanvasInterval = setInterval(() => {
             this.x += 1;
-            this.y += 6; // Geschwindigkeit des Fallens
-            if (this.y > 1000) { // Canvas verlassen (anpassen je nach Canvas-Höhe)
+            this.y += 6;
+            if (this.y > 1000) {
                 clearInterval(this.fallThroughCanvasInterval);
-                this.setDead(); // <-- Hier wird isCharacterDead gesetzt
+                this.setDead();
                 if (callback) callback();
             }
         }, 10);

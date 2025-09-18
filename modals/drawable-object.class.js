@@ -61,7 +61,7 @@ class DrawableObject {
     drawBoundingBox(ctx) {
         if (this.allCollidingObjects()) {
             ctx.beginPath();
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 2;
             ctx.strokeStyle = 'transparent';
             ctx.rect(
                 this.x + this.offset.left,

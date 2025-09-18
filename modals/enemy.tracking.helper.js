@@ -19,12 +19,12 @@ export function trackEndbossToCharacter(world) {
 /** Functions to manage enemy movement and direction changes
 * @param {Object} e - The enemy object
 */
-function approachLeft(e) { e.otherDirection = false; e.speed = 5; e.moveLeft(); e.walking(); e.enemyRandomJump(); }
+function approachLeft(e) { e.otherDirection = false; e.speed = 7.8; e.moveLeft(); e.walking(); e.enemyRandomJump(); }
 
 /** Functions to manage enemy movement and direction changes
 * @param {Object} e - The enemy object
 */
-function approachRight(e) { e.otherDirection = true; e.speed = 5; e.moveRight(); e.walking(); e.enemyRandomJump(); }
+function approachRight(e) { e.otherDirection = true; e.speed = 7.8; e.moveRight(); e.walking(); e.enemyRandomJump(); }
 
 /** Start the endboss attack sequence
 * @param {Object} e - The enemy object
