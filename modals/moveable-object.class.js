@@ -24,7 +24,7 @@ class MoveableObject extends DrawableObject {
                 if (this.y >= this.groundLevel) this.setGravity();
                 else if (this.isAboveGround() || this.speedY > 0) this.reduceSpeedYandAcceleration();
             } else if (this.isAboveGround() || this.speedY > 0) this.reduceSpeedYandAcceleration();
-        }, 1000 / 25);
+        }, 1000 / 60);
     }
 
     /** Set the object on the ground level */
@@ -95,7 +95,7 @@ class MoveableObject extends DrawableObject {
             this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
             this.x + this.offset.left < mo.x + mo.width - mo.offset.right;
         const isFromAbove = characterBottom >= enemyTop &&
-            characterBottom <= enemyTop + 26 &&
+            characterBottom <= enemyTop + 24 &&
             this.speedY < 0 &&
             isHorizontalOverlap;
         return isFromAbove;

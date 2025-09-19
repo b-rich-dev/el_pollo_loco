@@ -245,7 +245,7 @@ class Character extends MoveableObject {
     characterLongIdleCheck() {
         if (isGameStopped()) return;
         if (this.showBaseFrameOnce) this.setThrowImage();
-        if (this.isInactive(6000) && this.idleCheckInterval) {
+        if (this.isInactive(5000) && this.idleCheckInterval) {
             clearInterval(this.idleCheckInterval);
             this.idleCheckInterval = null;
             if (!window.isMuted) window.safePlay(this.SLEEPING_SOUND);

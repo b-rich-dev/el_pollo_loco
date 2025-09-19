@@ -79,7 +79,7 @@ class ThrowableObject extends MoveableObject {
     /** Throw the bottle with initial upward speed and apply gravity */
     throwBottle() {
         if (!window.isMuted) this.SHOOTING_SOUND.play();
-        this.speedY = 18;
+        this.speedY = 16;
         if (this.world && this.world.character) this.resetIdleTimer();
         this.applyGravity();
         this.throwBottleInterval = setInterval(() => {
@@ -102,8 +102,8 @@ class ThrowableObject extends MoveableObject {
 
     /** Update bottle horizontal position based on throw direction */
     updateBottleHorizontal() {
-        if (this.directionLeft) this.x -= 12;
-        else this.x += 12;
+        if (this.directionLeft) this.x -= 28;
+        else this.x += 28;
     }
 
     /** Stop bottle movement and start splash animation */
@@ -137,15 +137,15 @@ class ThrowableObject extends MoveableObject {
         if (!window.isMuted) this.COIN_SOUND.play();
         this.speedY = 8;
         if (this.world && this.world.character) this.resetIdleTimer();
-        this.groundLevel = 800;
+        this.groundLevel = 600;
         this.applyGravity();
-        this.throwCoinInterval = setInterval(() => this.updateCoinFrame(), 52);
+        this.throwCoinInterval = setInterval(() => this.updateCoinFrame(), 42);
     }
 
     /** Update coin horizontal position based on throw direction */
     updateCoinFrame() {
-        if (this.directionLeft) this.x -= 30;
-        else this.x += 30;
+        if (this.directionLeft) this.x -= 48;
+        else this.x += 48;
 
         this.animateRotationCoin();
 
@@ -183,7 +183,7 @@ class ThrowableObject extends MoveableObject {
         this.isSplashing = true;
         this.currentRotation = 0;
         this.loadImages(this.IMAGES_BOTTLE_SPLASH);
-        this.splashInterval = setInterval(this.animateSplashFrame.bind(this), 120);
+        this.splashInterval = setInterval(this.animateSplashFrame.bind(this), 60);
     }
 
     /** Update splash animation frame */
