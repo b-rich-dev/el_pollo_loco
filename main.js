@@ -3,7 +3,7 @@ let startScreen = document.getElementById("startScreen");
 let loseScreen = document.getElementById('loseEndScreen');
 let winScreen = document.getElementById('winEndScreen');
 let canvasWrapper = document.getElementById('canvasWrapper');
-const smilies = [trashSmile(), lameSmile(), mehSmile(), basicSmile(), alrightSmile(), chillSmile(), coolSmile(), awesomeSmile(), epicSmile(), absolutelyGreatSmile()];
+const smilies = [trashSmile(), lameSmile(), mehSmile(), basicSmile(), alrightSmile(), chillSmile(), coolSmile(), awesomeSmile(), epicSmile(), absolutelyGreatSmile(), legendarySmile()];
 const muteButton = document.getElementById('muteButton');
 window.isMuted = false;
 

@@ -99,7 +99,8 @@ function epicSmile() {
 
 /** Template for absolutely great smiley face */
 function absolutelyGreatSmile() {
-    return `<svg width="28" height="28" viewBox="0 0 40 60">
+    return `<span>Absolutely Great</span>
+            <svg width="28" height="28" viewBox="0 0 40 60">
                 <defs>
                     <linearGradient id="g-trophy" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stop-color="#FFD54F"/>   <!-- gold oben -->
@@ -124,6 +125,50 @@ function absolutelyGreatSmile() {
 
             <!-- Base -->
                 <rect x="12" y="48" width="16" height="6" fill="#6D4C41" stroke="#2F2F2F" stroke-width="2"/>
-            </svg>
-            <span>Absolutely Great</span>`
+            </svg>`
 }
+
+/** Template for legendary smiley face */
+function legendarySmile() {
+  return `  <span>Legendary</span>
+            <svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                    <radialGradient id="g-legendary-11" cx="40%" cy="30%" r="65%">
+                        <stop offset="0%" stop-color="#FFF9E6"/>
+                        <stop offset="30%" stop-color="#FFD54F"/>
+                        <stop offset="100%" stop-color="#FFAB00"/>
+                    </radialGradient>
+
+                    <filter id="f-legendary-11" x="-30%" y="-30%" width="160%" height="160%">
+                        <feDropShadow dx="0" dy="1.2" stdDeviation="1.6" flood-color="#000" flood-opacity="0.18"/>
+                    </filter>
+                </defs>
+
+                <!-- Medallion -->
+                <g filter="url(#f-legendary-11)">
+                    <circle cx="32" cy="26" r="20" fill="url(#g-legendary-11)" stroke="#2F2F2F" stroke-width="1.6"/>
+                    <!-- central star -->
+                    <polygon points="32,14 36,24 48,24 38.5,30 42.5,40 32,34 21.5,40 25.5,30 16,24 28,24"
+                        fill="#FFFFFF" fill-opacity="0.96" stroke="#2F2F2F" stroke-width="0.9"/>
+                </g>
+
+                <!-- Decoration -->
+                <path d="M12 34c6-10 12-12 20-12s14 2 20 12" fill="none" stroke="#2F2F2F" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M14 38c5-8 10-10 18-10s13 2 18 10" fill="none" stroke="#2F2F2F" stroke-width="0.8" stroke-linecap="round"/>
+
+                <!-- Ribbons -->
+                <path d="M24 44 l6 12 l-6 0 l2 -8 l-2 0" fill="#D84315" stroke="#2F2F2F" stroke-width="1"/>
+                <path d="M40 44 l-6 12 l6 0 l-2 -8 l2 0" fill="#EF6C00" stroke="#2F2F2F" stroke-width="1"/>
+
+                <!-- subtle sparks/shine animation -->
+                <g transform="translate(50,10)">
+                    <rect x="-1" y="-3" width="2" height="6" rx="1" fill="#FFFFFF" opacity="0.9">
+                        <animate attributeName="opacity" values="0.2;1;0.2" dur="1.6s" repeatCount="indefinite"/>
+                    </rect>
+                    <rect x="-3" y="-1" width="6" height="2" rx="1" fill="#FFFFFF" opacity="0.9">
+                        <animate attributeName="opacity" values="0.2;1;0.2" dur="1.6s" begin="0.4s" repeatCount="indefinite"/>
+                    </rect>
+                </g>
+            </svg>`;
+}
+
