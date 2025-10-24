@@ -109,11 +109,31 @@
     .controller-button {
         height: 40px;
         width: 40px;
+        
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
     }
 
     .controller-button img {
         width: 40px;
         height: 40px;
+        
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        pointer-events: none;
+        -webkit-user-drag: none;
+        -webkit-app-region: no-drag;
     }
 
     .dialog-content {

@@ -64,6 +64,12 @@ moveLeft.addEventListener('touchend', () => {
 moveLeft.addEventListener('contextmenu', (e) => {
     e.preventDefault();
 });
+moveLeft.addEventListener('selectstart', (e) => {
+    e.preventDefault();
+});
+moveLeft.addEventListener('dragstart', (e) => {
+    e.preventDefault();
+});
 
 moveRight.addEventListener('mousedown', () => {
     keyboard.RIGHT = true;
@@ -78,6 +84,12 @@ moveRight.addEventListener('touchend', () => {
     keyboard.RIGHT = false;
 });
 moveRight.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+});
+moveRight.addEventListener('selectstart', (e) => {
+    e.preventDefault();
+});
+moveRight.addEventListener('dragstart', (e) => {
     e.preventDefault();
 });
 
@@ -96,6 +108,12 @@ jump.addEventListener('touchend', () => {
 jump.addEventListener('contextmenu', (e) => {
     e.preventDefault();
 });
+jump.addEventListener('selectstart', (e) => {
+    e.preventDefault();
+});
+jump.addEventListener('dragstart', (e) => {
+    e.preventDefault();
+});
 
 throwObject.addEventListener('mousedown', () => {
     keyboard.D = true;
@@ -110,5 +128,11 @@ throwObject.addEventListener('touchend', () => {
     keyboard.D = false;
 });
 throwObject.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+});
+throwObject.addEventListener('selectstart', (e) => {
+    e.preventDefault();
+});
+throwObject.addEventListener('dragstart', (e) => {
     e.preventDefault();
 });
