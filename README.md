@@ -201,7 +201,6 @@ Potential improvements for future versions:
 - Additional levels and environments
 - New enemy types and abilities
 - Power-ups and special items
-- Multiplayer functionality
 - Save game progress
 - High score system
 
