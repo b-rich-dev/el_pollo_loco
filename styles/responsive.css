@@ -1,0 +1,205 @@
+/* Responsive Styles for El Pollo Loco Game */
+@media (pointer: coarse), (any-pointer: coarse), (hover: none), (any-hover: none) {
+    .move-buttons,
+    .canvas-wrapper.fullscreen-mode .move-buttons {
+        display: flex;
+    }
+
+    .action-buttons,
+    .canvas-wrapper.fullscreen-mode .action-buttons {
+        display: flex;
+    }
+
+    #gameControls {
+        display: none;
+    }
+
+    #portraitOverlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 20px;
+        font-family: sans-serif;
+        text-align: center;
+        background: linear-gradient(233deg, #FFF227, #B14F30, #6B912E);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    #portraitOverlay.show {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .portrait-overlay-logo {
+        position: absolute;
+        inset: 0;
+        background: url('../assets/img/others/bg_main_portrait.png') center/cover no-repeat;
+        opacity: 0.2;
+        filter: blur(2px);
+        pointer-events: none;
+    }
+
+    .portrait-overlay-message h2 {
+        display: flex;
+        font-size: 24px;
+        color: white;
+        background: rgba(148, 54, 16, 0.85);
+        padding: 16px 24px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        z-index: 9999;
+        max-width: 90vw;
+        line-height: 1.4;
+    }
+}
+
+@media (max-width: 1024px) {
+    canvas {
+        border-radius: 0;
+    }
+
+    main {
+        border-radius: 0;
+    }
+
+    #startScreen {
+        border-radius: 0;
+    }
+
+    .pepe-greeting {
+        display: none;
+    }
+
+    #loseEndScreen {
+        border-radius: 0;
+    }
+
+    .win-screen-container {
+        border-radius: 0;
+
+        h2 {
+            padding-top: 20px;
+        }
+    }
+
+    .final-score-container {
+        padding-bottom: 140px;
+    }
+}
+
+@media (max-height: 767px) {
+    .move-buttons {
+        bottom: 30px;
+        left: 30px;
+        width: 100px;
+        height: 100px;
+    }
+
+    .action-buttons {
+        bottom: 30px;
+        right: 30px;
+        width: 100px;
+        height: 100px;
+    }
+
+    .controller-button {
+        height: 40px;
+        width: 40px;
+        
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+
+    .controller-button img {
+        width: 40px;
+        height: 40px;
+        
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        pointer-events: none;
+        -webkit-user-drag: none;
+        -webkit-app-region: no-drag;
+    }
+
+    .dialog-content {
+        height: 99%;
+        width: 99%;
+    }
+}
+
+@media only screen and (max-width: 720px) {
+    canvas {
+        width: 100%;
+        border-radius: 0;
+    }
+
+    main {
+        width: 100%;
+        border-radius: 0;
+    }
+
+    #startScreen {
+        border-radius: 0;
+    }
+}
+
+@media only screen and (max-height: 480px) {
+    canvas {
+        height: 100vh;
+        height: 100dvh;
+    }
+
+    main {
+        height: 100vh;
+        height: 100dvh;
+    }
+
+    .lose-screen-container {
+        background-size: auto 160px;
+    }
+}
+
+@media (orientation: portrait) and (pointer: coarse),
+       (orientation: portrait) and (any-pointer: coarse),
+       (orientation: portrait) and (hover: none),
+       (orientation: portrait) and (any-hover: none) {
+    #portraitOverlay {
+        opacity: 1 !important;
+        pointer-events: all !important;
+        z-index: 99999 !important;
+        display: flex !important;
+    }
+
+    #gameControls,
+    canvas,
+    main,
+    #startScreen {
+        pointer-events: none !important;
+        touch-action: none !important;
+        user-select: none !important;
+        -webkit-user-select: none !important;
+    }
+
+    canvas,
+    main {
+        filter: blur(3px);
+    }
+}
+

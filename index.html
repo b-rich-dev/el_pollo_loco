@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Pollo Loco</title>
+
+    <link rel="icon" type="image/png" href="assets/img/4_enemie_boss_chicken/2_alert/G12.png">
+
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./styles/standard.css">
+    <link rel="stylesheet" href="./styles/font.css">
+    <link rel="stylesheet" href="./styles/responsive.css">
+    <link rel="stylesheet" href="./styles/imprint.css">
+</head>
+
+<body translate="no">
+    <div class="move-buttons">
+        <div class="move-button-container">
+            <button id="moveLeftButton" class="controller-button"><img src="./assets/img/buttons/button-left.png"
+                    alt="move left button"></button>
+            <button id="moveRightButton" class="controller-button"><img src="./assets/img/buttons/button-right.png"
+                    alt="move right button"></button>
+        </div>
+    </div>
+    <div class="action-buttons">
+        <div class="action-button-container">
+            <button id="jumpButton" class="controller-button"><img src="./assets/img/buttons/button-jump.png"
+                    alt="jump button"></button>
+            <button id="throwButton" class="controller-button"><img src="./assets/img/buttons/button-action.png"
+                    alt="throw button"></button>
+        </div>
+    </div>
+    <div id="canvasWrapper" class="canvas-wrapper">
+        <canvas id="gameCanvas" width="720" height="480"></canvas>
+        <figure id="gameControls">
+            <figcaption>
+                <h2>Game controls</h2>
+            </figcaption>
+            <div class="game-controls">
+                <div class="walk-controls">
+                    <div class="control flexdirection_column">
+                        <span>JUMP</span>
+                        <img src="assets/img/keyboard/up.png" alt="Jump" class="game-controls-img">
+                    </div>
+                    <div class="horizontal-controls">
+                        <div class="control">
+                            <span>LEFT</span>
+                            <img src="assets/img/keyboard/left.png" alt="Move Left" class="game-controls-img">
+                        </div>
+                        <div class="control">
+                            <img src="assets/img/keyboard/down.png" alt="Move Down" class="game-controls-img">
+                        </div>
+                        <div class="control">
+                            <img src="assets/img/keyboard/right.png" alt="Move Right" class="game-controls-img">
+                            <span>RIGHT</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="other-controls">
+                    <div class="control space_between width_100">
+                        <img src="assets/img/keyboard/d.png" alt="Throw Bottles" class="game-controls-img">
+                        <span>OR</span>
+                        <img src="assets/img/keyboard/num_zero.png" alt="Throw Bottles" class="game-controls-img">
+                        <span>THROW BOTTLES/COINS</span>
+                    </div>
+                    <div class="control">
+                        <img src="assets/img/keyboard/space.png" alt="Jump" class="game-controls-img">
+                        <span>JUMP</span>
+                    </div>
+                </div>
+            </div>
+        </figure>
+        <figure id="muteButton">
+        </figure>
+        <button id="fullscreenButton" class="fullscreen-button" title="Fullscreen umschalten">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
+            </svg>
+        </button>
+    </div>
+    <main id="main">
+        <section id="startScreen">
+            <div class="headline">
+                <h1>El Pollo Loco</h1>
+                <h2>Ride the Chicks</h2>
+            </div>
+            <div class="btn-container">
+                <button onclick="startGame()" id="startGameButton" class="start-screen-btn">Start Game</button>
+                <button onclick="openDialog('howToPlayDialog')" id="howToPlayButton" class="start-screen-btn">How to
+                    Play</button>
+                <button onclick="openDialog('imprintDialog')" id="imprintButton"
+                    class="start-screen-btn">Imprint</button>
+            </div>
+            <img src="assets/img/2_character_pepe/6_spezial/greeting.png" alt="Pepe greeting" class="pepe-greeting">
+        </section>
+        <section id="loseEndScreen">
+            <div class="lose-screen-container">
+                <button onclick="restartGame()" id="restartButton" class="end-screen-btn">Try again?</button>
+                <button onclick="exitGame()" id="exitButton" class="end-screen-btn">Exit</button>
+            </div>
+        </section>
+        <section id="winEndScreen">
+            <div class="win-screen-container">
+                <h2>Gratulations, you won this Game!</h2>
+                <div class="final-score-container">
+                    <p>Your final score is: <span id="finalScore">0</span> points.</p>
+                    <p>and that is <span id="finalSentence">great</span></p>
+                </div>
+                <div class="win-screen-btn-container">
+                    <button onclick="restartGame()" id="restartButton" class="end-screen-btn">Play again?</button>
+                    <button onclick="exitGame()" id="exitButton" class="end-screen-btn">Exit</button>
+                </div>
+            </div>
+        </section>
+    </main>
+    <dialog id="howToPlayDialog">
+        <div id="dialogContent" class="dialog-content">
+            <button onclick="closeDialog('howToPlayDialog')" class="x-close-btn">&#x2715;</button>
+            <div class="htp-text-content">
+                <header class="htp-dialog-header">
+                    <h2>How to Play</h2>
+                    <h3>EL POLLO LOCCO – Ride the Chicks</h3>
+                    <p>Take control of <strong>Pepe</strong> and survive a wacky world full of chickens and chicks.
+                    </p>
+                </header>
+                <section class="card" aria-labelledby="controls-heading">
+                    <h4>🐔 Controls</h4>
+                    <ul>
+                        <li><strong>Arrow keys left/right</strong>: Move</li>
+                        <li><strong>Arrow key up</strong> or <strong>Spacebar</strong>: Jump</li>
+                        <li><strong>Key D</strong> or <strong>Numpad Zero</strong>: Throw bottles</li>
+                    </ul>
+                </section>
+                <section aria-labelledby="enemies-heading">
+                    <h4>🐣 The Enemies</h4>
+                    <p>Dangerous <strong>chicks and chickens</strong> roam around, trying to hurt Pepe. Defeat them
+                        by
+                        <strong>jumping on their heads</strong> or <strong>throwing bottles</strong> at them.
+                    </p>
+                </section>
+                <section aria-labelledby="resources-heading">
+                    <h4>💥 Weapons & Resources</h4>
+                    <ul>
+                        <li>Collect <strong>bottles</strong> along the way and use them as ammunition.</li>
+                        <li>If you run out of bottles, you can <strong>throw your collected coins</strong> as a last
+                            resort.
+                        </li>
+                    </ul>
+                    <p>Be careful – coins are valuable,
+                    <p>and the more you keep until the end of the level, the higher
+                        your score!</p>
+                    </p>
+                </section>
+                <section aria-labelledby="boss-heading">
+                    <h4>🐓 The Boss Fight</h4>
+                    <p>At the end of each level, face the ultimate challenge: <strong>a giant chicken boss
+                            monster</strong>!
+                        Only with skill, smart resource management, and courage can you take it down.
+                    <p><strong>But beware:</strong> after taking a hit, when the boss starts smoking, it becomes
+                        invulnerable for a
+                        short time!</p>
+                    </p>
+                </section>
+                <section aria-labelledby="goal-heading">
+                    <h4>✨ Goal of the Game</h4>
+                    <p>Survive all enemies, defeat the boss, and hold on to as many coins as possible to reach the
+                        high
+                        score!</p>
+                </section>
+            </div>
+            <button onclick="closeDialog('howToPlayDialog')" id="closeHowToPlayButton"
+                class="htp-dialog-btn">Close</button>
+        </div>
+    </dialog>
+    <div id="portraitOverlay">
+        <div class="portrait-overlay-logo"></div>
+        <div class="portrait-overlay-message">
+            <h2>Please rotate your device to landscape mode to play this game.</h2>
+        </div>
+    </div>
+    <dialog id="imprintDialog">
+        <div id="imprintDialogContent" class="dialog-content padding_zero">
+            <button onclick="closeDialog('imprintDialog')" class="x-close-btn" aria-label="Close">&#x2715;</button>
+            <header class="imprint-dialog-header">
+                <img src="./assets/img/4_enemie_boss_chicken/2_alert/G12.png" alt="El_Pollo_Loco_Logo">
+                <div class="imprint-headline">
+                    <h1>EL POLLO LOCCO</h1>
+                    <h4>-</h4>
+                    <h4>Ride the Chicks</h4>
+                </div>
+            </header>
+            <div id="imprint-main" class="imprint-main" role="document">
+                <div class="back-button"><b onclick="closeDialog('imprintDialog')"> &lt; home</b></div>
+                <h1>Imprint</h1>
+                <div class="adress">
+                    <p>Eugen Birich </p>
+                    <p>Mittlauer Weg 36</p>
+                    <p>63571 Gelnhausen</p>
+                </div>
+                <div class="contact">
+                    <h2>Contact</h2>
+                    <p><b>Phone:</b><a href="tel:+491751032571"> 01751032571</a></p>
+                    <p><b>E-Mail:</b><a href="mailto:info@birich.it"> info@birich.it</a></p>
+                </div>
+                <div class="source">
+                    <p><b>Source:</b> <a href="https://www.e-recht24.de"><b>e-recht24.de</b></a></p>
+                    <p><b>Image sources and copyright notices:</b></p>
+                    <p>Images are from Developer Akademie, License: Developer Akademie <br>
+                        Images are from Pixabay, License: Pixabay License <br>
+                        Images are from freepik.com, License: Freepik License <br>
+                        Images are from pngwing.com, License: Pngwing License</p>
+                </div>
+            </div>
+            <footer class="imprint-footer">
+                <div class="footer_container">
+                    <img src="./assets/img/4_enemie_boss_chicken/2_alert/G12.png" alt="Logo">
+                    <div class="footer_text">Imprint</div>
+                </div>
+            </footer>
+        </div>
+    </dialog>
+
+    <script src="./js/templates.js" defer></script>
+    <script src="./modals/drawable-object.class.js" defer></script>
+    <script src="./modals/moveable-object.class.js" defer></script>
+    <script src="./modals/character.class.js" defer></script>
+    <script src="./modals/chicks.class.js" defer></script>
+    <script src="./modals/chicken.class.js" defer></script>
+    <script src="./modals/cloud.class.js" defer></script>
+    <script src="./modals/coins.class.js" defer></script>
+    <script src="./modals/bottles.class.js" defer></script>
+    <script src="./modals/status-bar.class.js" defer></script>
+    <script src="./modals/background-object.class.js" defer></script>
+    <script src="./modals/keyboard.class.js" defer></script>
+    <script src="./modals/level.class.js" defer></script>
+    <script src="./modals/endboss.class.js" defer></script>
+    <script src="./modals/collidable-object.class.js" defer></script>
+    <script src="./modals/throwable-object.class.js" defer></script>
+    <script src="./levels/level1.js" defer></script>
+    <script src="./js/game.js" defer></script>
+    <script type="module" src="./modals/collision.helper.js"></script>
+    <script type="module" src="./modals/world.class.js"></script>
+    <script type="module" src="./modals/enemy.tracking.helper.js"></script>
+    <script src="./main.js" defer></script>
+    <script src="./js/portrait-blocker.js" defer></script>
+</body>
+
+</html>

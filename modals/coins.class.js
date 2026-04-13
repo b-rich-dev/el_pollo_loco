@@ -1,0 +1,34 @@
+/** Coins class for collectible coins */
+class Coins extends MoveableObject {
+    y = 200;
+    height = 90;
+    width = 90;
+    offset = {
+        top: 30,
+        left: 30,
+        right: 30,
+        bottom: 30
+    };
+    IMAGES_COINS = [
+        'assets/img/8_coin/coin_1.png',
+        'assets/img/8_coin/coin_2.png',
+    ];
+
+    /** Create a coin object */
+    constructor() {
+        super().loadImage('assets/img/8_coin/coin_1.png');
+        this.loadImages(this.IMAGES_COINS);
+
+        this.x = 30 + Math.random() * 2200;
+        this.y = 30 + Math.random() * 344;
+
+        this.animate();
+    }
+
+    /** Animate the coin rotation */
+    animate() {
+        this.animationCoinInterval = setInterval(() => {
+            this.playAnimation(this.IMAGES_COINS);
+        }, 200);
+    }
+}
