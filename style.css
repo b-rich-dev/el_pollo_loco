@@ -99,14 +99,15 @@ figcaption h2 {
 
 #muteButton {
     position: absolute;
-    top: 20px;
-    right: 70px;
+    top: 70px;
+    right: 20px;
     width: 40px;
     height: 40px;
     background: url('./assets/img/sound/pngwing.com.png') center/cover no-repeat;
     border: none;
     cursor: pointer;
     z-index: 10;
+    filter: brightness(0) invert(1);
 }
 
 #muteButton.muted {
@@ -190,8 +191,8 @@ svg {
 
 .canvas-wrapper.fullscreen-mode #muteButton {
     position: fixed;
-    top: 20px;
-    right: 70px;
+    top: 70px;
+    right: 20px;
     z-index: 10000;
 }
 
