@@ -1,8 +1,8 @@
-# El Pollo Loco 🐔
+﻿# El Pollo Loco
 
 A fun and engaging 2D side-scrolling platformer game built with HTML5 Canvas and JavaScript. Play as Pepe, a brave character on a mission to collect coins and bottles while fighting against chickens and the ultimate boss chicken!
 
-## 🎮 Game Features
+## Game Features
 
 - **Side-scrolling Adventure**: Explore a vibrant world with multiple background layers
 - **Character Actions**: Walk, jump, and throw bottles at enemies
@@ -13,7 +13,7 @@ A fun and engaging 2D side-scrolling platformer game built with HTML5 Canvas and
 - **Responsive Design**: Mobile-friendly controls with on-screen buttons
 - **Game States**: Start screen, game over, and victory screens
 
-## 🕹️ How to Play
+## How to Play
 
 ### Desktop Controls
 - **Arrow Keys**: Move left/right and jump
@@ -33,7 +33,7 @@ A fun and engaging 2D side-scrolling platformer game built with HTML5 Canvas and
 4. Reach and defeat the end boss chicken to win the game
 5. Avoid taking damage from enemies to preserve your health
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - A modern web browser that supports HTML5 Canvas
@@ -53,32 +53,31 @@ A fun and engaging 2D side-scrolling platformer game built with HTML5 Canvas and
 ### Playing Online
 Simply open the `index.html` file in any modern web browser to start playing immediately.
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 el_pollo_loco/
 ├── index.html              # Main game entry point
 ├── main.js                 # Game initialization and menu logic
-├── style.css              # Main stylesheet
+├── style.css               # Main stylesheet
 ├── js/
-│   ├── game.js            # Core game logic and controls
+│   ├── game.js             # Core game logic and controls
 │   ├── portrait-blocker.js # Screen orientation handling
-│   └── templates.js       # HTML templates
+│   └── templates.js        # HTML templates
 ├── levels/
-│   └── level1.js          # Level configuration
-├── modals/                # Game object classes
+│   └── level1.js           # Level configuration
+├── modals/                 # Game object classes
 │   ├── character.class.js
 │   ├── world.class.js
-│   ├── enemy classes...
 │   └── ...
-├── styles/                # CSS stylesheets
-├── assets/
-│   ├── audio/            # Sound effects and music
-│   ├── img/              # Game sprites and images
-│   └── fonts/            # Custom fonts
+├── styles/                 # CSS stylesheets
+└── assets/
+    ├── audio/              # Sound effects and music
+    ├── img/                # Game sprites and images
+    └── fonts/              # Custom fonts
 ```
 
-## 🎨 Game Objects
+## Game Objects
 
 ### Character Classes
 - **Character**: The main player character (Pepe)
@@ -94,7 +93,7 @@ el_pollo_loco/
 - **BackgroundObject**: Environmental elements
 - **Cloud**: Moving background elements
 
-## 🔧 Technical Features
+## Technical Features
 
 - **Object-Oriented Design**: Built with ES6 classes and modular architecture
 - **Canvas Rendering**: Smooth 2D graphics using HTML5 Canvas
@@ -104,7 +103,7 @@ el_pollo_loco/
 - **Mobile Support**: Touch controls and responsive design
 - **Game State Management**: Proper handling of game states and transitions
 
-## 🎵 Audio
+## Audio
 
 The game features a rich audio experience including:
 - Background music
@@ -115,14 +114,62 @@ The game features a rich audio experience including:
 
 Audio can be muted using the in-game mute button.
 
-## 📱 Mobile Compatibility
+## Mobile Compatibility
 
 The game is fully playable on mobile devices with:
 - Touch-friendly on-screen controls
 - Responsive design that adapts to different screen sizes
 - Optimized performance for mobile browsers
 
-## 🛠️ Development
+## Deployment with `up.bat`
+
+The `up.bat` script combines Git commit and FTP upload in a single step.
+
+### Prerequisites
+
+1. **Install git-ftp**:
+   ```bash
+   # Windows (via Chocolatey)
+   choco install git-ftp
+
+   # or manually: https://github.com/git-ftp/git-ftp
+   ```
+
+2. **Configure FTP credentials** (one-time setup):
+   ```bash
+   git config git-ftp.url "ftp://your-domain.com/public_html"
+   git config git-ftp.user "ftp-username"
+   git config git-ftp.password "ftp-password"
+   ```
+
+3. **Initialize git-ftp** on first use (if files are already on the server):
+   ```bash
+   git ftp init
+   # or if the server is already up to date:
+   git ftp catchup
+   ```
+
+### Usage
+
+Run from the project folder:
+```bat
+up.bat "Your commit message"
+```
+
+The script automatically runs:
+1. `git pull` - fetch the latest changes
+2. `git add .` - stage all changes
+3. `git commit -m "..."` - commit with your message
+4. `git push` - push to GitHub
+5. `git ftp push` - upload changed files to the server via FTP
+
+### Note
+
+The folders `assets/img/1_editables/` and `gitignore/` are excluded from tracking and upload via `.gitignore` and `.git-ftp-ignore`.
+
+---
+
+## Development
 
 ### Technologies Used
 - **HTML5**: Canvas for game rendering
@@ -137,18 +184,18 @@ The game is fully playable on mobile devices with:
 - Edge
 - Mobile browsers (iOS Safari, Chrome Mobile)
 
-## 📄 License
+## License
 
 This project is part of a learning exercise and is intended for educational purposes.
 
-## 🤝 Contributing
+## Contributing
 
 This is a learning project, but suggestions and improvements are welcome! Feel free to:
 1. Fork the repository
 2. Create a feature branch
 3. Submit a pull request
 
-## 🎯 Future Enhancements
+## Future Enhancements
 
 Potential improvements for future versions:
 - Additional levels and environments
@@ -160,6 +207,6 @@ Potential improvements for future versions:
 
 ---
 
-**Have fun playing El Pollo Loco! 🐔🎮**
+**Have fun playing El Pollo Loco!**
 
-*Made with ❤️ using HTML5 Canvas and JavaScript*
+*Made with love using HTML5 Canvas and JavaScript*
